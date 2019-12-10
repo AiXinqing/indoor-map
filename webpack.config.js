@@ -25,7 +25,19 @@ module.exports = {
     hot: true,
     historyApiFallback: {},
   },
-
+  module: {
+    rules: [
+      {
+        test: /\.(scss|css)$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          { loader: 'css-loader', options: { importLoaders: 1, sourceMap: true } },
+        ]
+      },
+    ],
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -38,5 +50,10 @@ module.exports = {
       },
     }),
     new FriendlyErrorsPlugin(),
-  ]
+  ],
+  resolve: {
+    alias: {
+      assets: path.resolve(process.cwd(), './src/assets'),
+    },
+  },
 }
