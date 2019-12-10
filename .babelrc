@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import"
+  ],
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": ["> 1%", "IE >9", "and_uc > 10"]
+      }
+    }]
+  ]
+}
