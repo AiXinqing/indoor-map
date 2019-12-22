@@ -39,14 +39,25 @@ export default class IndoorMap {
     this.$svg.style.width = '100%'
     this.$svg.style.height = '100%'
     this.$el.appendChild(this.$svg)
-    const { width, height } = this.$svg.getBoundingClientRect()
-    this.setViewBox(width, height)
+    this._setViewBox()
   }
 
-  setViewBox (w, h, offsetx = 0, offsety = 0) {
+  setViewBox (view) {
+    const [x, y, w, h] = view || this.viewBox
     this.$svg.setAttribute(
       'viewBox',
-      `${offsetx / this.scale} ${offsety / this.scale} ${w / this.scale} ${h / this.scale}`
+      `${x / this.scale} ${y / this.scale} ${w / this.scale} ${h / this.scale}`
     )
+  }
+
+  setZoom (zoom) {
+    this.options.zoom = zoom
+    this.setViewBox()
+  }
+
+  _setViewBox () {
+    const { width, height } = this.$svg.getBoundingClientRect()
+    this.viewBox = [0, 0, width, height]
+    this.setViewBox()
   }
 }
