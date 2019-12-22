@@ -46,12 +46,18 @@ export default class IndoorMap {
     const [x, y, w, h] = view || this.viewBox
     this.$svg.setAttribute(
       'viewBox',
-      `${x / this.scale} ${y / this.scale} ${w / this.scale} ${h / this.scale}`
+      `${x} ${y} ${w / this.scale} ${h / this.scale}`
     )
   }
 
   setZoom (zoom) {
     this.options.zoom = zoom
+    this.setViewBox()
+  }
+
+  translate (x, y) {
+    this.viewBox[0] = this.viewBox[0] - x
+    this.viewBox[1] = this.viewBox[1] - y
     this.setViewBox()
   }
 
