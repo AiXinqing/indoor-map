@@ -6,11 +6,6 @@ const convertPolygonToPath = (polygon) => {
   const allpoints = polygon.geometry.coordinates[0]
   const x = allpoints.map(item => item[0])
   const y = allpoints.map(item => item[1])
-  console.log('x范围:')
-  console.log(Math.min.apply(this, x), Math.max.apply(this, x))
-
-  console.log('y范围:')
-  console.log(Math.min.apply(this, y), Math.max.apply(this, y))
   const pointsStr = points.map(point => `${point[0]},${point[1]}`).join('L')
   return `M${start[0]},${start[1]}L${pointsStr}Z`
 }
