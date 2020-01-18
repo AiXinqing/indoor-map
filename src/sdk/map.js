@@ -55,8 +55,8 @@ export default class IndoorMap {
   }
 
   translate (x, y) {
-    this.viewBox[0] = this.viewBox[0] - x
-    this.viewBox[1] = this.viewBox[1] - y
+    this.viewBox[0] = this.offset[0] - x
+    this.viewBox[1] = this.offset[1] - y
     this.setViewBox()
   }
 
