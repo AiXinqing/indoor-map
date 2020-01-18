@@ -1,6 +1,15 @@
 import { SvgNs } from './constant'
 
 const ZoomMap = {
+  '-9': 1e-9,
+  '-8': 1e-8,
+  '-7': 1e-7,
+  '-6': 1e-6,
+  '-5': 1e-5,
+  '-4': 1e-4,
+  '-3': 1e-3,
+  '-2': 1e-2,
+  '-1': 1e-1,
   '1': 1,
   '2': 2,
   '3': 3,
@@ -27,6 +36,8 @@ export default class IndoorMap {
       ...DefaultOptions,
       ...options,
     }
+    this.offset = [this.options.offsetX || 0, this.options.offsetY || 0]
+    this.width = this.options.width || 1
     this.generateElements()
   }
 
@@ -63,7 +74,8 @@ export default class IndoorMap {
 
   _setViewBox () {
     const { width, height } = this.$svg.getBoundingClientRect()
-    this.viewBox = [0, 0, width, height]
+    const h = this.width * height / width
+    this.viewBox = [...this.offset, this.width, h]
     this.setViewBox()
   }
 }
