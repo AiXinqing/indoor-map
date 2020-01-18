@@ -8,15 +8,15 @@ const convertLineToPath = (polygon) => {
 }
 
 export default class IndoorLineShape extends IndoorShape {
-  constructor (polygon, styles = {}) {
-    super()
+  constructor (line, styles = {}) {
+    super(line)
     const path = document.createElementNS(SvgNs, 'path')
-    const dstr = convertLineToPath(polygon)
+    const dstr = convertLineToPath(line)
     path.setAttribute('d', dstr)
     const stylestr = Object.keys(styles).reduce((acc, item) => {
       return `${acc}${item}: ${styles[item]};fill: none;`
     }, '')
     path.setAttribute('style', stylestr)
-    this.$el = path
+    this.setElement(path)
   }
 }

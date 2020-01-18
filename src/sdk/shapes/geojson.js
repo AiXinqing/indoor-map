@@ -10,9 +10,9 @@ const randomColor = () => {
 
 export default class IndoorGeojson extends IndoorShape {
   constructor (geojson) {
-    super()
+    super(geojson)
     const group = document.createElementNS(SvgNs, 'g')
-    this.$el = group
+    this.setElement(group)
 
     this.shapes = geojson.features.map((shape) => {
       switch (shape.geometry.type) {

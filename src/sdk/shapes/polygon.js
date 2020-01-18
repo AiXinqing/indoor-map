@@ -9,7 +9,7 @@ const convertPolygonToPath = (polygon) => {
 
 export default class IndoorPolygonShape extends IndoorShape {
   constructor (polygon, styles = {}) {
-    super()
+    super(polygon)
     const path = document.createElementNS(SvgNs, 'path')
     const dstr = convertPolygonToPath(polygon)
     path.setAttribute('d', dstr)
@@ -17,6 +17,12 @@ export default class IndoorPolygonShape extends IndoorShape {
       return `${acc}${item}: ${styles[item]};`
     }, '')
     path.setAttribute('style', stylestr)
-    this.$el = path
+    this.setElement(path)
+  }
+
+  bindEvents () {
+    this.$el.addEventListener('click', () => {
+      console.log(this.shape)
+    }, false)
   }
 }

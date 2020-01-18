@@ -1,6 +1,11 @@
 export default class IndoorShape {
-  constructor () {
-    this.$el = null
+  constructor (shape) {
+    this.shape = shape
+  }
+
+  setElement (el = null) {
+    this.$el = el
+    this.bindEvents()
   }
 
   setMap (map) {
@@ -18,4 +23,6 @@ export default class IndoorShape {
   remove (el) {
     this.$el.parentElement.removeChild(this.$el)
   }
+
+  bindEvents () {}
 }
