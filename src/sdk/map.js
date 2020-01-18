@@ -14,7 +14,7 @@ const ZoomMap = {
 }
 
 const DefaultOptions = {
-  zoom: 5,
+  zoom: 3,
 }
 
 export default class IndoorMap {

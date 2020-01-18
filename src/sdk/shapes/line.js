@@ -14,7 +14,7 @@ export default class IndoorLineShape extends IndoorShape {
     const dstr = convertLineToPath(polygon)
     path.setAttribute('d', dstr)
     const stylestr = Object.keys(styles).reduce((acc, item) => {
-      return `${acc}${item}: ${styles[item]};`
+      return `${acc}${item}: ${styles[item]};fill: none;`
     }, '')
     path.setAttribute('style', stylestr)
     this.$el = path

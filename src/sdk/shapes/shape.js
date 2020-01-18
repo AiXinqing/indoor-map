@@ -5,9 +5,17 @@ export default class IndoorShape {
 
   setMap (map) {
     if (map) {
-      map.$svg.appendChild(this.$el)
+      this.setRoot(map.$svg)
     } else {
-      this.$el.parentElement.removeChild(this.$el)
+      this.remove()
     }
+  }
+
+  setRoot (el) {
+    el.appendChild(this.$el)
+  }
+
+  remove (el) {
+    this.$el.parentElement.removeChild(this.$el)
   }
 }
