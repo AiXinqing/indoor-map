@@ -61,6 +61,12 @@ export default class IndoorMap {
     this.setViewBox()
   }
 
+  removeShapes () {
+    this.shapes.forEach((shape) => {
+      shape.remove()
+    })
+  }
+
   _setViewBox () {
     const { width, height } = this.$svg.getBoundingClientRect()
     const h = this.width * height / width

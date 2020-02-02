@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title><%= htmlWebpackPlugin.options.title %></title>
+  <style type="text/css">
+    #ui-layer {
+      position: fixed;
+      top: 100px;
+      right: 100px;
+    }
+  </style>
 </head>
 <body>
-  <div id="app" style="width: 100%;height: 100%">
+  <div id="app" style="width: 100%;height: 100%"></div>
+  <div id="ui-layer">
+    <button target="B2">负二层</button>
+    <button target="B3">负三层</button>
   </div>
 </body>
 </html>
