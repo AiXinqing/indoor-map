@@ -1,7 +1,11 @@
 export default class IndoorShape {
   constructor (shape) {
     this.shape = shape
+    this.initialShape(...arguments)
+    this.setAreas()
   }
+
+  initialShape () {}
 
   setElement (el = null) {
     this.$el = el
@@ -27,6 +31,14 @@ export default class IndoorShape {
     if (this.map) {
       this.map.shapes = this.map.shapes.filter((shape) => shape !== this)
     }
+  }
+
+  getAreas () {
+    return this.areas
+  }
+
+  setAreas () {
+    this.areas = [0, 0, 0, 0]
   }
 
   bindEvents () {}

@@ -8,8 +8,11 @@ const convertLineToPath = (polygon) => {
 }
 
 export default class IndoorLineShape extends IndoorShape {
-  constructor (line, styles = {}) {
-    super(line)
+  constructor () {
+    super(...arguments)
+  }
+
+  initialShape (line, styles) {
     const path = document.createElementNS(SvgNs, 'path')
     const dstr = convertLineToPath(line)
     path.setAttribute('d', dstr)
@@ -18,5 +21,12 @@ export default class IndoorLineShape extends IndoorShape {
     }, '')
     path.setAttribute('style', stylestr)
     this.setElement(path)
+  }
+
+  setAreas () {
+    const [...points] = this.shape.geometry.coordinates
+    const pointsX = points.map(point => point[0])
+    const pointsY = points.map(point => point[1])
+    this.areas = [Math.min(...pointsX), Math.min(...pointsY), Math.max(...pointsX), Math.max(...pointsY)]
   }
 }

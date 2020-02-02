@@ -8,8 +8,11 @@ const convertPolygonToPath = (polygon) => {
 }
 
 export default class IndoorPolygonShape extends IndoorShape {
-  constructor (polygon, styles = {}) {
-    super(polygon)
+  constructor () {
+    super(...arguments)
+  }
+
+  initialShape (polygon, styles = {}) {
     const path = document.createElementNS(SvgNs, 'path')
     const dstr = convertPolygonToPath(polygon)
     path.setAttribute('d', dstr)
@@ -18,6 +21,13 @@ export default class IndoorPolygonShape extends IndoorShape {
     }, '')
     path.setAttribute('style', stylestr)
     this.setElement(path)
+  }
+
+  setAreas () {
+    const [...points] = this.shape.geometry.coordinates[0]
+    const pointsX = points.map(point => point[0])
+    const pointsY = points.map(point => point[1])
+    this.areas = [Math.min(...pointsX), Math.min(...pointsY), Math.max(...pointsX), Math.max(...pointsY)]
   }
 
   bindEvents () {

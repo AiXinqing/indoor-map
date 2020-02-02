@@ -9,8 +9,11 @@ const randomColor = () => {
 }
 
 export default class IndoorGeojson extends IndoorShape {
-  constructor (geojson) {
-    super(geojson)
+  constructor () {
+    super(...arguments)
+  }
+
+  initialShape (geojson) {
     const group = document.createElementNS(SvgNs, 'g')
     this.setElement(group)
 
@@ -20,7 +23,7 @@ export default class IndoorGeojson extends IndoorShape {
           return new Polygon(shape, { fill: randomColor() })
         case 'LineString':
           return new Line(shape, {
-            stroke: randomColor(),
+            stroke: 'red',
             'stroke-width': 500,
           })
         default:
@@ -28,6 +31,15 @@ export default class IndoorGeojson extends IndoorShape {
       }
     })
     this.mount()
+  }
+
+  setAreas () {
+    const areas = this.shapes.map(shape => shape.getAreas())
+    this.areas = [0, 0, 0, 0]
+    this.areas[0] = Math.min(...areas.map(area => area[0]))
+    this.areas[1] = Math.min(...areas.map(area => area[1]))
+    this.areas[2] = Math.max(...areas.map(area => area[2]))
+    this.areas[3] = Math.max(...areas.map(area => area[3]))
   }
 
   mount () {
