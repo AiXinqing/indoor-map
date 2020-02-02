@@ -26,6 +26,7 @@ export default class IndoorMap {
     }
     this.offset = [this.options.offsetX || 0, this.options.offsetY || 0]
     this.width = this.options.width || 1
+    this.shapes = []
     this.generateElements()
   }
 

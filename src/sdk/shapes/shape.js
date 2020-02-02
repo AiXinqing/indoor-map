@@ -10,6 +10,7 @@ export default class IndoorShape {
 
   setMap (map) {
     if (map) {
+      map.shapes.push(this)
       this.setRoot(map.$svg)
     } else {
       this.remove()
@@ -20,7 +21,10 @@ export default class IndoorShape {
     el.appendChild(this.$el)
   }
 
-  remove (el) {
+  remove () {
+    if (this.map) {
+      this.map.shapes = this.map.shapes.filter((shape) => shape !== this)
+    }
     this.$el.parentElement.removeChild(this.$el)
   }
 
