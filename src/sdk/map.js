@@ -1,16 +1,16 @@
 import { SvgNs } from './constant'
 
 const ZoomMap = {
-  '1': 5e-4,
-  '2': 1e-3,
-  '3': 2e-3,
-  '4': 5e-3,
-  '5': 1e-2,
-  '6': 2e-2,
-  '7': 5e-2,
-  '8': 1e-1,
-  '9': 2e-1,
-  '10': 5e-1,
+  '1': 0.3,
+  '2': 0.5,
+  '3': 0.67,
+  '4': 1,
+  '5': 1.5,
+  '6': 2,
+  '7': 3,
+  '8': 5,
+  '9': 8,
+  '10': 12,
 }
 
 const DefaultOptions = {
@@ -24,14 +24,23 @@ export default class IndoorMap {
       ...DefaultOptions,
       ...options,
     }
-    this.offset = [this.options.offsetX || 0, this.options.offsetY || 0]
-    this.width = this.options.width || 1
     this.shapes = []
+    this.center = [0, 0]
+    this.size = [0, 0]
+    this.scale = 1
     this.generateElements()
   }
 
-  get scale() {
-    return ZoomMap[`${this.options.zoom}`]
+  get viewBox () {
+    const [cx, cy] = this.center
+    const [w, h] = this.size
+    const zoom = ZoomMap[this.options.zoom]
+    return [
+      cx - w / 2 * this.scale * zoom,
+      cy - h / 2 * this.scale * zoom,
+      w * this.scale * zoom,
+      h * this.scale * zoom
+    ]
   }
 
   generateElements () {
@@ -46,7 +55,7 @@ export default class IndoorMap {
     const [x, y, w, h] = view || this.viewBox
     this.$svg.setAttribute(
       'viewBox',
-      `${x} ${y} ${w / this.scale} ${h / this.scale}`
+      `${x} ${y} ${w} ${h}`
     )
   }
 
@@ -56,9 +65,30 @@ export default class IndoorMap {
   }
 
   translate (x, y) {
-    this.viewBox[0] = this.offset[0] - x
-    this.viewBox[1] = this.offset[1] - y
+    const [cx, cy] = this.center
+    this.center = [cx - x * this.scale, cy - y * this.scale]
     this.setViewBox()
+  }
+
+  setFitView () {
+    if (this.shapes.length < 1) return
+    const [Xmin, Ymin, Xmax, Ymax] = this.getAreas()
+    const { width, height } = this.$svg.getBoundingClientRect()
+    const scale = Math.max((Xmax - Xmin) / width, (Ymax - Ymin) / height)
+    this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
+    this.size = [width, height]
+    this.scale = scale
+    this.setViewBox()
+  }
+
+  getAreas () {
+    const areas = this.shapes.map(shape => shape.getAreas())
+    return [
+      Math.min(...areas.map(item => item[0])) || 0,
+      Math.min(...areas.map(item => item[1])) || 0,
+      Math.max(...areas.map(item => item[2])) || 0,
+      Math.max(...areas.map(item => item[3])) || 0,
+    ]
   }
 
   removeShapes () {
@@ -69,8 +99,8 @@ export default class IndoorMap {
 
   _setViewBox () {
     const { width, height } = this.$svg.getBoundingClientRect()
-    const h = this.width * height / width
-    this.viewBox = [...this.offset, this.width, h]
+    this.center = [width / 2, height / 2]
+    this.size = [width, height]
     this.setViewBox()
   }
 }
