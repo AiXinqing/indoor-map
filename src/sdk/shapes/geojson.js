@@ -13,18 +13,19 @@ export default class IndoorGeojson extends IndoorShape {
     super(...arguments)
   }
 
-  initialShape (geojson) {
+  initialShape (geojson, styleMaps = {}) {
     const group = document.createElementNS(SvgNs, 'g')
     this.setElement(group)
 
     this.shapes = geojson.features.map((shape) => {
       switch (shape.geometry.type) {
         case 'Polygon':
-          return new Polygon(shape, { fill: randomColor() })
+          const style = styleMaps[shape.properties.name || 'default']
+          return new Polygon(shape, style || { fill: randomColor() })
         case 'LineString':
           return new Line(shape, {
             stroke: 'red',
-            'stroke-width': 500,
+            'stroke-width': shape.properties.LineWt,
           })
         default:
           return new IndoorShape(shape)
