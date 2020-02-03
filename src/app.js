@@ -79,3 +79,13 @@ axios.get('http://39.106.77.97:8081/getByFloor/B2')
     const shapes = new Geojson(data.data, styleMaps)
     shapes.setMap(map)
   })
+
+document.getElementById('ui-layer').addEventListener('click', (event) => {
+  const floor = event.target.getAttribute('target')
+  axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`)
+    .then(({ data }) => {
+      map.removeShapes()
+      const shapes = new Geojson(data.data, styleMaps)
+      shapes.setMap(map)
+    })
+}, false)
