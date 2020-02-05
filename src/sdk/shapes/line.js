@@ -2,9 +2,9 @@ import IndoorShape from './shape'
 import { SvgNs } from '../constant'
 
 const convertLineToPath = (polygon) => {
-  const [start, ...points] = polygon.geometry.coordinates
+  const points = polygon.geometry.coordinates
   const pointsStr = points.map(point => `${point[0]},${point[1]}`).join('L')
-  return `M${start[0]},${start[1]}L${pointsStr}`
+  return `M${pointsStr}`
 }
 
 export default class IndoorLineShape extends IndoorShape {
@@ -17,8 +17,8 @@ export default class IndoorLineShape extends IndoorShape {
     const dstr = convertLineToPath(line)
     path.setAttribute('d', dstr)
     const stylestr = Object.keys(styles).reduce((acc, item) => {
-      return `${acc}${item}: ${styles[item]};fill: none;`
-    }, '')
+      return `${acc}${item}:${styles[item]};`
+    }, 'fill: none;')
     path.setAttribute('style', stylestr)
     this.setElement(path)
   }

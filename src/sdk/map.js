@@ -46,6 +46,7 @@ export default class IndoorMap {
   generateElements () {
     this.$svg = document.createElementNS(SvgNs, 'svg')
     this.$svg.style.width = '100%'
+    this.$svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
     this.$svg.style.height = '100%'
     this.$el.appendChild(this.$svg)
     this._setViewBox()
