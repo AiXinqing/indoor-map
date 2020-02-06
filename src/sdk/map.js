@@ -45,10 +45,12 @@ export default class IndoorMap {
 
   generateElements () {
     this.$svg = document.createElementNS(SvgNs, 'svg')
-    this.$svg.style.width = '100%'
     this.$svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-    this.$svg.style.height = '100%'
     this.$el.appendChild(this.$svg)
+    const { width, height } = this.$el.getBoundingClientRect()
+    this.$svg.style.width=`${width}px`
+    this.$svg.style.height=`${height}px`
+    this.size = [width, height]
     this._setViewBox()
   }
 
@@ -74,10 +76,9 @@ export default class IndoorMap {
   setFitView () {
     if (this.shapes.length < 1) return
     const [Xmin, Ymin, Xmax, Ymax] = this.getAreas()
-    const { width, height } = this.$svg.getBoundingClientRect()
+    const [width, height] = this.size
     const scale = Math.max((Xmax - Xmin) / width, (Ymax - Ymin) / height)
     this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
-    this.size = [width, height]
     this.scale = scale
     this.setViewBox()
   }
@@ -99,9 +100,8 @@ export default class IndoorMap {
   }
 
   _setViewBox () {
-    const { width, height } = this.$svg.getBoundingClientRect()
+    const [width, height] = this.size
     this.center = [width / 2, height / 2]
-    this.size = [width, height]
     this.setViewBox()
   }
 }
