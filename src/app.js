@@ -71,20 +71,48 @@ const styleMaps = {
   },
 }
 
-axios.get('http://39.106.77.97:8081/getByFloor/B2')
-  .then(({ data }) => {
-    const shapes = new Geojson(data.data, styleMaps)
-    shapes.setMap(map)
-    map.setFitView()
-  })
+const B2Floor = localStorage.getItem('B3-floor')
 
-document.getElementById('ui-layer').addEventListener('click', (event) => {
-  const floor = event.target.getAttribute('target')
-  axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`)
+if (B2Floor) {
+  const data = JSON.parse(B2Floor)
+  const shapes = new Geojson(data.data, styleMaps)
+  shapes.setMap(map)
+  map.setFitView()
+} else {
+  axios.get('http://39.106.77.97:8081/getByFloor/B3')
     .then(({ data }) => {
-      map.removeShapes()
+      try {
+        localStorage.setItem('B3-floor', JSON.stringify(data))
+      } catch (err) {
+        console.log(err)
+      }
       const shapes = new Geojson(data.data, styleMaps)
       shapes.setMap(map)
       map.setFitView()
     })
+}
+
+document.getElementById('ui-layer').addEventListener('click', (event) => {
+  const floor = event.target.getAttribute('target')
+  const cache = localStorage.getItem(`${floor}-floor`)
+
+  if (cache) {
+    map.removeShapes()
+    const shapes = new Geojson(JSON.parse(cache).data, styleMaps)
+    shapes.setMap(map)
+    map.setFitView()
+  } else {
+    axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`)
+      .then(({ data }) => {
+        try {
+          localStorage.setItem(`${floor}-floor`, JSON.stringify(data))
+        } catch (err) {
+          console.log(err)
+        }
+        map.removeShapes()
+        const shapes = new Geojson(data.data, styleMaps)
+        shapes.setMap(map)
+        map.setFitView()
+      })
+  }
 }, false)
