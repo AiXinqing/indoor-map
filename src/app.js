@@ -3,90 +3,31 @@ import 'assets/style.css'
 import axios from 'axios'
 import IndoorMap from './sdk/map.js'
 import Geojson from './sdk/shapes/geojson'
+import styleMaps from './style'
+import reduceFloorData from './reduce'
 
 const map = new IndoorMap('app', {
   zoom: 5,
 })
 
-const styleMaps = {
-  'default': {
-    fill: '#f3f3f3',
-  },
-  // 停车位
-  '停车位': {
-    stroke: '#f3f3f3',
-    fill: '#e6e6e6',
-    'stroke-width': 50,
-  },
-  '支柱': {
-    fill: '#333',
-  },
-  '冷冻机': {
-    fill: 'rgb(26,79,176)',
-  },
-  '其他房': {
-    fill: 'rgb(254,99,110)',
-  },
-  '电梯间': {
-    fill: 'rgb(199,235,200)',
-  },
-  '楼梯': {
-    fill: 'rgb(199,235,200)',
-  },
-  '淋浴间': {
-    fill: 'rgb(7,178,195)',
-  },
-  '垃圾闸': {
-    fill: '#cccccc',
-  },
-  '排风机': {
-    fill: 'rgb(22, 137, 112)',
-  },
-  '值班室': {
-    fill: 'rgb(195,7,132)',
-  },
-  '入口': {
-    fill: 'rgb(254,99,110)',
-  },
-  '新风机': {
-    fill: 'rgb(22, 187, 112)',
-  },
-  '弱电': {
-    fill: 'rgb(30, 110, 150)',
-  },
-  '强电': {
-    fill: 'rgb(30, 110, 220)',
-  },
-  '库房': {
-    fill: 'rgb(160, 160, 22)',
-  },
-  '热交换': {
-    fill: 'rgb(220, 40, 40)',
-  },
-  '配电间': {
-    fill: 'rgb(104,11,223)',
-  },
-  '出口': {
-    fill: 'rgb(110, 99, 254)',
-  },
-}
+const B3Floor = localStorage.getItem('B3-floor')
 
-const B2Floor = localStorage.getItem('B3-floor')
-
-if (B2Floor) {
-  const data = JSON.parse(B2Floor)
-  const shapes = new Geojson(data.data, styleMaps)
+if (B3Floor) {
+  const { reducedData } = JSON.parse(B3Floor)
+  const shapes = new Geojson(reducedData, styleMaps)
   shapes.setMap(map)
   map.setFitView()
 } else {
   axios.get('http://39.106.77.97:8081/getByFloor/B3')
     .then(({ data }) => {
+      const reducedData = reduceFloorData(data.data)
       try {
-        localStorage.setItem('B3-floor', JSON.stringify(data))
+        localStorage.setItem('B3-floor', JSON.stringify(reducedData))
+        localStorage.removeItem('B3-floor')
       } catch (err) {
         console.log(err)
       }
-      const shapes = new Geojson(data.data, styleMaps)
+      const shapes = new Geojson(reducedData.reducedData, styleMaps)
       shapes.setMap(map)
       map.setFitView()
     })
@@ -97,20 +38,21 @@ document.getElementById('ui-layer').addEventListener('click', (event) => {
   const cache = localStorage.getItem(`${floor}-floor`)
 
   if (cache) {
+    const shapes = new Geojson(JSON.parse(cache).reducedData, styleMaps)
     map.removeShapes()
-    const shapes = new Geojson(JSON.parse(cache).data, styleMaps)
     shapes.setMap(map)
     map.setFitView()
   } else {
     axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`)
       .then(({ data }) => {
+        const reducedData = reduceFloorData(data.data)
         try {
-          localStorage.setItem(`${floor}-floor`, JSON.stringify(data))
+          localStorage.setItem(`${floor}-floor`, JSON.stringify(reducedData))
         } catch (err) {
-          console.log(err)
+          localStorage.removeItem(`${floor}-floor`)
         }
         map.removeShapes()
-        const shapes = new Geojson(data.data, styleMaps)
+        const shapes = new Geojson(reducedData.reducedData, styleMaps)
         shapes.setMap(map)
         map.setFitView()
       })

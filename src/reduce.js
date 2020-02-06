@@ -1,0 +1,147 @@
+function reducePoints (points, offset) {
+  const [offsetX, offsetY] = offset
+  return points.reduce((acc, current, index, arr) => {
+    const [x, y] = current
+    // 第一个和最后一个可直接跳过
+    if (index < 1 || (index === arr.length - 1)) {
+      acc.push([x - offsetX, y - offsetY])
+    } else {
+      const [px, py] = arr[index - 1]
+      const [nx, ny] = arr[index + 1]
+      // 3点不在一条直线
+      if ((ny - py) * (x - px) - (y - py) * (nx - px) !== 0) {
+        acc.push([x - offsetX, y - offsetY])
+      }
+    }
+    return acc
+  }, [])
+}
+
+function getRange (point, range = {}) {
+  const [x, y] = point
+  if (range.hasOwnProperty('Xmin')) {
+    range.Xmin = Math.min(range.Xmin, x)
+    range.Xmax = Math.max(range.Xmax, x)
+    range.Ymin = Math.min(range.Ymin, y)
+    range.Ymax = Math.max(range.Ymin, y)
+  } else {
+    range.Xmin = x
+    range.Xmax = x
+    range.Ymin = y
+    range.Ymax = y
+  }
+  return range
+}
+
+export function reduceData(geojson, offset) {
+  if (geojson.type === 'FeatureCollection') {
+    return {
+      ...geojson,
+      features: geojson.features.map(item => reduceData(item, offset)),
+    }
+  }
+  const { type } = geojson.type === 'Feature' ? geojson.geometry : geojson
+  const { coordinates } = geojson.type === 'Feature' ? geojson.geometry : geojson
+  switch (type) {
+    case 'MultiLineString':
+    case 'Polygon':
+      return {
+        ...geojson,
+        geometry: {
+          ...geojson.geometry,
+          coordinates: coordinates.map(points => reducePoints(points, offset)),
+        },
+      }
+    case 'MultiPolygon':
+      return {
+        ...geojson,
+        geometry: {
+          ...geojson.geometry,
+          coordinates: coordinates.map(polygon => {
+            return polygon.map(points => reducePoints(points, offset))
+          })
+        },
+      }
+    case 'LineString':
+    case 'MultiPoint':
+      return {
+        ...geojson,
+        geometry: {
+          ...geojson.geometry,
+          coordinates: reducePoints(coordinates, offset),
+        },
+      }
+    default:
+      return {
+        ...geojson,
+        geometry: {
+          ...geojson.geometry,
+          coordinates: reducePoints([coordinates], offset),
+        },
+      }
+  }
+}
+
+export function getGeojsonRange (geojson) {
+  if (geojson.type === 'FeatureCollection') {
+    const ranges = geojson.features.map(feature => getGeojsonRange(feature))
+    return {
+      Xmin: Math.min(...ranges.map(range => range.Xmin)),
+      Xmax: Math.max(...ranges.map(range => range.Xmax)),
+      Ymin: Math.min(...ranges.map(range => range.Ymin)),
+      Ymax: Math.max(...ranges.map(range => range.Ymax)),
+    }
+  }
+  const { type } = geojson.type === 'Feature' ? geojson.geometry : geojson
+  const { coordinates } = geojson.type === 'Feature' ? geojson.geometry : geojson
+  let range = {}
+  switch (type) {
+    case 'MultiLineString':
+    case 'Polygon':
+      coordinates.forEach((points) => {
+        points.forEach((point) => {
+          range = getRange(point, range)
+        })
+      })
+      break
+    case 'MultiPolygon':
+      coordinates.forEach((polygon) => {
+        polygon.forEach((points) => {
+          points.forEach((point) => {
+            range = getRange(point, range)
+          })
+        })
+      })
+      break
+    case 'LineString':
+    case 'MultiPoint':
+      coordinates.forEach((point) => {
+        range = getRange(point, range)
+      })
+      break
+    default:
+      range = getRange(coordinates, range)
+  }
+  return range
+}
+
+function getOffset (min, max) {
+  const level = Math.ceil(Math.log10((max - min) || 1))
+  return Math.floor(min / Math.pow(10, level)) * Math.pow(10, level)
+}
+
+export default function reduceFloorData (data) {
+  const { Xmin = 0, Xmax = 1, Ymin = 0, Ymax = 1 } = getGeojsonRange(data)
+  const offset = [getOffset(Xmin, Xmax), getOffset(Ymin, Ymax)]
+  const reducedData = reduceData(data, offset)
+  return {
+    range: {
+      Xmax,
+      Xmin,
+      Ymax,
+      Ymin,
+    },
+    offset,
+    reducedData: reducedData,
+  }
+}
