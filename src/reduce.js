@@ -1,7 +1,8 @@
 function reducePoints (points, offset) {
   const [offsetX, offsetY] = offset
   return points.reduce((acc, current, index, arr) => {
-    const [x, y] = current
+    const x = Math.round(current[0])
+    const y = Math.round(current[1])
     // 第一个和最后一个可直接跳过
     if (index < 1 || (index === arr.length - 1)) {
       acc.push([x - offsetX, y - offsetY])

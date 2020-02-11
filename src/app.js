@@ -23,8 +23,8 @@ if (B3Floor) {
       const reducedData = reduceFloorData(data.data)
       try {
         localStorage.setItem('B3-floor', JSON.stringify(reducedData))
-        localStorage.removeItem('B3-floor')
       } catch (err) {
+        localStorage.removeItem('B3-floor')
         console.log(err)
       }
       const shapes = new Geojson(reducedData.reducedData, styleMaps)
