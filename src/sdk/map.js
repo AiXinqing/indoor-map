@@ -120,6 +120,7 @@ export default class IndoorMap {
   }
 
   renderShape (shape, type) {
+    shape.setStyle()
     switch (type) {
       case 'shape':
         this.$shapeGroup.appendChild(shape.$el)

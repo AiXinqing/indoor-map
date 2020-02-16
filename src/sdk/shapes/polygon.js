@@ -16,10 +16,6 @@ export default class IndoorPolygonShape extends IndoorShape {
     const path = document.createElementNS(SvgNs, 'path')
     const dstr = convertPolygonToPath(polygon)
     path.setAttribute('d', dstr)
-    const stylestr = Object.keys(styles).reduce((acc, item) => {
-      return `${acc}${item}:${styles[item]};`
-    }, '')
-    path.setAttribute('style', stylestr)
     this.setElement(path)
   }
 

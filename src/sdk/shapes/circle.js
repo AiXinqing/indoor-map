@@ -12,10 +12,6 @@ export default class IndoorCircle extends IndoorShape {
     circle.setAttribute('cx', cx)
     circle.setAttribute('cy', cy)
     circle.setAttribute('r', shape.radius)
-    const stylestr = Object.keys(styles).reduce((acc, item) => {
-      return `${acc}${item}:${styles[item]};`
-    }, '')
-    circle.setAttribute('style', stylestr)
     this.setElement(circle)
   }
 

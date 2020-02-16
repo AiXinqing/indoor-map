@@ -43,6 +43,10 @@ export default class IndoorGeojson extends IndoorShape {
     this.areas[3] = Math.max(...areas.map(area => area[3]))
   }
 
+  setStyle () {
+    this.shapes.forEach(item => item.setStyle())
+  }
+
   mount () {
     this.shapes.forEach(item => item.setRoot(this.$el))
   }
