@@ -1,5 +1,7 @@
 export default class IndoorShape {
   constructor (shape) {
+    this.id = `shape-${this.constructor.Count}`
+    this.constructor.Count += 1
     this.shape = shape
     this.initialShape(...arguments)
     this.setAreas()
@@ -9,14 +11,15 @@ export default class IndoorShape {
 
   setElement (el = null) {
     this.$el = el
+    this.$el.setAttribute('id', this.id)
     this.bindEvents()
   }
 
-  setMap (map) {
+  // type: shape | marker
+  setMap (map, type='shape') {
     if (map) {
       this.map = map
-      map.shapes.push(this)
-      this.setRoot(map.$svg)
+      map.addShape(this, type)
     } else {
       this.remove()
     }
@@ -29,7 +32,7 @@ export default class IndoorShape {
   remove () {
     this.$el.parentElement.removeChild(this.$el)
     if (this.map) {
-      this.map.shapes = this.map.shapes.filter((shape) => shape !== this)
+      this.map.removeShape(this)
     }
   }
 
@@ -43,3 +46,5 @@ export default class IndoorShape {
 
   bindEvents () {}
 }
+
+IndoorShape.Count = 0

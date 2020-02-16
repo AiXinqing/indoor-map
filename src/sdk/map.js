@@ -25,6 +25,7 @@ export default class IndoorMap {
       ...options,
     }
     this.shapes = []
+    this.markers = []
     this.center = [0, 0]
     this.size = [0, 0]
     this.scale = 1
@@ -47,6 +48,12 @@ export default class IndoorMap {
     this.$svg = document.createElementNS(SvgNs, 'svg')
     this.$svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
     this.$el.appendChild(this.$svg)
+    this.$shapeGroup = document.createElementNS(SvgNs, 'g')
+    this.$markerGroup = document.createElementNS(SvgNs, 'g')
+    this.$shapeGroup.setAttribute('aria-label', 'normal-shapes')
+    this.$markerGroup.setAttribute('aria-label', 'markers-group')
+    this.$svg.appendChild(this.$shapeGroup)
+    this.$svg.appendChild(this.$markerGroup)
     const { width, height } = this.$el.getBoundingClientRect()
     this.$svg.style.width=`${width}px`
     this.$svg.style.height=`${height}px`
@@ -97,6 +104,42 @@ export default class IndoorMap {
     this.shapes.forEach((shape) => {
       shape.remove()
     })
+  }
+
+  addShape (shape, type = 'shape') {
+    switch (type) {
+      case 'shape':
+        this.shapes.push(shape)
+        break
+      case 'marker':
+        this.markers.push(shape)
+        break
+      default:
+    }
+    this.renderShape(shape, type)
+  }
+
+  renderShape (shape, type) {
+    switch (type) {
+      case 'shape':
+        this.$shapeGroup.appendChild(shape.$el)
+        break
+      case 'marker':
+        this.$markerGroup.appendChild(shape.$el)
+        break
+      default:
+    }
+  }
+
+  removeShape (shape) {
+    const markerIndex = this.markers.findIndex(item => item.id === shape.id)
+    const shapeIndex = this.shapes.findIndex(item => item.id === shape.id)
+    if (markerIndex > -1) {
+      return this.markers.splice(markerIndex, 1)
+    }
+    if (shapeIndex > -1) {
+      return this.shapes.splice(shapeIndex, 1)
+    }
   }
 
   _setViewBox () {
