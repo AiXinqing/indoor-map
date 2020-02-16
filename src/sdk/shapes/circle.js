@@ -7,7 +7,7 @@ export default class IndoorCircle extends IndoorShape {
   }
 
   initialShape (shape, styles = {}) {
-    const circle = document.createElementNS(SvgNs, 'path')
+    const circle = document.createElementNS(SvgNs, 'circle')
     const [cx, cy] = shape.center
     circle.setAttribute('cx', cx)
     circle.setAttribute('cy', cy)
