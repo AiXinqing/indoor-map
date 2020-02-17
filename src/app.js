@@ -6,6 +6,7 @@ import Geojson from './sdk/shapes/geojson'
 import styleMaps from './style'
 import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
+import IndoorLineShape from './sdk/shapes/line.js'
 
 const map = new IndoorMap('app', {
   zoom: 5,
@@ -69,6 +70,25 @@ document.getElementById('ui-layer').addEventListener('click', (event) => {
       }, {
         fill: 'red',
       })
-      shape.setMap(map)
+      shape.setMap(map, 'marker')
+      break
+    case 'navigate':
+      const nav = new IndoorLineShape({
+        id: 'navigate',
+        geometry: {
+          coordinates: [
+            [46010, 43122],
+            [76010, 43122],
+            [76010, 69122],
+            [87010, 69122],
+          ],
+        },
+      }, {
+        stroke: 'blue',
+        'stroke-width': 500,
+        fill: 'none',
+      })
+      nav.setMap(map, 'shape')
+      break
   }
 }, false)
