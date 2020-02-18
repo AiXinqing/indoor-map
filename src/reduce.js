@@ -1,19 +1,11 @@
 function reducePoints (points, offset) {
   const [offsetX, offsetY] = offset
   return points.reduce((acc, current, index, arr) => {
-    const x = Math.round(current[0])
-    const y = Math.round(current[1])
-    // 第一个和最后一个可直接跳过
-    if (index < 1 || (index === arr.length - 1)) {
-      acc.push([x - offsetX, y - offsetY])
-    } else {
-      const [px, py] = arr[index - 1]
-      const [nx, ny] = arr[index + 1]
-      // 3点不在一条直线
-      if ((ny - py) * (x - px) - (y - py) * (nx - px) !== 0) {
-        acc.push([x - offsetX, y - offsetY])
-      }
-    }
+    const [x, y] = current
+    acc.push([
+      parseFloat((x - offsetX).toFixed(3)),
+      parseFloat((y - offsetY).toFixed(3))
+    ])
     return acc
   }, [])
 }

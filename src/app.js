@@ -8,32 +8,80 @@ import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
+const EXAMPLE_POSITION = [46010, 43122]
+let fetching = false
+
 const map = new IndoorMap('app', {
   zoom: 5,
 })
 
-const B3Floor = localStorage.getItem('B3-floor')
+const source = axios.CancelToken.source()
 
-if (B3Floor) {
-  const { reducedData } = JSON.parse(B3Floor)
-  const shapes = new Geojson(reducedData, styleMaps)
+function fetchFloor (floor) {
+  if (fetching) {
+    source.cancel('cancel')
+  }
+  fetching = true
+  return axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`, {
+    cancelToken: source.token,
+  }).then(({ data }) => {
+    return reduceFloorData(data.data)
+  }).finally(() => {
+    fetching = false
+  })
+}
+
+function getFloorCache (floor) {
+  const cache = localStorage.getItem(`${floor}-floor`)
+  if (cache) {
+    return JSON.parse(cache)
+  }
+  return undefined
+}
+
+function storeCache (floor, data) {
+  debugger
+  try {
+    localStorage.setItem(`${floor}-floor`, JSON.stringify(data))
+  } catch {
+    localStorage.removeItem(`${floor}-floor`)
+  }
+}
+
+function drawFloorMap (data) {
+  const shapes = new Geojson(data.reducedData, styleMaps)
+  map.offset = data.offset
+  map.removeShapes()
   shapes.setMap(map)
   map.setFitView()
-} else {
-  axios.get('http://39.106.77.97:8081/getByFloor/B3')
-    .then(({ data }) => {
-      const reducedData = reduceFloorData(data.data)
-      try {
-        localStorage.setItem('B3-floor', JSON.stringify(reducedData))
-      } catch (err) {
-        localStorage.removeItem('B3-floor')
-        console.log(err)
-      }
-      const shapes = new Geojson(reducedData.reducedData, styleMaps)
-      shapes.setMap(map)
-      map.setFitView()
-    })
 }
+
+function getPosition () {
+  // return axios.get('position/url', {
+  //   cancelToken: source.token,
+  // })
+  return Promise.resolve({
+    location: EXAMPLE_POSITION,
+    floor: 'B3',
+  })
+}
+
+function init() {
+  getPosition().then((position) => {
+    const cache = getFloorCache(position.floor)
+    if (cache) {
+      drawFloorMap(cache)
+    } else {
+      fetchFloor(position.floor).then((data) => {
+        storeCache(position.floor, data)
+        drawFloorMap(data)
+      }).catch(() => console.log('请求楼层数据失败'))
+    }
+  }).catch(() => console.log('获取定位失败'))
+}
+
+init()
+
 
 document.getElementById('ui-layer').addEventListener('click', (event) => {
   const type = event.target.getAttribute('data-type')
