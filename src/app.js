@@ -8,14 +8,9 @@ import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
+localStorage.clear()
 const BACKEND_HOST = 'http://39.106.77.97:8081'
 const EXAMPLE_POSITION = [46010, 43122]
-const EXAMPLE_NAV = [
-  [46010, 43122],
-  [76010, 43122],
-  [76010, 69122],
-  [87010, 69122],
-]
 let fetching = false
 
 const map = new IndoorMap('app', {
