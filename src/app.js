@@ -8,6 +8,7 @@ import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
+const BACKEND_HOST = 'http://39.106.77.97:8081'
 const EXAMPLE_POSITION = [46010, 43122]
 const EXAMPLE_NAV = [
   [46010, 43122],
@@ -28,7 +29,7 @@ function fetchFloor (floor) {
     source.cancel('cancel')
   }
   fetching = true
-  return axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`, {
+  return axios.get(`${BACKEND_HOST}/getByFloor/${floor}`, {
     cancelToken: source.token,
   }).then(({ data }) => {
     return reduceFloorData(data.data)
@@ -73,6 +74,14 @@ function drawFloor (floor) {
   }
 }
 
+function getNavigatePath (_from, _target) {
+  return axios.get(`${BACKEND_HOST}/direction`)
+    .then(({ data }) => {
+      return data.data
+    })
+    .catch(() => console.log('获取导航数据失败'))
+}
+
 function getPosition () {
   // return axios.get('position/url', {
   //   cancelToken: source.token,
@@ -93,18 +102,23 @@ function displayPosition (position, map) {
   location.setMap(map, 'marker')
 }
 
-function displayNavigate (navPath, map) {
-  const nav = new IndoorLineShape({
-    id: 'navigate',
-    geometry: {
-      coordinates: navPath,
-    },
-  }, {
-    stroke: 'blue',
-    'stroke-width': 500,
-    fill: 'none',
+function displayNavigate () {
+  getNavigatePath().then((navPath) => {
+    const points = navPath.map((point) => {
+      return [point[0] - map.offset[0], point[1] - map.offset[1]]
+    })
+
+    const nav = new IndoorLineShape({
+      geometry: {
+        coordinates: points,
+      },
+    }, {
+      stroke: 'blue',
+      'stroke-width': 500,
+      fill: 'none',
+    })
+    nav.setMap(map, 'shape')
   })
-  nav.setMap(map, 'shape')
 }
 
 function init() {
@@ -131,7 +145,7 @@ document.getElementById('ui-layer').addEventListener('click', (event) => {
       }, map)
       break
     case 'navigate':
-      displayNavigate(EXAMPLE_NAV, map)
+      displayNavigate()
       break
   }
 }, false)

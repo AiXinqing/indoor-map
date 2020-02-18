@@ -101,12 +101,19 @@ export default class IndoorMap {
   }
 
   removeShapes () {
-    this.shapes.forEach((shape) => {
+    let shapeLength = this.shapes.length
+    let shape = null
+    while (shapeLength > 0) {
+      shape = this.shapes[shapeLength - 1]
       shape.remove()
-    })
-    this.markers.forEach((marker) => {
-      marker.remove()
-    })
+      shapeLength -= 1
+    }
+    shapeLength = this.markers.length
+    while (shapeLength > 0) {
+      shape = this.markers[shapeLength - 1]
+      shape.remove()
+      shapeLength -= 1
+    }
   }
 
   addShape (shape, type = 'shape') {
