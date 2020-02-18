@@ -26,6 +26,7 @@ export default class IndoorGeojson extends IndoorShape {
           return new Line(shape, {
             stroke: 'red',
             'stroke-width': shape.properties.LineWt,
+            fill: 'none',
           })
         default:
           return new IndoorShape(shape)
