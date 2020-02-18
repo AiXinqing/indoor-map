@@ -65,12 +65,14 @@ function drawFloorMap (data) {
 function drawFloor (floor) {
   const cache = getFloorCache(floor)
   if (cache) {
+    showInfo(`当前楼层: ${floor}`)
     drawFloorMap(cache)
   } else {
     fetchFloor(floor).then((data) => {
       storeCache(floor, data)
+      showInfo(`当前楼层: ${floor}`)
       drawFloorMap(data)
-    }).catch(() => console.log('请求楼层数据失败'))
+    }).catch(() => showInfo('请求楼层数据失败'))
   }
 }
 
@@ -79,7 +81,7 @@ function getNavigatePath (_from, _target) {
     .then(({ data }) => {
       return data.data
     })
-    .catch(() => console.log('获取导航数据失败'))
+    .catch(() => showInfo('获取导航数据失败'))
 }
 
 function getPosition () {
@@ -118,18 +120,22 @@ function displayNavigate () {
       fill: 'none',
     })
     nav.setMap(map, 'shape')
+    map.setFitView()
   })
+}
+
+function showInfo (info) {
+  document.getElementById('infoBox').innerHTML = info
 }
 
 function init() {
   getPosition().then((position) => {
     displayPosition(position.location, map)
     drawFloor(position.floor)
-  }).catch(() => console.log('获取定位失败'))
+  }).catch(() => showInfo('获取定位失败'))
 }
 
 init()
-
 
 document.getElementById('ui-layer').addEventListener('click', (event) => {
   const type = event.target.getAttribute('data-type')
@@ -140,9 +146,7 @@ document.getElementById('ui-layer').addEventListener('click', (event) => {
       drawFloor(floor)
       break
     case 'position':
-      displayPosition({
-        location: EXAMPLE_POSITION,
-      }, map)
+      displayPosition(EXAMPLE_POSITION, map)
       break
     case 'navigate':
       displayNavigate()
