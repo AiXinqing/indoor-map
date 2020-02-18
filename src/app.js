@@ -56,6 +56,18 @@ function drawFloorMap (data) {
   map.setFitView()
 }
 
+function drawFloor (floor) {
+  const cache = getFloorCache(floor)
+  if (cache) {
+    drawFloorMap(cache)
+  } else {
+    fetchFloor(floor).then((data) => {
+      storeCache(floor, data)
+      drawFloorMap(data)
+    }).catch(() => console.log('请求楼层数据失败'))
+  }
+}
+
 function getPosition () {
   // return axios.get('position/url', {
   //   cancelToken: source.token,
@@ -68,15 +80,7 @@ function getPosition () {
 
 function init() {
   getPosition().then((position) => {
-    const cache = getFloorCache(position.floor)
-    if (cache) {
-      drawFloorMap(cache)
-    } else {
-      fetchFloor(position.floor).then((data) => {
-        storeCache(position.floor, data)
-        drawFloorMap(data)
-      }).catch(() => console.log('请求楼层数据失败'))
-    }
+    drawFloor(position.floor)
   }).catch(() => console.log('获取定位失败'))
 }
 
