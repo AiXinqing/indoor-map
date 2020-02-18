@@ -9,6 +9,12 @@ import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
 const EXAMPLE_POSITION = [46010, 43122]
+const EXAMPLE_NAV = [
+  [46010, 43122],
+  [76010, 43122],
+  [76010, 69122],
+  [87010, 69122],
+]
 let fetching = false
 
 const map = new IndoorMap('app', {
@@ -77,8 +83,33 @@ function getPosition () {
   })
 }
 
+function displayPosition (position, map) {
+  const location = new IndoorCircle({
+    center: position,
+    radius: 1000,
+  }, {
+    fill: 'red',
+  })
+  location.setMap(map, 'marker')
+}
+
+function displayNavigate (navPath, map) {
+  const nav = new IndoorLineShape({
+    id: 'navigate',
+    geometry: {
+      coordinates: navPath,
+    },
+  }, {
+    stroke: 'blue',
+    'stroke-width': 500,
+    fill: 'none',
+  })
+  nav.setMap(map, 'shape')
+}
+
 function init() {
   getPosition().then((position) => {
+    displayPosition(position.location, map)
     drawFloor(position.floor)
   }).catch(() => console.log('获取定位失败'))
 }
@@ -95,31 +126,12 @@ document.getElementById('ui-layer').addEventListener('click', (event) => {
       drawFloor(floor)
       break
     case 'position':
-      const shape = new IndoorCircle({
-        center: [46010, 43122],
-        radius: 1000,
-      }, {
-        fill: 'red',
-      })
-      shape.setMap(map, 'marker')
+      displayPosition({
+        location: EXAMPLE_POSITION,
+      }, map)
       break
     case 'navigate':
-      const nav = new IndoorLineShape({
-        id: 'navigate',
-        geometry: {
-          coordinates: [
-            [46010, 43122],
-            [76010, 43122],
-            [76010, 69122],
-            [87010, 69122],
-          ],
-        },
-      }, {
-        stroke: 'blue',
-        'stroke-width': 500,
-        fill: 'none',
-      })
-      nav.setMap(map, 'shape')
+      displayNavigate(EXAMPLE_NAV, map)
       break
   }
 }, false)
