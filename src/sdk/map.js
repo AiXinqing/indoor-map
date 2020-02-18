@@ -104,6 +104,9 @@ export default class IndoorMap {
     this.shapes.forEach((shape) => {
       shape.remove()
     })
+    this.markers.forEach((marker) => {
+      marker.remove()
+    })
   }
 
   addShape (shape, type = 'shape') {

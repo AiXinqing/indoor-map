@@ -40,7 +40,6 @@ function getFloorCache (floor) {
 }
 
 function storeCache (floor, data) {
-  debugger
   try {
     localStorage.setItem(`${floor}-floor`, JSON.stringify(data))
   } catch {
@@ -90,30 +89,10 @@ init()
 document.getElementById('ui-layer').addEventListener('click', (event) => {
   const type = event.target.getAttribute('data-type')
   const floor = event.target.getAttribute('target')
-  const cache = localStorage.getItem(`${floor}-floor`)
 
   switch (type) {
     case 'switchFloor':
-      if (cache) {
-        const shapes = new Geojson(JSON.parse(cache).reducedData, styleMaps)
-        map.removeShapes()
-        shapes.setMap(map)
-        map.setFitView()
-      } else {
-        axios.get(`http://39.106.77.97:8081/getByFloor/${floor}`)
-          .then(({ data }) => {
-            const reducedData = reduceFloorData(data.data)
-            try {
-              localStorage.setItem(`${floor}-floor`, JSON.stringify(reducedData))
-            } catch (err) {
-              localStorage.removeItem(`${floor}-floor`)
-            }
-            map.removeShapes()
-            const shapes = new Geojson(reducedData.reducedData, styleMaps)
-            shapes.setMap(map)
-            map.setFitView()
-          })
-      }
+      drawFloor(floor)
       break
     case 'position':
       const shape = new IndoorCircle({
