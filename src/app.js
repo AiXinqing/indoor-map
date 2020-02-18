@@ -8,7 +8,8 @@ import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
-localStorage.clear()
+localStorage.removeItem('B3-floor')
+localStorage.removeItem('B2-floor')
 const BACKEND_HOST = 'http://39.106.77.97:8081'
 const EXAMPLE_POSITION = [46010, 43122]
 let fetching = false
@@ -34,7 +35,7 @@ function fetchFloor (floor) {
 }
 
 function getFloorCache (floor) {
-  const cache = localStorage.getItem(`${floor}-floor`)
+  const cache = localStorage.getItem(`floor-${floor}`)
   if (cache) {
     return JSON.parse(cache)
   }
@@ -43,9 +44,9 @@ function getFloorCache (floor) {
 
 function storeCache (floor, data) {
   try {
-    localStorage.setItem(`${floor}-floor`, JSON.stringify(data))
+    localStorage.setItem(`floor-${floor}`, JSON.stringify(data))
   } catch {
-    localStorage.removeItem(`${floor}-floor`)
+    localStorage.removeItem(`floor-${floor}`)
   }
 }
 
