@@ -10,13 +10,25 @@ import IndoorLineShape from './sdk/shapes/line.js'
 
 localStorage.removeItem('B3-floor')
 localStorage.removeItem('B2-floor')
-const BACKEND_HOST = 'http://39.106.77.97:8081'
+const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
 const EXAMPLE_POSITION = [46010, 43122]
 let fetching = false
 
 const map = new IndoorMap('app', {
   zoom: 5,
 })
+
+function getQueryVariable (variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split("&")
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split("=")
+    if (pair[0] == variable) {
+      return pair[1]
+    }
+  }
+  return false
+}
 
 const source = axios.CancelToken.source()
 
@@ -80,16 +92,6 @@ function getNavigatePath (_from, _target) {
     .catch(() => showInfo('获取导航数据失败'))
 }
 
-function getPosition () {
-  // return axios.get('position/url', {
-  //   cancelToken: source.token,
-  // })
-  return Promise.resolve({
-    location: EXAMPLE_POSITION,
-    floor: 'B3',
-  })
-}
-
 function displayPosition (position, map) {
   const location = new IndoorCircle({
     center: position,
@@ -125,10 +127,33 @@ function showInfo (info) {
 }
 
 function init() {
-  getPosition().then((position) => {
-    displayPosition(position.location, map)
-    drawFloor(position.floor)
-  }).catch(() => showInfo('获取定位失败'))
+  const openId = getQueryVariable('openid')
+  const ws = new WebSocket('wss://xsocket.yunzaitech.com')
+
+  ws.onopen = function () {
+    console.log('websocket open')
+    const connectdata = {
+      from: 'Web',
+      type: 'Connect',
+      openid: openId,
+    }
+    ws.send(JSON.stringify(connectdata))
+  }
+
+  ws.onclose = function () {
+    console.log('websocket close')
+  }
+
+  ws.onmessage = function (evt) {
+    // const position = JSON.parse(evt.data)
+  }
+  const position = {
+    location: EXAMPLE_POSITION,
+    floor: 'B3',
+  }
+  displayPosition(position.location, map)
+  drawFloor(position.floor)
+  showInfo('当前因为设备的原因，没法上正式的。现在采用的是仿真数据来定位')
 }
 
 init()
