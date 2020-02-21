@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "./node_modules/.bin/webpack-dev-server",
     "build": "node_modules/.bin/webpack --config webpack.prod.config.js",
-    "deploy": "scp -r dist root@39.106.77.97:/usr/local/nginx/html/www"
+    "deploy": "scp -r dist root@39.106.77.97:/usr/local/nginx/html/business.yunzaitech.com"
   },
   "author": "",
   "license": "ISC",
