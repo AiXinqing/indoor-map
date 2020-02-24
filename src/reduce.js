@@ -1,6 +1,6 @@
 function reducePoints (points, offset) {
   const [offsetX, offsetY] = offset
-  return points.reduce((acc, current, index, arr) => {
+  return points.filter(item => item).reduce((acc, current, index, arr) => {
     const [x, y] = current
     // 第一个和最后一个可直接跳过
     if (index < 1 || (index === arr.length - 1)) {
@@ -122,7 +122,9 @@ export function getGeojsonRange (geojson) {
     case 'LineString':
     case 'MultiPoint':
       coordinates.forEach((point) => {
-        range = getRange(point, range)
+        if (point) {
+          range = getRange(point, range)
+        }
       })
       break
     default:

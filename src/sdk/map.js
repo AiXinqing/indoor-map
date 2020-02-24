@@ -1,17 +1,5 @@
 import { SvgNs } from './constant'
-
-const ZoomMap = {
-  '1': 0.3,
-  '2': 0.5,
-  '3': 0.67,
-  '4': 1,
-  '5': 1.5,
-  '6': 2,
-  '7': 3,
-  '8': 5,
-  '9': 8,
-  '10': 12,
-}
+import AlloyFinger from 'alloyfinger'
 
 const DefaultOptions = {
   zoom: 3,
@@ -24,18 +12,20 @@ export default class IndoorMap {
       ...DefaultOptions,
       ...options,
     }
+    this.zoom = this.options.zoom
     this.shapes = []
     this.markers = []
     this.center = [0, 0]
     this.size = [0, 0]
     this.scale = 1
     this.generateElements()
+    this.bindFingerEvents()
   }
 
   get viewBox () {
     const [cx, cy] = this.center
     const [w, h] = this.size
-    const zoom = ZoomMap[this.options.zoom]
+    const zoom = this.zoom
     return [
       cx - w / 2 * this.scale * zoom,
       cy - h / 2 * this.scale * zoom,
@@ -70,13 +60,14 @@ export default class IndoorMap {
   }
 
   setZoom (zoom) {
-    this.options.zoom = zoom
+    this.zoom = zoom
     this.setViewBox()
   }
 
   translate (x, y) {
     const [cx, cy] = this.center
-    this.center = [cx - x * this.scale, cy - y * this.scale]
+    const zoom = this.zoom
+    this.center = [cx - x * this.scale * zoom, cy - y * this.scale * zoom]
     this.setViewBox()
   }
 
@@ -151,6 +142,21 @@ export default class IndoorMap {
     if (shapeIndex > -1) {
       return this.shapes.splice(shapeIndex, 1)
     }
+  }
+
+  bindFingerEvents () {
+    new AlloyFinger(this.$el, {
+      pressMove: (event) => {
+        this.translate(event.deltaX, event.deltaY)
+        event.preventDefault()
+      },
+      pinch: (evt) => {
+        this.setZoom(this.options.zoom / evt.zoom)
+      },
+      multipointEnd: () => {
+        this.options.zoom = this.zoom
+      }
+    })
   }
 
   _setViewBox () {

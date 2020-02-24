@@ -15,7 +15,7 @@ const EXAMPLE_POSITION = [46010, 43122]
 let fetching = false
 
 const map = new IndoorMap('app', {
-  zoom: 5,
+  zoom: 1.2,
 })
 
 function getQueryVariable (variable) {
@@ -80,7 +80,7 @@ function drawFloor (floor) {
       storeCache(floor, data)
       showInfo(`当前楼层: ${floor}`)
       drawFloorMap(data)
-    }).catch(() => showInfo('请求楼层数据失败'))
+    }).catch(() => showInfo('获取楼层数据失败'))
   }
 }
 
@@ -149,7 +149,7 @@ function init() {
   }
   const position = {
     location: EXAMPLE_POSITION,
-    floor: 'B3',
+    floor: 'B2',
   }
   displayPosition(position.location, map)
   drawFloor(position.floor)

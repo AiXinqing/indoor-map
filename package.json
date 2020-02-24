@@ -26,6 +26,7 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "alloyfinger": "^0.1.16",
     "axios": "^0.19.1",
     "vue": "^2.6.11"
   }
