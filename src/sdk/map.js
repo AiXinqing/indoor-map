@@ -148,14 +148,17 @@ export default class IndoorMap {
     new AlloyFinger(this.$el, {
       pressMove: (event) => {
         this.translate(event.deltaX, event.deltaY)
-        event.preventDefault()
       },
       pinch: (evt) => {
         this.setZoom(this.options.zoom / evt.zoom)
       },
       multipointEnd: () => {
         this.options.zoom = this.zoom
-      }
+      },
+      doubleTap: () => {
+        this.setZoom(this.zoom * 0.85)
+        this.options.zoom = this.zoom
+      },
     })
   }
 
