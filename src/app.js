@@ -8,6 +8,7 @@ import reduceFloorData from './reduce'
 import IndoorCircle from './sdk/shapes/circle.js'
 import IndoorLineShape from './sdk/shapes/line.js'
 
+localStorage.clear()
 localStorage.removeItem('B3-floor')
 localStorage.removeItem('B2-floor')
 const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
