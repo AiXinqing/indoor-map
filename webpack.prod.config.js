@@ -11,7 +11,7 @@ module.exports = {
   output: {
     filename: '[name]-[hash].js',
     path: path.resolve(process.cwd(), './dist'),
-    publicPath: '/www/dist',
+    publicPath: '/dist',
   },
   module: {
     rules: [
