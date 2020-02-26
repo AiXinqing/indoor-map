@@ -1,6 +1,7 @@
 const path = require('path'),
       { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-      HtmlWebpackPlugin = require('html-webpack-plugin');
+      HtmlWebpackPlugin = require('html-webpack-plugin'),
+      VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   mode: 'production',
@@ -16,6 +17,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
         test: /\.(scss|css)$/,
         use: [
           {
@@ -28,6 +33,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       title: 'indoor-map',
       filename: 'index.html',

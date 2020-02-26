@@ -2,7 +2,8 @@ const path = require('path'),
       webpack = require('webpack'),
       { CleanWebpackPlugin } = require('clean-webpack-plugin'),
       HtmlWebpackPlugin = require('html-webpack-plugin'),
-      FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+      FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin'),
+      VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   mode: 'development',
@@ -28,6 +29,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
         test: /\.(scss|css)$/,
         use: [
           {
@@ -40,6 +45,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new VueLoaderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: 'indoor-map',
