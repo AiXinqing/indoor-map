@@ -13,6 +13,7 @@ export default class IndoorMap {
       ...options,
     }
     this.zoom = this.options.zoom
+    this.angle = 0
     this.shapes = []
     this.markers = []
     this.center = [0, 0]
@@ -40,13 +41,17 @@ export default class IndoorMap {
     this.$el.appendChild(this.$svg)
     this.$shapeGroup = document.createElementNS(SvgNs, 'g')
     this.$markerGroup = document.createElementNS(SvgNs, 'g')
+    this.$svgWrapper = document.createElementNS(SvgNs, 'g')
     this.$shapeGroup.setAttribute('aria-label', 'normal-shapes')
     this.$markerGroup.setAttribute('aria-label', 'markers-group')
-    this.$svg.appendChild(this.$shapeGroup)
-    this.$svg.appendChild(this.$markerGroup)
+    this.$svg.appendChild(this.$svgWrapper)
+    this.$svgWrapper.appendChild(this.$shapeGroup)
+    this.$svgWrapper.appendChild(this.$markerGroup)
     const { width, height } = this.$el.getBoundingClientRect()
     this.$svg.style.width=`${width}px`
-    this.$svg.style.height=`${height}px`
+    this.$svg.style.height = `${ height }px`
+    this.$svgWrapper.style.width = `${ width }px`
+    this.$svgWrapper.style.height = `${ height }px`
     this.size = [width, height]
     this._setViewBox()
   }
@@ -144,6 +149,12 @@ export default class IndoorMap {
     }
   }
 
+  rotate(angle) {
+    const [w, h] = this.center
+    this.angle += angle
+    this.$svgWrapper.setAttribute('transform', `rotate(${this.angle}, ${w}, ${h})`)
+  }
+
   bindFingerEvents () {
     new AlloyFinger(this.$el, {
       pressMove: (event) => {
@@ -158,6 +169,9 @@ export default class IndoorMap {
       doubleTap: () => {
         this.setZoom(this.zoom * 0.85)
         this.options.zoom = this.zoom
+      },
+      rotate: (evt) => {
+        this.rotate(evt.angle)
       },
     })
   }
