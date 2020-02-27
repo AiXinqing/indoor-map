@@ -4,6 +4,7 @@
       v-if="json"
       :size="size"
       :geojson="json"
+      :styles="styles"
     />
     <div class="ui-layer">UI</div>
   </div>
@@ -12,6 +13,7 @@
 <script>
 import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
+import styles from './style'
 
 const ExamplePosition = [46010, 43122]
 const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
@@ -29,6 +31,7 @@ export default {
       json: null,
       fetching: false,
       source: axios.CancelToken.source(),
+      styles: styles,
     }
   },
   mounted () {

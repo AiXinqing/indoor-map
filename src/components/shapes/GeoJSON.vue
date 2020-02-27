@@ -2,7 +2,7 @@
   <g class="geojson-shape">
     <component
       v-for="shape in shapes"
-      :key="shape.uuid"
+      :key="shape.properties.uuid"
       :is="getComponent(shape)"
       :styles="getStyle(shape)"
       :shape="shape"
@@ -32,7 +32,7 @@ export default {
     getStyle (shape) {
       switch (shape.geometry.type) {
         case 'Polygon':
-          return { fill: this.randomColor() }
+          return this.styles[shape.properties.class || 'fallback']
         case 'LineString':
           return { stroke: this.randomColor(), 'stroke-width': shape.properties.LineWt, fill: 'none' }
       }

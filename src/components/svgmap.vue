@@ -13,6 +13,7 @@
         <g aria-label="normal-shapes">
           <geo-json
             :shape="reducedData"
+            :styles="styles"
           />
         </g>
         <g aria-label="makers-group"></g>
@@ -35,6 +36,10 @@ export default {
     size: {
       type: Array,
       required: true,
+    },
+    styles: {
+      type: Object,
+      default: () => ({}),
     },
     shapes: {
       type: Array,
