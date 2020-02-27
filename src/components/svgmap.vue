@@ -14,6 +14,7 @@
           <geo-json
             :shape="reducedData"
             :styles="styles"
+            v-on="$listeners"
           />
         </g>
         <g aria-label="makers-group"></g>
@@ -28,6 +29,8 @@ import AlloyFinger from 'alloyfinger'
 import reduceFloorData from '../reduce'
 
 export default {
+  inheritAttrs: false,
+
   components: {
     GeoJson,
   },

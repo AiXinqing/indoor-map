@@ -6,6 +6,7 @@
       :is="getComponent(shape)"
       :styles="getStyle(shape)"
       :shape="shape"
+      v-on="$listeners"
     />
   </g>
 </template>
@@ -16,6 +17,8 @@ import PolygonShape from './Polygon.vue'
 import LineString from './LineString.vue'
 
 export default {
+  inheritAttrs: false,
+
   components: {
     PolygonShape,
     LineString,

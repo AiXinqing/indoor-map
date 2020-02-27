@@ -5,6 +5,7 @@
       :size="size"
       :geojson="json"
       :styles="styles"
+      @click-shape="handleShapeClick"
     />
     <div class="ui-layer">UI</div>
   </div>
@@ -32,6 +33,7 @@ export default {
       fetching: false,
       source: axios.CancelToken.source(),
       styles: styles,
+      activeShapeVm: null,
     }
   },
   mounted () {
@@ -83,6 +85,17 @@ export default {
       }).finally(() => {
         this.fetching = false
       })
+    },
+
+    handleShapeClick (shapeVm) {
+      if (this.activeShapeVm) {
+        this.activeShapeVm.blur()
+        if (shapeVm === this.activeShapeVm) return this.activeShapeVm = null
+      }
+      shapeVm.highlight({
+        fill: 'red',
+      })
+      this.activeShapeVm = shapeVm
     },
   },
 }
