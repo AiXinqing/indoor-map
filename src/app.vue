@@ -4,6 +4,7 @@
       v-if="json"
       :size="size"
       :geojson="json"
+      :shapes="shapes"
       :styles="styles"
       @click-shape="handleShapeClick"
     />
@@ -31,6 +32,7 @@ export default {
       position: ExamplePosition,
       json: null,
       fetching: false,
+      shapes: [],
       source: axios.CancelToken.source(),
       styles: styles,
       activeShapeVm: null,
@@ -42,6 +44,7 @@ export default {
 
     // this.createSocketConnect()
     this.drawFloor()
+    this.displayNavigate()
   },
 
   methods: {
@@ -85,6 +88,27 @@ export default {
       }).finally(() => {
         this.fetching = false
       })
+    },
+
+    displayNavigate () {
+      axios.get(`${BACKEND_HOST}/direction`)
+        .then(({ data }) => {
+          this.shapes = [
+            {
+              type: 'Feature',
+              properties: {
+                name: '导航线',
+                uuid: Date.now(),
+                class: '30',
+              },
+              geometry: {
+                type: 'LineString',
+                coordinates: data.data,
+              },
+            },
+          ]
+        })
+        .catch(() => console.log('获取导航数据失败'))
     },
 
     handleShapeClick (shapeVm) {

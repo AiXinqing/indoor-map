@@ -16,6 +16,14 @@
             :styles="styles"
             v-on="$listeners"
           />
+          <component
+            v-for="shape in reducedShapes"
+            :key="shape.properties.uuid"
+            :is="_getComponent(shape)"
+            :styles="_getStyle(shape)"
+            :shape="shape"
+            v-on="$listeners"
+          />
         </g>
         <g aria-label="makers-group"></g>
       </g>
@@ -24,15 +32,22 @@
 </template>
 
 <script>
-import GeoJson from './shapes/GeoJSON.vue'
 import AlloyFinger from 'alloyfinger'
-import reduceFloorData from '../reduce'
+import reduceFloorData, { reduceData } from '../reduce'
+
+import GeoJson from './shapes/GeoJSON.vue'
+import PolygonShape from './shapes/Polygon.vue'
+import PointShape from './shapes/Point.vue'
+import LineString from './shapes/LineString.vue'
 
 export default {
   inheritAttrs: false,
 
   components: {
     GeoJson,
+    PolygonShape,
+    LineString,
+    PointShape,
   },
 
   props: {
@@ -95,6 +110,10 @@ export default {
       const [w, h] = this.center
       return `rotate(${this.rotateAngle}, ${w}, ${h})`
     },
+
+    reducedShapes () {
+      return this.shapes.map(item => reduceData(item, this.offset))
+    },
   },
 
   mounted () {
@@ -135,6 +154,21 @@ export default {
       const [cx, cy] = this.center
       const zoom = this.currentZoom
       this.center = [cx - x * this.scale * zoom, cy - y * this.scale * zoom]
+    },
+
+    _getComponent (shape) {
+      switch (shape.geometry.type) {
+        case 'Polygon':
+          return 'polygon-shape'
+        case 'LineString':
+          return 'line-string'
+        default:
+          return 'point-shape'
+      }
+    },
+
+    _getStyle (shape) {
+      return this.styles[shape.properties.class || 'fallback']
     },
   },
 }

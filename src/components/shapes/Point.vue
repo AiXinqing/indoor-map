@@ -22,7 +22,7 @@ export default {
 
   computed: {
     center () {
-      return this.shape.center
+      return this.shape.geometry.coordinates
     },
   },
 }
