@@ -7,7 +7,7 @@ module.exports = {
   mode: 'production',
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    app: './src/app.js',
+    app: './src/main.js',
   },
   output: {
     filename: '[name]-[hash].js',
@@ -39,7 +39,7 @@ module.exports = {
       filename: 'index.html',
       template: './src/index.html',
       meta: {
-        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
+        viewport: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0',
       },
     }),
   ],
