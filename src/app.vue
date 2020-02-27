@@ -8,7 +8,18 @@
       :styles="styles"
       @click-shape="handleShapeClick"
     />
-    <div class="ui-layer">UI</div>
+    <div
+      class="ui-layer"
+      v-if="activeShapeVm"
+    >
+      <span>{{ activeShapeVm.shape.properties.name }}</span>
+      <button
+        class="button"
+        @click="displayNavigate"
+      >
+        导航
+      </button>
+    </div>
   </div>
 </template>
 
@@ -44,7 +55,6 @@ export default {
 
     // this.createSocketConnect()
     this.drawFloor()
-    this.displayNavigate()
   },
 
   methods: {
@@ -114,11 +124,15 @@ export default {
     handleShapeClick (shapeVm) {
       if (this.activeShapeVm) {
         this.activeShapeVm.blur()
-        if (shapeVm === this.activeShapeVm) return this.activeShapeVm = null
+        if (shapeVm === this.activeShapeVm) {
+          return this.activeShapeVm = null
+        }
       }
-      shapeVm.highlight({
-        fill: 'red',
-      })
+      if (!shapeVm.shape.properties.name) {
+        return this.activeShapeVm = null
+      }
+      const highlightStyle = { fill: 'red' }
+      shapeVm.highlight(highlightStyle)
       this.activeShapeVm = shapeVm
     },
   },
@@ -143,5 +157,33 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+    background-color: hsl(0, 0%, 100%);
+    box-shadow: 0 0 5px 1px #ccc;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 16px;
+  }
+
+  .ui-layer span {
+    font-size: 20px;
+    color: #333;
+    flex-grow: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .button {
+    flex-shrink: 0;
+    background: hsl(209, 100%, 74%);
+    font-size: 14px;
+    line-height: 21px;
+    padding: 6px 16px;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 17px;
+    outline: none;
+    cursor: pointer;
   }
 </style>
