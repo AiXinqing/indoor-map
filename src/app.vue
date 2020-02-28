@@ -8,17 +8,30 @@
       :styles="styles"
       @click-shape="handleShapeClick"
     />
-    <div
-      class="ui-layer"
-      v-if="activeShapeVm"
-    >
-      <span>{{ activeShapeVm.shape.properties.name }}</span>
-      <button
-        class="button"
-        @click="displayNavigate"
+    <div class="ui-layer">
+      <div class="button-group">
+        <div
+          v-for="item in floors"
+          :key="item"
+          :class="{ active: item === floor }"
+          class="floor-button"
+          @click="switchFloor(item)"
+        >
+          {{ item }}
+        </div>
+      </div>
+      <div
+        v-if="activeShapeVm"
+        class="detail-container"
       >
-        导航
-      </button>
+        <span>{{ activeShapeVm.shape.properties.name }}</span>
+        <button
+          class="button"
+          @click="displayNavigate"
+        >
+          导航
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +42,7 @@ import SvgMap from './components/svgmap.vue'
 import styles from './style'
 
 const ExamplePosition = [46010, 43122]
+const Floors = ['B2', 'B3']
 const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
 
 export default {
@@ -38,8 +52,9 @@ export default {
 
   data () {
     return {
+      floors: Floors,
       size: [0, 0],
-      floor: 'B3',
+      floor: Floors[0],
       position: ExamplePosition,
       json: null,
       fetching: false,
@@ -101,10 +116,8 @@ export default {
     },
 
     switchFloor (floor) {
-      this.fetchFloor(floor)
-        .then(({ data }) => {
-          this.json = data.data
-        })
+      this.floor = floor
+      this.drawFloor()
     },
 
     displayNavigate () {
@@ -164,6 +177,9 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+  }
+
+  .detail-container {
     background-color: hsl(0, 0%, 100%);
     box-shadow: 0 0 5px 1px #ccc;
     display: flex;
@@ -181,6 +197,39 @@ export default {
     overflow: hidden;
   }
 
+  .button-group {
+    margin-left: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    background: hsl(0, 0%, 100%);
+    border-radius: 5px;
+  }
+
+  .floor-button {
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    margin-top: -1px;
+  }
+
+  .floor-button:first-child {
+    margin-top: 0;
+    border-radius: 5px 5px 0 0;
+  }
+
+  .floor-button:last-child {
+    border-radius: 0 0 5px 5px;
+  }
+
+  .floor-button.active {
+    background-color: hsl(209, 100%, 74%);
+    border-color: hsl(209, 100%, 74%);
+    color: white;
+  }
+
   .button {
     flex-shrink: 0;
     background: hsl(209, 100%, 74%);
@@ -192,5 +241,6 @@ export default {
     border-radius: 17px;
     outline: none;
     cursor: pointer;
+    color: white;
   }
 </style>
