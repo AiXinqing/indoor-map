@@ -16,8 +16,17 @@ export default {
   9: { fill: 'rgb(46, 43, 189)' },
   10: { fill: 'rgb(120, 120, 120)' },
   11: { fill: 'rgb(254, 99, 110)' },
-  30: {
+  // 导航线样式
+  '-1': {
     stroke: 'blue',
     'stroke-width': 200,
+  },
+  // 定位点样式
+  '-2': {
+    fill: 'blue',
+  },
+  // 目的地定位点样式
+  '-3': {
+    fill: 'green',
   },
 }

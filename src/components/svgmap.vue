@@ -26,7 +26,15 @@
             v-on="$listeners"
           />
         </g>
-        <g aria-label="makers-group"></g>
+        <g aria-label="makers-group">
+          <point-shape
+            v-for="marker in markers"
+            :key="marker.properties.uuid"
+            :shape="marker"
+            :radius="500"
+            :styles="_getStyle(marker)"
+          />
+        </g>
       </g>
     </svg>
   </div>

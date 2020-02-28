@@ -6,6 +6,7 @@
       :geojson="json"
       :shapes="shapes"
       :styles="styles"
+      :markers="markers"
       @click-shape="handleShapeClick"
     />
     <div class="ui-layer">
@@ -62,19 +63,28 @@ export default {
       source: axios.CancelToken.source(),
       styles: styles,
       activeShapeVm: null,
+      currentPosition: null,
     }
   },
+
+  computed: {
+    markers () {
+      return this.currentPosition ? [this.currentPosition] : []
+    },
+  },
+
   mounted () {
     const { width, height } = document.body.getBoundingClientRect()
     this.size = [width, height]
 
     // this.createSocketConnect()
     this.drawFloor()
+    this.showPosition()
   },
 
   methods: {
     createSocketConnect () {
-      const search = window.location.search
+      const search = window.currentPosition.search
       const openId = search
         ? search.match(/openid=([^&]*)/)[1] || ''
         : 'oRYKI5Jp3tPhKOib8Xm6Ie4zb7xs'
@@ -129,7 +139,7 @@ export default {
               properties: {
                 name: '导航线',
                 uuid: Date.now(),
-                class: '30',
+                class: '-1',
               },
               geometry: {
                 type: 'LineString',
@@ -139,6 +149,21 @@ export default {
           ]
         })
         .catch(() => console.log('获取导航数据失败'))
+    },
+
+    showPosition () {
+      this.currentPosition = {
+        type: 'Feature',
+        properties: {
+          name: '当前位置',
+          uuid: Date.now(),
+          class: '-2',
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: this.position,
+        },
+      }
     },
 
     handleShapeClick (shapeVm) {
