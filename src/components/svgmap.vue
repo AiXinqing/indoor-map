@@ -12,6 +12,7 @@
       >
         <g aria-label="normal-shapes">
           <geo-json
+            v-if="reducedData"
             :shape="reducedData"
             :styles="styles"
             v-on="$listeners"
@@ -78,19 +79,31 @@ export default {
   },
 
   data () {
-    const data = reduceFloorData(this.geojson)
-    const [offsetX, offsetY] = data.offset
-    const { Xmin, Ymin, Xmax, Ymax } = data.range
-    const [width, height] = this.size
     return {
-      offset: data.offset,
-      scale: Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height),
-      center: [(Xmax + Xmin) / 2 - offsetX, (Ymax + Ymin) / 2 - offsetY],
-      reducedData: data.reducedData,
+      offset: [0, 0],
+      scale: 1,
+      center: [0, 0],
+      reducedData: null,
       rotateAngle: 0,
       originZoom: this.zoom,
       currentZoom: this.zoom,
     }
+  },
+
+  watch: {
+    geojson: {
+      immediate: true,
+      handler () {
+        const data = reduceFloorData(this.geojson)
+        const [offsetX, offsetY] = data.offset
+        const { Xmin, Ymin, Xmax, Ymax } = data.range
+        const [width, height] = this.size
+        this.offset = data.offset
+        this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
+        this.center = [(Xmax + Xmin) / 2 - offsetX, (Ymax + Ymin) / 2 - offsetY]
+        this.reducedData = data.reducedData
+      },
+    },
   },
 
   computed: {

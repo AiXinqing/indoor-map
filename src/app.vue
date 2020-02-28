@@ -100,6 +100,13 @@ export default {
       })
     },
 
+    switchFloor (floor) {
+      this.fetchFloor(floor)
+        .then(({ data }) => {
+          this.json = data.data
+        })
+    },
+
     displayNavigate () {
       axios.get(`${BACKEND_HOST}/direction`)
         .then(({ data }) => {
