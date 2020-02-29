@@ -82,7 +82,7 @@ export function reduceData(geojson, offset) {
         ...geojson,
         geometry: {
           ...geojson.geometry,
-          coordinates: reducePoints([coordinates], offset),
+          coordinates: reducePoints([coordinates], offset)[0],
         },
       }
   }
