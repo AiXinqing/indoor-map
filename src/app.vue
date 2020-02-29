@@ -293,6 +293,7 @@ export default {
     margin-left: 16px;
     margin-bottom: 12px;
     color: #333;
+    cursor: pointer;
   }
 
   .locate-button.active {
