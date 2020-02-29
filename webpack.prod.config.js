@@ -1,11 +1,11 @@
 const path = require('path'),
       { CleanWebpackPlugin } = require('clean-webpack-plugin'),
+      MiniCssExtractPlugin = require('mini-css-extract-plugin'),
       HtmlWebpackPlugin = require('html-webpack-plugin'),
       VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   mode: 'production',
-  devtool: 'cheap-module-eval-source-map',
   entry: {
     app: './src/main.js',
   },
@@ -23,15 +23,16 @@ module.exports = {
       {
         test: /\.(scss|css)$/,
         use: [
-          {
-            loader: 'style-loader',
-          },
+          MiniCssExtractPlugin.loader,
           { loader: 'css-loader', options: { importLoaders: 1, sourceMap: true } },
         ]
       },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'style.css'
+    }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
