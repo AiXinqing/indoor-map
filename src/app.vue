@@ -13,12 +13,12 @@
       <div class="button-group">
         <div
           v-for="item in floors"
-          :key="item"
+          :key="item.id"
           :class="{ active: item === floor }"
           class="floor-button"
           @click="switchFloor(item)"
         >
-          {{ item }}
+          {{ item.alias }}
         </div>
       </div>
       <div
@@ -58,7 +58,16 @@ import SvgMap from './components/svgmap.vue'
 import styles from './style'
 
 const ExamplePosition = [46010, 43122]
-const Floors = ['B2', 'B3']
+const Floors = [
+  {
+    id: -2,
+    alias: 'B2',
+  },
+  {
+    id: -3,
+    alias: 'B3',
+  },
+]
 const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
 
 export default {
@@ -119,6 +128,7 @@ export default {
       ws.onmessage = (evt) => {
         console.log('socket message')
         console.log(evt)
+        this.updatePosition(evt.data)
       }
 
       ws.onerror = (evt) => {
@@ -139,7 +149,21 @@ export default {
         .catch(() => console.log('获取楼层数据失败'))
     },
 
+    // position:
+    //   positionX: x,
+    //   PositionY: y,
+    //   PositionZ: floor,
+    updatePosition (position) {
+      const { positionX, positionY, positionZ } = position
+      this.position = [positionX, positionY]
+      this.switchFloor(this.findFloor(positionZ))
+    },
+
     locateToCenter () {},
+
+    findFloor (floorId) {
+      return this.floors.find((item) => item.id === floorId)
+    },
 
     fetchFloor (floor) {
       if (this.fetching) {
@@ -147,7 +171,7 @@ export default {
         this.source = axios.CancelToken.source()
       }
       this.fetching = true
-      return axios.get(`${BACKEND_HOST}/getByFloor/${floor}`, {
+      return axios.get(`${BACKEND_HOST}/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).finally(() => {
         this.fetching = false
