@@ -21,7 +21,10 @@
           {{ item }}
         </div>
       </div>
-      <div class="locate-button">
+      <div
+        class="locate-button"
+        @click="locateToCenter"
+      >
         <svg
           width="100%"
           height="100%"
@@ -33,6 +36,7 @@
 			c-30,0-54.5-24.5-54.5-54.5s24.5-54.5,54.5-54.5s54.5,24.5,54.5,54.5C261.049,169,236.549,193.4,206.549,193.4z"/>
         </svg>
       </div>
+      <div class="info-box">{{ info }}</div>
       <div
         v-if="activeShapeVm"
         class="detail-container"
@@ -76,6 +80,7 @@ export default {
       styles: styles,
       activeShapeVm: null,
       currentPosition: null,
+      info: '',
     }
   },
 
@@ -109,10 +114,11 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
+        this.info = 'socket opened'
       }
 
       ws.onmessage = (evt) => {
-        console.log(evt.data)
+        this.info = JSON.stringify(evt)
       }
     },
 
@@ -123,6 +129,8 @@ export default {
         })
         .catch(() => console.log('获取楼层数据失败'))
     },
+
+    locateToCenter () {},
 
     fetchFloor (floor) {
       if (this.fetching) {
@@ -138,6 +146,7 @@ export default {
     },
 
     switchFloor (floor) {
+      if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
     },
