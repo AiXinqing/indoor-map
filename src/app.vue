@@ -159,11 +159,11 @@ export default {
         ws.send(JSON.stringify(connectdata))
         console.log('connect-data', connectdata)
         console.log('socket onpen')
-        this.updatePosition(ExamplePosition)
+        // this.updatePosition(ExamplePosition)
       }
 
       ws.onmessage = (evt) => {
-        console.log(evt)
+        console.log(evt.data)
         this.updatePosition(evt.data)
       }
 
