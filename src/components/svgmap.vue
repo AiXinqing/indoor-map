@@ -23,6 +23,7 @@
             :is="_getComponent(shape)"
             :styles="_getStyle(shape)"
             :shape="shape"
+            :zoom="scale * currentZoom"
             v-on="$listeners"
           />
         </g>

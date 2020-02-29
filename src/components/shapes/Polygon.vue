@@ -9,6 +9,7 @@
       v-if="shapeText"
       :x="textCenter[0]"
       :y="textCenter[1]"
+      :font-size="14 * zoom"
       text-anchor="middle"
       dominant-baseline="middle"
     >
