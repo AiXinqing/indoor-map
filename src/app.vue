@@ -57,7 +57,12 @@ import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
 import styles from './style'
 
-const ExamplePosition = [46010, 43122]
+const ExamplePosition = {
+  positionX: 308258249.8175751,
+  positionY: 506969415.9401813,
+  positionZ: -2,
+}
+
 const Floors = [
   {
     id: -2,
@@ -68,7 +73,6 @@ const Floors = [
     alias: 'B3',
   },
 ]
-const BACKEND_HOST = 'https://xrequest.yunzaitech.com'
 
 export default {
   components: {
@@ -88,18 +92,43 @@ export default {
       floors: Floors,
       size: [0, 0],
       floor: Floors[0],
-      position: ExamplePosition,
+      position: null,
       json: null,
       fetching: false,
       shapes: [],
       source: axios.CancelToken.source(),
       styles: styles,
       activeShapeVm: null,
-      currentPosition: null,
     }
   },
 
   computed: {
+    positionFloor () {
+      return this.position && this.position[2]
+    },
+
+    currentPosition () {
+      return this.position
+        ? {
+            type: 'Feature',
+            properties: {
+              name: '当前位置',
+              uuid: 'current-location',
+              class: '-2',
+              floor: this.positionFloor,
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: this.positionCenter,
+            },
+          }
+        : null
+    },
+
+    positionCenter () {
+      return this.position && this.position.slice(0, 2)
+    },
+
     markers () {
       return this.currentPosition ? [this.currentPosition] : []
     },
@@ -111,16 +140,13 @@ export default {
 
     this.createSocketConnect()
     this.drawFloor()
-    this.showPosition()
   },
 
   methods: {
     createSocketConnect () {
       const search = window.location.search
       console.log('query:', search)
-      const openId = search
-        ? (search.match(/openid=([^&]*)/) || ['', ''])[1]
-        : 'oRYKI5Jp3tPhKOib8Xm6Ie4zb7xs'
+      const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
 
       ws.onopen = () => {
@@ -132,21 +158,20 @@ export default {
         ws.send(JSON.stringify(connectdata))
         console.log('connect-data', connectdata)
         console.log('socket onpen')
+        this.updatePosition(ExamplePosition)
       }
 
       ws.onmessage = (evt) => {
-        console.log('socket message')
         console.log(evt)
         this.updatePosition(evt.data)
       }
 
       ws.onerror = (evt) => {
-        console.log('socket error')
         console.log(evt)
       }
 
       ws.onclose = () => {
-        console.log('socket close')
+        this.updatePosition(ExamplePosition)
       }
     },
 
@@ -158,13 +183,9 @@ export default {
         .catch(() => console.log('获取楼层数据失败'))
     },
 
-    // position:
-    //   positionX: x,
-    //   PositionY: y,
-    //   PositionZ: floor,
     updatePosition (position) {
       const { positionX, positionY, positionZ } = position
-      this.position = [positionX, positionY]
+      this.position = [positionX, positionY, positionZ]
       this.switchFloor(this.getFloor(positionZ))
     },
 
@@ -176,7 +197,7 @@ export default {
         this.source = axios.CancelToken.source()
       }
       this.fetching = true
-      return axios.get(`${BACKEND_HOST}/getByFloor/${floor.alias}`, {
+      return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).finally(() => {
         this.fetching = false
@@ -184,6 +205,7 @@ export default {
     },
 
     switchFloor (floor) {
+      if (!floor) return
       if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
@@ -197,7 +219,7 @@ export default {
     },
 
     displayNavigate () {
-      axios.get(`${BACKEND_HOST}/direction`)
+      axios.get('/direction')
         .then(({ data }) => {
           this.shapes = [
             {
@@ -215,21 +237,6 @@ export default {
           ]
         })
         .catch(() => console.log('获取导航数据失败'))
-    },
-
-    showPosition () {
-      this.currentPosition = {
-        type: 'Feature',
-        properties: {
-          name: '当前位置',
-          uuid: Date.now(),
-          class: '-2',
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: this.position,
-        },
-      }
     },
 
     handleShapeClick (shapeVm) {

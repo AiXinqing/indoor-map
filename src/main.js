@@ -3,6 +3,8 @@ import 'assets/style.css'
 import Vue from 'vue'
 import App from './app.vue'
 import vConsole from 'vconsole'
+import axios from 'axios'
+axios.defaults.baseURL = 'https://xrequest.yunzaitech.com'
 
 new vConsole()
 

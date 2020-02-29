@@ -28,7 +28,7 @@
         </g>
         <g aria-label="makers-group">
           <point-shape
-            v-for="marker in markers"
+            v-for="marker in reducedMarkers"
             :key="marker.properties.uuid"
             :shape="marker"
             :radius="500"
@@ -134,6 +134,10 @@ export default {
 
     reducedShapes () {
       return this.shapes.map(item => reduceData(item, this.offset))
+    },
+
+    reducedMarkers () {
+      return this.markers.map(item => reduceData(item, this.offset))
     },
   },
 
