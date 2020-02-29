@@ -94,14 +94,14 @@ export default {
     const { width, height } = document.body.getBoundingClientRect()
     this.size = [width, height]
 
-    // this.createSocketConnect()
+    this.createSocketConnect()
     this.drawFloor()
     this.showPosition()
   },
 
   methods: {
     createSocketConnect () {
-      const search = window.currentPosition.search
+      const search = window.location.search
       const openId = search
         ? search.match(/openid=([^&]*)/)[1] || ''
         : 'oRYKI5Jp3tPhKOib8Xm6Ie4zb7xs'
@@ -114,11 +114,11 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        this.info = 'socket opened'
+        this.info += '\nsocket opened'
       }
 
       ws.onmessage = (evt) => {
-        this.info = JSON.stringify(evt)
+        this.info += '\n' + JSON.stringify(evt)
       }
     },
 
