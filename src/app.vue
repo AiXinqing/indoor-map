@@ -112,6 +112,7 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
+        console.log('connect-data', connectdata)
         console.log('socket onpen')
       }
 
@@ -252,13 +253,15 @@ export default {
   }
 
   .button-group {
-    margin-left: 16px;
-    margin-bottom: 12px;
     display: flex;
     flex-direction: column;
     width: 40px;
     background: hsl(0, 0%, 100%);
     border-radius: 5px;
+    position: absolute;
+    left: 16px;
+    bottom: 100%;
+    margin-bottom: 64px;
   }
 
   .floor-button {
@@ -290,10 +293,12 @@ export default {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    margin-left: 16px;
-    margin-bottom: 12px;
     color: #333;
     cursor: pointer;
+    position: absolute;
+    bottom: 100%;
+    left: 16px;
+    margin-bottom: 12px;
   }
 
   .locate-button.active {
