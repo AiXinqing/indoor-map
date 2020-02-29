@@ -146,7 +146,6 @@ export default {
   methods: {
     createSocketConnect () {
       const search = window.location.search
-      console.log('query:', search)
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
 
@@ -157,8 +156,6 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        console.log('connect-data', connectdata)
-        console.log('socket onpen')
         // this.updatePosition(ExamplePosition)
       }
 
@@ -169,10 +166,6 @@ export default {
 
       ws.onerror = (evt) => {
         console.log(evt)
-      }
-
-      ws.onclose = () => {
-        this.updatePosition(ExamplePosition)
       }
     },
 
@@ -193,7 +186,7 @@ export default {
     locateToCenter () {
       if (this.floor.id != this.positionFloor) {
         this.switchFloor(this.getFloor(this.positionFloor))
-        this.$refs.mapRef.once('floor-change', (vm) => {
+        this.$refs.mapRef.$once('floor-change', (vm) => {
           vm.setCenter(this.positionCenter)
         })
       } else {
