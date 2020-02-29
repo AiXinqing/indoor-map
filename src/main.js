@@ -12,7 +12,11 @@ document.body.addEventListener('touchmove', function (e) {
 
 new Vue({
   el: '#app',
-  render: h => h(App),
+  render: h => h(App, {
+    props: {
+      storage: true,
+    },
+  }),
 })
 // import axios from 'axios'
 // import IndoorMap from './sdk/map.js'

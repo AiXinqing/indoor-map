@@ -75,6 +75,14 @@ export default {
     SvgMap,
   },
 
+  props: {
+    // 是否开启缓存
+    storage: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
   data () {
     return {
       floors: Floors,
@@ -156,14 +164,10 @@ export default {
     updatePosition (position) {
       const { positionX, positionY, positionZ } = position
       this.position = [positionX, positionY]
-      this.switchFloor(this.findFloor(positionZ))
+      this.switchFloor(this.getFloor(positionZ))
     },
 
     locateToCenter () {},
-
-    findFloor (floorId) {
-      return this.floors.find((item) => item.id === floorId)
-    },
 
     fetchFloor (floor) {
       if (this.fetching) {
@@ -182,6 +186,13 @@ export default {
       if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
+    },
+
+    getFloor (floorId, offset = 0) {
+      const floorIndex = this.floors.findIndex(item => item.id === floorId)
+      const index = floorIndex + offset
+      if (index < 0 || index >= this.floors.length) return undefined
+      return this.floors[index]
     },
 
     displayNavigate () {
