@@ -133,14 +133,9 @@ export function getGeojsonRange (geojson) {
   return range
 }
 
-function getOffset (min, max) {
-  const level = Math.ceil(Math.log10((max - min) || 1))
-  return Math.floor(min / Math.pow(10, level)) * Math.pow(10, level)
-}
-
 export default function reduceFloorData (data) {
   const { Xmin = 0, Xmax = 1, Ymin = 0, Ymax = 1 } = getGeojsonRange(data)
-  const offset = [getOffset(Xmin, Xmax), getOffset(-Ymax, -Ymin)]
+  const offset = [Xmax, -Ymax]
   const reducedData = reduceData(data, offset)
   return {
     range: {

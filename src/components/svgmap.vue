@@ -31,7 +31,7 @@
             v-for="marker in reducedMarkers"
             :key="marker.properties.uuid"
             :shape="marker"
-            :radius="500"
+            :radius="1000 * currentZoom"
             :styles="_getStyle(marker)"
           />
         </g>
@@ -186,7 +186,7 @@ export default {
     setCenter (point) {
       const [offsetX, offsetY] = this.offset
       const [px, py] = point
-      this.center = [px - offsetX, py - offsetY]
+      this.center = [px - offsetX, -py - offsetY]
     },
 
     getOriginPoint (point) {
