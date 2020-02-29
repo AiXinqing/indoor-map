@@ -117,6 +117,7 @@ export default {
   methods: {
     createSocketConnect () {
       const search = window.location.search
+      console.log('query:', search)
       const openId = search
         ? (search.match(/openid=([^&]*)/) || ['', ''])[1]
         : 'oRYKI5Jp3tPhKOib8Xm6Ie4zb7xs'
