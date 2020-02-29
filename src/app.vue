@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <svg-map
+      ref="mapRef"
       v-if="json"
       :size="size"
       :geojson="json"
@@ -189,7 +190,16 @@ export default {
       this.switchFloor(this.getFloor(positionZ))
     },
 
-    locateToCenter () {},
+    locateToCenter () {
+      if (this.floor.id != this.positionFloor) {
+        this.switchFloor(this.getFloor(this.positionFloor))
+        this.$refs.mapRef.once('floor-change', (vm) => {
+          vm.setCenter(this.positionCenter)
+        })
+      } else {
+        this.$refs.mapRef.setCenter(this.positionCenter)
+      }
+    },
 
     fetchFloor (floor) {
       if (this.fetching) {

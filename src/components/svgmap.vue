@@ -110,6 +110,7 @@ export default {
         this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
         this.center = [(Xmax + Xmin) / 2 - offsetX, (Ymax + Ymin) / 2 - offsetY]
         this.reducedData = data.reducedData
+        this.$emit('floor-change', this)
       },
     },
   },
@@ -179,6 +180,13 @@ export default {
       const [cx, cy] = this.center
       const zoom = this.currentZoom
       this.center = [cx - x * this.scale * zoom, cy - y * this.scale * zoom]
+    },
+
+    // 平移图形到以 point 为中心
+    setCenter (point) {
+      const [offsetX, offsetY] = this.offset
+      const [px, py] = point
+      this.center = [px - offsetX, py - offsetY]
     },
 
     _getComponent (shape) {
