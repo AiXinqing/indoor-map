@@ -36,7 +36,6 @@
 			c-30,0-54.5-24.5-54.5-54.5s24.5-54.5,54.5-54.5s54.5,24.5,54.5,54.5C261.049,169,236.549,193.4,206.549,193.4z"/>
         </svg>
       </div>
-      <div class="info-box">{{ info }}</div>
       <div
         v-if="activeShapeVm"
         class="detail-container"
@@ -80,7 +79,6 @@ export default {
       styles: styles,
       activeShapeVm: null,
       currentPosition: null,
-      info: '',
     }
   },
 
@@ -114,11 +112,21 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        this.info += '\nsocket opened'
+        console.log('socket onpen')
       }
 
       ws.onmessage = (evt) => {
-        this.info += '\n' + JSON.stringify(evt)
+        console.log('socket message')
+        console.log(evt)
+      }
+
+      ws.onerror = (evt) => {
+        console.log('socket error')
+        console.log(evt)
+      }
+
+      ws.onclose = () => {
+        console.log('socket close')
       }
     },
 
