@@ -118,7 +118,7 @@ export default {
     createSocketConnect () {
       const search = window.location.search
       const openId = search
-        ? search.match(/openid=([^&]*)/)[1] || ''
+        ? (search.match(/openid=([^&]*)/) || ['', ''])[1]
         : 'oRYKI5Jp3tPhKOib8Xm6Ie4zb7xs'
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
 
