@@ -2,11 +2,8 @@ import 'assets/style.css'
 
 import Vue from 'vue'
 import App from './app.vue'
-import vConsole from 'vconsole'
 import axios from 'axios'
 axios.defaults.baseURL = 'https://xrequest.yunzaitech.com'
-
-new vConsole()
 
 document.body.addEventListener('touchmove', function (e) {
   e.preventDefault() //阻止默认的处理方式(阻止下拉滑动的效果)
