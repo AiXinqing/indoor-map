@@ -6,6 +6,8 @@
       :is="getComponent(shape)"
       :styles="getStyle(shape)"
       :shape="shape"
+      :zoom="zoom"
+      :scale="scale"
       v-on="$listeners"
     />
   </g>

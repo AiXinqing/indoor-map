@@ -15,6 +15,8 @@
             v-if="reducedData"
             :shape="reducedData"
             :styles="styles"
+            :zoom="currentZoom"
+            :scale="scale"
             v-on="$listeners"
           />
           <component
@@ -23,7 +25,8 @@
             :is="_getComponent(shape)"
             :styles="_getStyle(shape)"
             :shape="shape"
-            :zoom="scale * currentZoom"
+            :zoom="currentZoom"
+            :scale="scale"
             v-on="$listeners"
           />
         </g>

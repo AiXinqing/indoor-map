@@ -8,6 +8,10 @@ export default {
       type: Number,
       default: 1,
     },
+    scale: {
+      type: Number,
+      default: 1,
+    },
     styles: {
       type: Object,
       default: () => ({}),

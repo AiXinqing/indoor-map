@@ -9,7 +9,7 @@
       v-if="shapeText"
       :x="textCenter[0]"
       :y="textCenter[1]"
-      :font-size="14 * zoom"
+      :font-size="textSize"
       text-anchor="middle"
       dominant-baseline="middle"
     >
@@ -51,6 +51,13 @@ export default {
         ...this.styles,
         ...this.highlightStyle,
       }
+    },
+
+    textSize () {
+      if (this.zoom > 1.5) {
+        return 0
+      }
+      return this.scale * this.zoom * 14
     },
   },
 
