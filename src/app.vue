@@ -156,12 +156,11 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        // this.updatePosition(ExamplePosition)
+        this.updatePosition(ExamplePosition)
       }
 
       ws.onmessage = (evt) => {
-        console.log(evt.data)
-        this.updatePosition(evt.data)
+        this.updatePosition(JSON.parse(evt.data))
       }
 
       ws.onerror = (evt) => {
@@ -190,6 +189,7 @@ export default {
           vm.setCenter(this.positionCenter)
         })
       } else {
+        if (!this.$refs.mapRef) return
         this.$refs.mapRef.setCenter(this.positionCenter)
       }
     },

@@ -6,7 +6,7 @@ function reducePoints (points, offset) {
     if (index < 1 || (index === arr.length - 1)) {
       acc.push([
         parseFloat((x - offsetX).toFixed(3)),
-        parseFloat((y - offsetY).toFixed(3))
+        parseFloat((-y - offsetY).toFixed(3))
       ])
     } else {
       const [px, py] = arr[index - 1]
@@ -15,7 +15,7 @@ function reducePoints (points, offset) {
       if ((ny - py) * (x - px) - (y - py) * (nx - px) !== 0) {
         acc.push([
           parseFloat((x - offsetX).toFixed(3)),
-          parseFloat((y - offsetY).toFixed(3))
+          parseFloat((-y - offsetY).toFixed(3))
         ])
       }
     }
@@ -140,14 +140,14 @@ function getOffset (min, max) {
 
 export default function reduceFloorData (data) {
   const { Xmin = 0, Xmax = 1, Ymin = 0, Ymax = 1 } = getGeojsonRange(data)
-  const offset = [getOffset(Xmin, Xmax), getOffset(Ymin, Ymax)]
+  const offset = [getOffset(Xmin, Xmax), getOffset(-Ymax, -Ymin)]
   const reducedData = reduceData(data, offset)
   return {
     range: {
       Xmax,
       Xmin,
-      Ymax,
-      Ymin,
+      Ymax: -Ymin,
+      Ymin: -Ymax,
     },
     offset,
     reducedData: reducedData,

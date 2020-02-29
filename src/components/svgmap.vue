@@ -189,6 +189,12 @@ export default {
       this.center = [px - offsetX, py - offsetY]
     },
 
+    getOriginPoint (point) {
+      const [x, y] = point
+      const [offsetX, offsetY] = this.offset
+      return [x + offsetX, -y - offsetY]
+    },
+
     _getComponent (shape) {
       switch (shape.geometry.type) {
         case 'Polygon':
