@@ -10,6 +10,7 @@
       :x="textCenter[0]"
       :y="textCenter[1]"
       :font-size="textSize"
+      dy="0.1em"
       text-anchor="middle"
       dominant-baseline="middle"
     >
@@ -54,10 +55,10 @@ export default {
     },
 
     textSize () {
-      if (this.zoom > 1.5) {
+      if (this.zoom * this.scale > 100) {
         return 0
       }
-      return this.scale * this.zoom * 14
+      return this.scale * this.zoom * 12
     },
   },
 
