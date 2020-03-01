@@ -228,6 +228,7 @@ export default {
         if (this.storage) {
           localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
         }
+        return res
       }).finally(() => {
         this.fetching = false
       })
