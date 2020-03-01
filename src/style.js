@@ -4,7 +4,9 @@ const borderStyle = {
 }
 
 export default {
-  fallback: { fill: '#f3f3f3' },
+  fallback: {
+    fill: '#f3f3f3'
+  },
   0: {
     fill: '#f3f3f3',
     ...borderStyle,

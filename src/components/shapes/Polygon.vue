@@ -58,10 +58,12 @@ export default {
     },
 
     textSize () {
-      if (this.zoom * this.scale > 100) {
+      const { Ymax, Ymin, Xmax, Xmin } = this.range
+      const max = Math.max(Ymax - Ymin, Xmax - Xmin)
+      if (this.zoom * this.scale * 10 > max / 8) {
         return 0
       }
-      return this.scale * this.zoom * 12
+      return Math.min(max / 8, this.zoom * this.scale * 24)
     },
 
     range () {

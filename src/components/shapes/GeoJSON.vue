@@ -37,7 +37,7 @@ export default {
     getStyle (shape) {
       switch (shape.geometry.type) {
         case 'Polygon':
-          return this.styles[shape.properties.class || 'fallback']
+          return this.styles[shape.properties.class || 'fallback'] || this.styles.fallback
         case 'LineString':
           return {
             ...this.styles['-4'],
