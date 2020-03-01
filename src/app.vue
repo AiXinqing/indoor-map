@@ -50,6 +50,13 @@
         </button>
       </div>
     </div>
+    <div
+      v-if="message.content"
+      class="message-box"
+      @click="handleMessageClick"
+    >
+      <div>{{ message.content }}</div>
+    </div>
   </div>
 </template>
 
@@ -100,6 +107,10 @@ export default {
       source: axios.CancelToken.source(),
       styles: styles,
       activeShapeVm: null,
+      message: {
+        closeable: true,
+        content: '',
+      },
     }
   },
 
@@ -160,6 +171,25 @@ export default {
         })
     },
 
+    setMessage (content, options = {}) {
+      this.message_timer && clearTimeout(this.message_timer)
+      const closeable = options.hasOwnProperty('closeable')
+        ? options.closeable
+        : true
+      const duration = options.hasOwnProperty('duration')
+        ? options.duration
+        : -1
+      this.message = {
+        content,
+        closeable,
+      }
+      if (duration > 0) {
+        this.message_timer = setTimeout(() => {
+          this.message.content = ''
+        }, duration)
+      }
+    },
+
     createSocketConnect () {
       const search = window.location.search
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
@@ -179,8 +209,8 @@ export default {
         this.updatePosition(JSON.parse(evt.data))
       }
 
-      ws.onerror = (evt) => {
-        console.log(evt)
+      ws.onerror = () => {
+        this.setMessage('获取不到你的定位，请确认是否开启了蓝牙')
       }
     },
 
@@ -189,7 +219,9 @@ export default {
         .then(({ data }) => {
           this.json = data.data
         })
-        .catch(() => console.log('获取楼层数据失败'))
+        .catch(() => {
+          this.setMessage('获取楼层数据失败', { duration: 3000 })
+        })
     },
 
     updatePosition (position) {
@@ -222,9 +254,11 @@ export default {
         this.source = axios.CancelToken.source()
       }
       this.fetching = true
+      this.setMessage('正在载入地图数据', { closeable: false, duration: 3000 })
       return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).then((res) => {
+        this.setMessage('正在载入地图数据', { closeable: true, duration: 300 })
         if (this.storage) {
           localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
         }
@@ -288,6 +322,12 @@ export default {
       shapeVm.highlight(highlightStyle)
       this.activeShapeVm = shapeVm
     },
+
+    handleMessageClick () {
+      if (this.message.closeable) {
+        this.message.content = ''
+      }
+    },
   },
 }
 </script>
@@ -310,6 +350,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 2;
   }
 
   .detail-container {
@@ -396,5 +437,19 @@ export default {
     outline: none;
     cursor: pointer;
     color: white;
+  }
+
+  .message-box {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
   }
 </style>
