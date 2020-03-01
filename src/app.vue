@@ -186,6 +186,7 @@ export default {
       if (duration > 0) {
         this.message_timer = setTimeout(() => {
           this.message.content = ''
+          options.cb && options.cb()
         }, duration)
       }
     },
@@ -288,24 +289,33 @@ export default {
     },
 
     displayNavigate () {
+      const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
+      this.setMessage(message, { closeable: false })
       axios.get('/direction')
         .then(({ data }) => {
-          this.shapes = [
-            {
-              type: 'Feature',
-              properties: {
-                name: '导航线',
-                uuid: Date.now(),
-                class: '-1',
-              },
-              geometry: {
-                type: 'LineString',
-                coordinates: data.data,
-              },
+          this.setMessage(message, {
+            cb: () => {
+              this.shapes = [
+                {
+                  type: 'Feature',
+                  properties: {
+                    name: '导航线',
+                    uuid: Date.now(),
+                    class: '-1',
+                  },
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: data.data,
+                  },
+                },
+              ]
             },
-          ]
+            duration: 1000,
+          })
         })
-        .catch(() => console.log('获取导航数据失败'))
+        .catch(() => {
+          this.setMessage('获取路线失败', { duration: 2000 })
+        })
     },
 
     handleShapeClick (shapeVm) {
