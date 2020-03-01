@@ -211,6 +211,12 @@ export default {
     },
 
     fetchFloor (floor) {
+      if (this.storage) {
+        const cache = localStorage.getItem(`floor-id-${floor.id}`)
+        if (cache) {
+          return Promise.resolve(JSON.parse(cache))
+        }
+      }
       if (this.fetching) {
         this.source.cancel('cancel')
         this.source = axios.CancelToken.source()
@@ -218,6 +224,10 @@ export default {
       this.fetching = true
       return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
+      }).then((res) => {
+        if (this.storage) {
+          localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
+        }
       }).finally(() => {
         this.fetching = false
       })
