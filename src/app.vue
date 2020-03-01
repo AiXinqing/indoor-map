@@ -338,6 +338,7 @@ export default {
     height: 40px;
     padding: 8px;
     border: 1px solid #ddd;
+    background-color: white;
     border-radius: 5px;
     color: #333;
     cursor: pointer;
