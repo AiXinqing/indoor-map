@@ -108,11 +108,8 @@ export default {
       handler () {
         const data = reduceFloorData(this.geojson)
         const [offsetX, offsetY] = data.offset
-        const { Xmin, Ymin, Xmax, Ymax } = data.range
-        const [width, height] = this.size
         this.offset = data.offset
-        this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
-        this.center = [(Xmax + Xmin) / 2 - offsetX, (Ymax + Ymin) / 2 - offsetY]
+        this.setFitView(data.range)
         this.reducedData = data.reducedData
         this.$emit('floor-change', this)
       },
@@ -199,6 +196,16 @@ export default {
       return [x + offsetX, -y - offsetY]
     },
 
+    setFitView (range) {
+      const { Xmin, Xmax, Ymin, Ymax } = range
+      const [width, height] = this.size
+      this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
+      this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
+      this.rotateAngle = 0
+      this.setZoom(1.2)
+      this.setOriginZoom()
+    },
+
     _getComponent (shape) {
       switch (shape.geometry.type) {
         case 'Polygon':
@@ -211,7 +218,7 @@ export default {
     },
 
     _getStyle (shape) {
-      return this.styles[shape.properties.class || 'fallback']
+      return this.styles[shape.properties.class || 'fallback'] || this.styles.fallback
     },
   },
 }
