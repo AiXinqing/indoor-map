@@ -7,10 +7,12 @@
     />
     <text
       v-if="shapeText"
+      v-bind="textRotate"
+      :font-size="textSize"
       :x="textCenter[0]"
       :y="textCenter[1]"
-      :font-size="textSize"
       dy="0.1em"
+      fill="#666"
       text-anchor="middle"
       dominant-baseline="middle"
     >
@@ -59,6 +61,33 @@ export default {
         return 0
       }
       return this.scale * this.zoom * 12
+    },
+
+    range () {
+      const points = this.shape.geometry.coordinates[0]
+      return points.reduce((acc, point) => {
+        const [x, y] = point
+        if (acc.hasOwnProperty('Xmin')) {
+          acc.Xmin = Math.min(acc.Xmin, x)
+          acc.Xmax = Math.max(acc.Xmax, x)
+          acc.Ymin = Math.min(acc.Ymin, y)
+          acc.Ymax = Math.max(acc.Ymax, y)
+        } else {
+          acc.Xmin = x
+          acc.Xmax = x
+          acc.Ymin = y
+          acc.Ymax = y
+        }
+        return acc
+      }, {})
+    },
+
+    textRotate () {
+      const { Ymax, Ymin, Xmax, Xmin } = this.range
+      const [x, y] = this.textCenter
+      return (Ymax - Ymin) > (Xmax - Xmin)
+        ? { transform: `rotate(90, ${x}, ${y})` }
+        : {}
     },
   },
 
