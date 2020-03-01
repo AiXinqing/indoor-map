@@ -99,7 +99,7 @@ export default {
     return {
       floors: Floors,
       size: [0, 0],
-      floor: Floors[0],
+      floor: null,
       position: null,
       json: null,
       fetching: false,
@@ -152,7 +152,6 @@ export default {
 
     this.createSocketConnect()
     this.fetchStyles()
-    this.drawFloor()
   },
 
   methods: {
@@ -228,7 +227,7 @@ export default {
     updatePosition (position) {
       const { positionX, positionY, positionZ } = position
       this.position = [positionX, positionY, positionZ]
-      this.switchFloor(this.getFloor(positionZ))
+      if (!this.floor) this.switchFloor(this.getFloor(positionZ))
     },
 
     locateToCenter () {
