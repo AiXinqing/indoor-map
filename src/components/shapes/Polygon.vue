@@ -3,6 +3,7 @@
     <polygon
       :points="points"
       :style="shapeStyle"
+      :class="shape.properties.class"
       @click.stop="handleClick"
     />
     <text
@@ -40,7 +41,7 @@ export default {
     },
 
     shapeText () {
-      return this.shape.properties.name
+      return this.shape.properties.class !== '0' && this.shape.properties.name
     },
 
     textCenter () {

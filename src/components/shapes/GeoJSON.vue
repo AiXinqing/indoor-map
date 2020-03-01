@@ -39,7 +39,11 @@ export default {
         case 'Polygon':
           return this.styles[shape.properties.class || 'fallback']
         case 'LineString':
-          return { stroke: this.randomColor(), 'stroke-width': shape.properties.LineWt, fill: 'none' }
+          return {
+            ...this.styles['-4'],
+            'stroke-width': shape.properties.LineWt,
+            fill: 'none',
+          }
       }
     },
 

@@ -252,7 +252,7 @@ export default {
       if (!shapeVm.shape.properties.name) {
         return this.activeShapeVm = null
       }
-      const highlightStyle = { fill: 'red' }
+      const highlightStyle = { fill: 'hsl(37, 45%, 72%)' }
       shapeVm.highlight(highlightStyle)
       this.activeShapeVm = shapeVm
     },
