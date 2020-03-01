@@ -239,6 +239,7 @@ export default {
       if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
+      this.cleanNavigate()
     },
 
     getFloor (floorId, offset = 0) {
@@ -246,6 +247,10 @@ export default {
       const index = floorIndex + offset
       if (index < 0 || index >= this.floors.length) return undefined
       return this.floors[index]
+    },
+
+    cleanNavigate () {
+      this.shapes = []
     },
 
     displayNavigate () {
