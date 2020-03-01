@@ -140,10 +140,26 @@ export default {
     this.size = [width, height]
 
     this.createSocketConnect()
+    this.fetchStyles()
     this.drawFloor()
   },
 
   methods: {
+    fetchStyles () {
+      axios.get('/typeList', {
+        baseURL: 'http://39.106.77.97:8081/',
+      })
+        .then(({ data }) => {
+          this.styles = data.data.reduce((acc, style) => {
+            acc[style.typeName] = JSON.parse(style.typeData)
+            return acc
+          }, { ...styles })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+
     createSocketConnect () {
       const search = window.location.search
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
