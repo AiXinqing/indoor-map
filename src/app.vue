@@ -161,7 +161,10 @@ export default {
       })
         .then(({ data }) => {
           this.styles = data.data.reduce((acc, style) => {
-            acc[style.typeName] = JSON.parse(style.typeData)
+            const data = typeof style.typeData === 'string'
+              ? JSON.parse(style.typeData)
+              : style.typeData
+            acc[style.typeName] = data
             return acc
           }, { ...styles })
         })
