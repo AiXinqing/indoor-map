@@ -61,12 +61,12 @@ export default {
       const { Xmax, Xmin, Ymin, Ymax } = this.range
       // 一个形状最多能显示的字数为8个
       const max = Math.max((Xmax - Xmin), (Ymax - Ymin)) / 8
-      // 最小显示字号为6px
-      if (this.zoom * this.scale * 6 > max) {
+      // 最小显示字号为7px
+      if (this.zoom * this.scale * 7 > max) {
         return 0
       }
-      // 最大显示的字号为12px
-      return Math.min(max, this.zoom * this.scale * 12)
+      // 最大显示的字号为14px
+      return Math.min(max, this.zoom * this.scale * 14)
     },
 
     range () {
