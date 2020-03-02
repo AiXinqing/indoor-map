@@ -204,8 +204,6 @@ export default {
         return
       }
 
-      this.setMessage('正在获取你的定位')
-
       ws.onopen = () => {
         const connectdata = {
           from: 'Web',
@@ -216,12 +214,11 @@ export default {
       }
 
       ws.onmessage = (evt) => {
-        this.setMessage('正在获取你的定位', { duration: 300 })
         this.updatePosition(JSON.parse(evt.data))
       }
 
       ws.onerror = () => {
-        this.setMessage('获取不到你的定位，请确认是否开启了蓝牙')
+        this.setMessage('获取不到你的定位，请确认是否开启了蓝牙', { duration: 2000 })
       }
     },
 
