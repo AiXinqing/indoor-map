@@ -16,5 +16,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    rotate: {
+      type: Number,
+      default: 0,
+    },
   },
 }

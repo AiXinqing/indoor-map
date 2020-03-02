@@ -58,12 +58,12 @@ export default {
     },
 
     textSize () {
-      const { Ymax, Ymin, Xmax, Xmin } = this.range
-      const max = Math.max(Ymax - Ymin, Xmax - Xmin)
-      if (this.zoom * this.scale * 10 > max / 8) {
+      const { Xmax, Xmin } = this.range
+      const max = Xmax - Xmin
+      if (this.zoom * this.scale * 10 > max / 6) {
         return 0
       }
-      return Math.min(max / 8, this.zoom * this.scale * 24)
+      return Math.min(max / 6, this.zoom * this.scale * 24)
     },
 
     range () {
@@ -86,11 +86,9 @@ export default {
     },
 
     textRotate () {
-      const { Ymax, Ymin, Xmax, Xmin } = this.range
+      const angle = 360 - (this.rotate % 360)
       const [x, y] = this.textCenter
-      return (Ymax - Ymin) > (Xmax - Xmin)
-        ? { transform: `rotate(90, ${x}, ${y})` }
-        : {}
+      return { transform: `rotate(${angle}, ${x}, ${y})` }
     },
   },
 

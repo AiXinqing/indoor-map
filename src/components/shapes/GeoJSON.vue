@@ -8,6 +8,7 @@
       :shape="shape"
       :zoom="zoom"
       :scale="scale"
+      :rotate="rotate"
       v-on="$listeners"
     />
   </g>

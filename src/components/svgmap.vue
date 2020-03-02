@@ -17,6 +17,7 @@
             :styles="styles"
             :zoom="currentZoom"
             :scale="scale"
+            :rotate="rotateAngle"
             v-on="$listeners"
           />
           <component
@@ -146,7 +147,11 @@ export default {
   mounted () {
     new AlloyFinger(this.$el, {
       pressMove: (event) => {
-        this.translate(event.deltaX, event.deltaY)
+        const theta = this.rotateAngle / 180 * Math.PI
+        const { deltaX, deltaY } = event
+        const dx = deltaX * Math.cos(theta) + deltaY * Math.sin(theta)
+        const dy = deltaY * Math.cos(theta) - deltaX * Math.sin(theta)
+        this.translate(dx, dy)
       },
       pinch: (evt) => {
         this.setZoom(this.originZoom / evt.zoom)
