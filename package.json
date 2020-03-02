@@ -30,7 +30,6 @@
   "dependencies": {
     "alloyfinger": "^0.1.16",
     "axios": "^0.19.1",
-    "vconsole": "^3.3.4",
     "vue": "^2.6.11"
   }
 }
