@@ -198,6 +198,14 @@ export default {
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
 
+      if (!openId) {
+        this.floor = this.floors[0]
+        this.drawFloor()
+        return
+      }
+
+      this.setMessage('正在获取你的定位')
+
       ws.onopen = () => {
         const connectdata = {
           from: 'Web',
@@ -205,10 +213,10 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        this.updatePosition(ExamplePosition)
       }
 
       ws.onmessage = (evt) => {
+        this.setMessage('正在获取你的定位', { duration: 300 })
         this.updatePosition(JSON.parse(evt.data))
       }
 
