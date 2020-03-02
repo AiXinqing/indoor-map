@@ -58,12 +58,15 @@ export default {
     },
 
     textSize () {
-      const { Xmax, Xmin } = this.range
-      const max = Xmax - Xmin
-      if (this.zoom * this.scale * 10 > max / 6) {
+      const { Xmax, Xmin, Ymin, Ymax } = this.range
+      // 一个形状最多能显示的字数为8个
+      const max = Math.max((Xmax - Xmin), (Ymax - Ymin)) / 8
+      // 最小显示字号为6px
+      if (this.zoom * this.scale * 6 > max) {
         return 0
       }
-      return Math.min(max / 6, this.zoom * this.scale * 24)
+      // 最大显示的字号为12px
+      return Math.min(max, this.zoom * this.scale * 12)
     },
 
     range () {
