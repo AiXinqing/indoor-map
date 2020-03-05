@@ -11,6 +11,18 @@
       @click-shape="handleShapeClick"
     />
     <div class="ui-layer">
+      <div class="search-component">
+        <div class="search-input">
+          <input
+            v-model="searchKey"
+            placeholder="输入搜索关键词"
+            type="text"
+            @change="doSearch"
+          />
+          <span></span>
+        </div>
+        <div class="search-results"></div>
+      </div>
       <div class="button-group">
         <div
           v-for="item in floors"
@@ -97,6 +109,8 @@ export default {
 
   data () {
     return {
+      searchKey: '',
+      searchResults: null,
       floors: Floors,
       size: [0, 0],
       floor: null,
@@ -155,6 +169,19 @@ export default {
   },
 
   methods: {
+    doSearch () {
+      if (!this.searchKey) return
+      axios.get('/search', {
+        baseURL: 'http://39.106.77.97:8081/',
+        params: {
+          name: this.searchKey,
+        },
+      })
+      .then(({ data }) => {
+        this.searchResults = data.data
+      })
+    },
+
     fetchStyles () {
       axios.get('/typeList', {
         baseURL: 'http://39.106.77.97:8081/',
@@ -262,7 +289,7 @@ export default {
         this.source = axios.CancelToken.source()
       }
       this.fetching = true
-      this.setMessage('正在载入地图数据', { closeable: false, duration: 3000 })
+      this.setMessage('正在载入地图数据', { closeable: false })
       return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).then((res) => {
@@ -418,8 +445,8 @@ export default {
   }
 
   .floor-button.active {
-    background-color: hsl(209, 100%, 74%);
-    border-color: hsl(209, 100%, 74%);
+    background-color: hsl(208, 86%, 31%);
+    border-color: hsl(208, 86%, 31%);
     color: white;
   }
 
@@ -439,12 +466,12 @@ export default {
   }
 
   .locate-button.active {
-    color: hsl(209, 100%, 74%);
+    color: hsl(208, 86%, 31%);
   }
 
   .button {
     flex-shrink: 0;
-    background: hsl(209, 100%, 74%);
+    background: hsl(208, 86%, 31%);
     font-size: 14px;
     line-height: 21px;
     padding: 6px 16px;
@@ -468,5 +495,34 @@ export default {
     justify-content: center;
     align-items: center;
     color: #666;
+  }
+
+  .search-component {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    right: 24px;
+  }
+
+  .search-input input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: white;
+    -webkit-appearance: none;
+  }
+
+  .search-input input::-webkit-input-placeholder {
+    color: #999;
+  }
+
+  .search-input input:focus {
+    outline: none;
+    box-shadow: 0 1px 5px 0px hsl(208, 86%, 31%);
+    border-color: hsl(208, 86%, 31%);
   }
 </style>
