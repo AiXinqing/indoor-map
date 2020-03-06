@@ -225,7 +225,6 @@ export default {
         return
       }
       axios.get('/search', {
-        baseURL: 'http://39.106.77.97:8081/',
         params: {
           name: this.searchKey,
         },
@@ -253,9 +252,7 @@ export default {
     },
 
     fetchStyles () {
-      axios.get('/typeList', {
-        baseURL: 'http://39.106.77.97:8081/',
-      })
+      axios.get('/typeList')
         .then(({ data }) => {
           this.styles = data.data.reduce((acc, style) => {
             const data = typeof style.typeData === 'string'
