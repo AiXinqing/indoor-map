@@ -582,7 +582,7 @@ export default {
   .search-input svg {
     position: absolute;
     right: 12px;
-    top: 11px;
+    top: 12px;
   }
 
   .search-input input::-webkit-input-placeholder {
