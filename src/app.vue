@@ -122,17 +122,6 @@ const ExamplePosition = {
   positionZ: -2,
 }
 
-const Floors = [
-  {
-    id: -2,
-    alias: 'B2',
-  },
-  {
-    id: -3,
-    alias: 'B3',
-  },
-]
-
 export default {
   components: {
     SvgMap,
@@ -150,7 +139,7 @@ export default {
     return {
       searchKey: '',
       searchResults: null,
-      floors: Floors,
+      floors: [],
       size: [0, 0],
       floor: null,
       position: null,
@@ -251,6 +240,18 @@ export default {
       event._isScroll = true
     },
 
+    fetchFloors () {
+      return axios.get('/floor/mapping', {
+        baseURL: 'http://39.106.77.97:8081/',
+      })
+        .then(({ data }) => {
+          this.floors = Object.keys(data.data).map(alias => ({
+            alias: alias,
+            id: data.data[alias],
+          }))
+        })
+    },
+
     fetchStyles () {
       axios.get('/typeList')
         .then(({ data }) => {
@@ -291,10 +292,13 @@ export default {
       const search = window.location.search
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
+      const floorsRequest = this.fetchFloors()
 
       if (!openId) {
-        this.floor = this.floors[0]
-        this.drawFloor()
+        floorsRequest.then(() => {
+          this.floor = this.floors[0]
+          this.drawFloor()
+        })
         return
       }
 
