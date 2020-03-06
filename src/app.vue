@@ -200,6 +200,16 @@ export default {
     },
   },
 
+  watch: {
+    activeShapeVm () {
+      if (!this.activeShapeVm) return
+      if (!this.selectedShape) return
+      if (!this.activeShapeVm.shapeText) return
+      this.$refs.mapRef.setOffsetCenter(this.activeShapeVm.textCenter)
+      this.selectedShape = null
+    },
+  },
+
   mounted () {
     const { width, height } = document.body.getBoundingClientRect()
     this.size = [width, height]
@@ -385,6 +395,7 @@ export default {
     displayNavigate () {
       const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
       this.setMessage(message, { closeable: false })
+      this.selectedShape = null
       axios.get('/direction')
         .then(({ data }) => {
           this.setMessage(message, {

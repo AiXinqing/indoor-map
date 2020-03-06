@@ -204,6 +204,10 @@ export default {
       this.center = [px - offsetX, -py - offsetY]
     },
 
+    setOffsetCenter (offsetPoint) {
+      this.center = offsetPoint
+    },
+
     getOriginPoint (point) {
       const [x, y] = point
       const [offsetX, offsetY] = this.offset
