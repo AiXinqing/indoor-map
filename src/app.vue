@@ -20,10 +20,12 @@
             @change="doSearch"
           />
           <svg
+            v-if="searchResults"
             width="14px"
             height="14px"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
+            @click="cleanSearch"
           >
             <path
               d="M1,1L15,15L8,8L1,15L15,1"
@@ -53,7 +55,7 @@
             v-if="!searchResults.length"
             class="blankslate"
           >
-            没有找到 {{searchKey}} 相关的信息
+            没有找到相关的信息
           </div>
         </div>
       </div>
@@ -217,6 +219,11 @@ export default {
       .then(({ data }) => {
         this.searchResults = data.data
       })
+    },
+
+    cleanSearch () {
+      this.searchResults = null
+      this.searchKey = ''
     },
 
     fetchStyles () {
@@ -545,7 +552,9 @@ export default {
 
   .search-input input {
     width: 100%;
-    padding: 8px 12px;
+    padding: 8px 26px 8px 12px;
+    font-size: inherit;
+    color: inherit;
     border: 1px solid #ddd;
     box-shadow: none;
     border-radius: 5px;
@@ -557,7 +566,7 @@ export default {
   .search-input svg {
     position: absolute;
     right: 12px;
-    top: 8px;
+    top: 11px;
   }
 
   .search-input input::-webkit-input-placeholder {
@@ -596,5 +605,11 @@ export default {
     color: #999;
     font-size: 12px;
     margin-top: 4px;
+  }
+
+  .search-results .blankslate {
+    padding: 20px 12px;
+    text-align: center;
+    font-size: 16px;
   }
 </style>
