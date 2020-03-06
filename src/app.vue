@@ -8,6 +8,7 @@
       :shapes="shapes"
       :styles="styles"
       :markers="markers"
+      :selected-shape="selectedShape"
       @click-shape="handleShapeClick"
     />
     <div class="ui-layer">
@@ -38,11 +39,13 @@
         <div
           v-if="searchResults"
           class="search-results"
+          @touchmove="handleScrollTouchMove"
         >
           <div
             v-for="result in searchResults"
             :key="result.properties.uuid"
             class="search-result-item"
+            @click="focusShape(result)"
           >
             <div class="search-result-item-title">
               {{ result.properties.name }}
@@ -156,6 +159,7 @@ export default {
       shapes: [],
       source: axios.CancelToken.source(),
       styles: styles,
+      selectedShape: null,
       activeShapeVm: null,
       message: {
         closeable: true,
@@ -224,6 +228,18 @@ export default {
     cleanSearch () {
       this.searchResults = null
       this.searchKey = ''
+    },
+
+    focusShape (shape) {
+      this.cleanSearch()
+      const floor = this.floors.find(item => item.alias === shape.properties.floor)
+      this.switchFloor(floor)
+      this.selectedShape = shape
+    },
+
+    // 禁止滚动被橡皮筋弄失效
+    handleScrollTouchMove (event) {
+      event._isScroll = true
     },
 
     fetchStyles () {

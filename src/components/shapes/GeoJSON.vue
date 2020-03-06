@@ -9,6 +9,7 @@
       :zoom="zoom"
       :scale="scale"
       :rotate="rotate"
+      :selected-shape="selectedShape"
       v-on="$listeners"
     />
   </g>
@@ -27,6 +28,13 @@ export default {
     LineString,
   },
   mixins: [ShapeMixins],
+
+  props: {
+    selectedShape: {
+      type: Object,
+      default: null,
+    },
+  },
 
   computed: {
     shapes () {

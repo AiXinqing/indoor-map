@@ -12,12 +12,14 @@
       >
         <g aria-label="normal-shapes">
           <geo-json
+            ref="mapRef"
             v-if="reducedData"
             :shape="reducedData"
             :styles="styles"
             :zoom="currentZoom"
             :scale="scale"
             :rotate="rotateAngle"
+            :selected-shape="selectedShape"
             v-on="$listeners"
           />
           <component
@@ -89,6 +91,11 @@ export default {
       type: Number,
       default: 1.2,
     },
+
+    selectedShape: {
+      type: Object,
+      default: null,
+    },
   },
 
   data () {
@@ -112,7 +119,9 @@ export default {
         this.offset = data.offset
         this.setFitView(data.range)
         this.reducedData = data.reducedData
-        this.$emit('floor-change', this)
+        this.$nextTick(() => {
+          this.$emit('floor-change', this)
+        })
       },
     },
   },

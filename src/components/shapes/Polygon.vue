@@ -28,6 +28,13 @@ import ShapeMixins from './shapes_mixin'
 export default {
   mixins: [ShapeMixins],
 
+  props: {
+    selectedShape: {
+      type: Object,
+      default: null,
+    },
+  },
+
   data () {
     return {
       highlightStyle: {},
@@ -92,6 +99,18 @@ export default {
       const angle = 360 - (this.rotate % 360)
       const [x, y] = this.textCenter
       return { transform: `rotate(${angle}, ${x}, ${y})` }
+    },
+  },
+
+  watch: {
+    selectedShape: {
+      immediate: true,
+      handler () {
+        if (!this.selectedShape) return
+        if (this.selectedShape.properties.uuid === this.shape.properties.uuid) {
+          this.$emit('click-shape', this)
+        }
+      },
     },
   },
 
