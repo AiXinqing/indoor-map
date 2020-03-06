@@ -19,9 +19,43 @@
             type="text"
             @change="doSearch"
           />
-          <span></span>
+          <svg
+            width="14px"
+            height="14px"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M1,1L15,15L8,8L1,15L15,1"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2px"
+            />
+          </svg>
         </div>
-        <div class="search-results"></div>
+        <div
+          v-if="searchResults"
+          class="search-results"
+        >
+          <div
+            v-for="result in searchResults"
+            :key="result.properties.uuid"
+            class="search-result-item"
+          >
+            <div class="search-result-item-title">
+              {{ result.properties.name }}
+            </div>
+            <div class="search-result-item-description">
+              所属楼层: {{ result.properties.floor }}
+            </div>
+          </div>
+          <div
+            v-if="!searchResults.length"
+            class="blankslate"
+          >
+            没有找到 {{searchKey}} 相关的信息
+          </div>
+        </div>
       </div>
       <div class="button-group">
         <div
@@ -170,7 +204,10 @@ export default {
 
   methods: {
     doSearch () {
-      if (!this.searchKey) return
+      if (!this.searchKey) {
+        this.searchResults = null
+        return
+      }
       axios.get('/search', {
         baseURL: 'http://39.106.77.97:8081/',
         params: {
@@ -502,18 +539,25 @@ export default {
     top: 24px;
     left: 24px;
     right: 24px;
+    color: #666;
+    font-size: 14px;
   }
 
   .search-input input {
     width: 100%;
     padding: 8px 12px;
-    font-size: 14px;
     border: 1px solid #ddd;
     box-shadow: none;
     border-radius: 5px;
     outline: none;
     background-color: white;
     -webkit-appearance: none;
+  }
+
+  .search-input svg {
+    position: absolute;
+    right: 12px;
+    top: 8px;
   }
 
   .search-input input::-webkit-input-placeholder {
@@ -524,5 +568,33 @@ export default {
     outline: none;
     box-shadow: 0 1px 5px 0px hsl(208, 86%, 31%);
     border-color: hsl(208, 86%, 31%);
+  }
+
+  .search-results {
+    position: absolute;
+    top: 100%;
+    margin-top: 4px;
+    left: 0;
+    right: 0;
+    max-height: calc(60vh - 65px);
+    overflow: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .search-result-item {
+    padding: 4px 12px;
+    border-top: 1px solid #f6f6f6;
+  }
+
+  .search-result-item:first-child {
+    border-top: none;
+  }
+
+  .search-result-item-description {
+    color: #999;
+    font-size: 12px;
+    margin-top: 4px;
   }
 </style>
