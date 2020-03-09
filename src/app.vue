@@ -241,9 +241,7 @@ export default {
     },
 
     fetchFloors () {
-      return axios.get('/floor/mapping', {
-        baseURL: 'http://39.106.77.97:8081/',
-      })
+      return axios.get('/floor/mapping')
         .then(({ data }) => {
           this.floors = Object.keys(data.data).map(alias => ({
             alias: alias,
