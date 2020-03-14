@@ -127,12 +127,6 @@ import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
 import styles from './style'
 
-const ExamplePosition = {
-  positionX: 308258249.8175751,
-  positionY: 506969415.9401813,
-  positionZ: -2,
-}
-
 export default {
   components: {
     SvgMap,
