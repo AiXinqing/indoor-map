@@ -78,4 +78,7 @@ export default {
   '-4': {
     stroke: '#c6c6c6',
   },
+  highlight: {
+    fill: 'hsl(37, 45%, 72%)',
+  },
 }

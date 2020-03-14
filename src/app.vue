@@ -1,5 +1,8 @@
 <template>
-  <div class="app">
+  <div
+    class="app"
+    @click="handleOtherClick"
+  >
     <svg-map
       ref="mapRef"
       v-if="json"
@@ -98,14 +101,14 @@
           class="button"
           @click="cleanNavigate"
         >
-          取消导航
+          取消路线
         </button>
         <button
           v-else
           class="button"
           @click="displayNavigate"
         >
-          导航
+          去这里
         </button>
       </div>
     </div>
@@ -405,7 +408,6 @@ export default {
       if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
-      this.cleanNavigate()
     },
 
     getFloor (floorId, offset = 0) {
@@ -420,12 +422,18 @@ export default {
     },
 
     displayNavigate () {
+      this.selectedShape = null
+      if (!this.position) {
+        this.setMessage('没有获取到您的定位', {
+          duration: 3000,
+        })
+        return
+      }
       const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
       const [sx, sy, sz] = this.$refs.mapRef.getOriginPoint(this.position)
       const ez = this.activeShapeVm.shape.properties.floor || this.floor.id
       const [ex, ey] = this.$refs.mapRef.getOriginPoint(this.activeShapeVm.textCenter)
       this.setMessage(message, { closeable: false })
-      this.selectedShape = null
       axios.post('/direction', {
         startPosition: {
           positionX: sx.toFixed(3),
@@ -451,6 +459,13 @@ export default {
         })
     },
 
+    handleOtherClick () {
+      if (this.activeShapeVm) {
+        this.activeShapeVm.blur()
+        this.activeShapeVm = null
+      }
+    },
+
     handleShapeClick (shapeVm) {
       if (this.activeShapeVm) {
         this.activeShapeVm.blur()
@@ -461,8 +476,7 @@ export default {
       if (!shapeVm.shape.properties.name) {
         return this.activeShapeVm = null
       }
-      const highlightStyle = { fill: 'hsl(37, 45%, 72%)' }
-      shapeVm.highlight(highlightStyle)
+      shapeVm.highlight(this.styles.highlight)
       this.activeShapeVm = shapeVm
     },
 
