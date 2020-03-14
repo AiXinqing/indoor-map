@@ -1,11 +1,12 @@
 const borderStyle = {
   stroke: '#999',
-  'stroke-width': 100,
+  'strokeWidth': 100,
 }
 
 export default {
   fallback: {
-    fill: '#f3f3f3'
+    fill: '#f3f3f3',
+    ...borderStyle,
   },
   0: {
     fill: '#f3f3f3',
@@ -14,7 +15,7 @@ export default {
   1: {
     stroke: '#f3f3f3',
     fill: '#e6e6e6',
-    'stroke-width': 50,
+    'strokeWidth': 50,
   },
   2: {
     fill: 'hsl(38, 92%, 95%)',
@@ -63,7 +64,7 @@ export default {
   // 导航线样式
   '导航线': {
     stroke: 'hsl(126, 95%, 33%)',
-    'stroke-width': 200,
+    'strokeWidth': 200,
     fill: 'transparent',
   },
   // 定位点样式

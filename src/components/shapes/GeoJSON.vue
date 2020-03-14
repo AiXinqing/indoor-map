@@ -50,7 +50,7 @@ export default {
         case 'LineString':
           return {
             ...this.styles['车流线'],
-            'stroke-width': shape.properties.LineWt,
+            'strokeWidth': shape.properties.LineWt,
             fill: 'none',
           }
       }
