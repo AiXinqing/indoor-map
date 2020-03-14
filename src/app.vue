@@ -5,7 +5,7 @@
       v-if="json"
       :size="size"
       :geojson="json"
-      :shapes="shapes"
+      :shapes="navigateLine"
       :styles="styles"
       :markers="markers"
       :selected-shape="selectedShape"
@@ -94,6 +94,14 @@
       >
         <span>{{ activeShapeVm.shape.properties.name }}</span>
         <button
+          v-if="navigateLine.length"
+          class="button"
+          @click="cleanNavigate"
+        >
+          取消导航
+        </button>
+        <button
+          v-else
           class="button"
           @click="displayNavigate"
         >
@@ -145,7 +153,7 @@ export default {
       position: null,
       json: null,
       fetching: false,
-      shapes: [],
+      navigatePathPoints: [],
       source: axios.CancelToken.source(),
       styles: styles,
       selectedShape: null,
@@ -160,6 +168,26 @@ export default {
   computed: {
     positionFloor () {
       return this.position && this.position[2]
+    },
+
+    navigateLine () {
+      const points = this.floor
+        ? this.navigatePathPoints.filter(item => item[2] === this.floor.id)
+        : []
+      return points.length
+        ? [{
+            type: 'Feature',
+            properties: {
+              name: '导航线',
+              uuid: `navigate-path-${this.floor.id}`,
+              class: '-1',
+            },
+            geometry: {
+              type: 'LineString',
+              coordinates: points,
+            },
+          }]
+        : []
     },
 
     currentPosition () {
@@ -388,31 +416,32 @@ export default {
     },
 
     cleanNavigate () {
-      this.shapes = []
+      this.navigatePathPoints = []
     },
 
     displayNavigate () {
       const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
+      const [sx, sy, sz] = this.$refs.mapRef.getOriginPoint(this.position)
+      const ez = this.activeShapeVm.shape.properties.floor || this.floor.id
+      const [ex, ey] = this.$refs.mapRef.getOriginPoint(this.activeShapeVm.textCenter)
       this.setMessage(message, { closeable: false })
       this.selectedShape = null
-      axios.get('/direction')
+      axios.post('/direction', {
+        startPosition: {
+          positionX: sx.toFixed(3),
+          positionY: sy.toFixed(3),
+          positionZ: `${sz}`,
+        },
+        endPosition: {
+          positionX: ex.toFixed(3),
+          positionY: ey.toFixed(3),
+          positionZ: `${ez}`,
+        }
+      })
         .then(({ data }) => {
           this.setMessage(message, {
             cb: () => {
-              this.shapes = [
-                {
-                  type: 'Feature',
-                  properties: {
-                    name: '导航线',
-                    uuid: Date.now(),
-                    class: '-1',
-                  },
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: data.data,
-                  },
-                },
-              ]
+              this.navigatePathPoints = data.data.map(item => [item[0] * 1000, item[1] * 1000, item[2]])
             },
             duration: 1000,
           })

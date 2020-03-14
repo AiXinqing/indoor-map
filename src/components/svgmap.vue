@@ -209,9 +209,15 @@ export default {
     },
 
     getOriginPoint (point) {
-      const [x, y] = point
+      const [x, y, ...rest] = point
       const [offsetX, offsetY] = this.offset
-      return [x + offsetX, -y - offsetY]
+      return [x + offsetX, -y - offsetY, ...rest]
+    },
+
+    getOffsetPoint (point) {
+      const [x, y, ...rest] = point
+      const [offsetX, offsetY] = this.offset
+      return [x - offsetX, offsetY - y, ...rest]
     },
 
     setFitView (range) {

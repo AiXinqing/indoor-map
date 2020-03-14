@@ -64,6 +64,7 @@ export default {
   '-1': {
     stroke: 'hsl(126, 95%, 33%)',
     'stroke-width': 200,
+    fill: 'transparent',
   },
   // 定位点样式
   '-2': {
