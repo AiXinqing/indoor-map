@@ -441,7 +441,7 @@ export default {
         .then(({ data }) => {
           this.setMessage(message, {
             cb: () => {
-              this.navigatePathPoints = data.data.map(item => [item[0] * 1000, item[1] * 1000, item[2]])
+              this.navigatePathPoints = data.data
             },
             duration: 1000,
           })
