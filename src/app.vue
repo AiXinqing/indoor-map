@@ -183,7 +183,7 @@ export default {
             properties: {
               name: '导航线',
               uuid: `navigate-path-${this.floor.id}`,
-              class: '-1',
+              class: '导航线',
             },
             geometry: {
               type: 'LineString',
@@ -200,7 +200,7 @@ export default {
             properties: {
               name: '当前位置',
               uuid: 'current-location',
-              class: '-2',
+              class: '定位点',
               floor: this.positionFloor,
             },
             geometry: {
@@ -476,7 +476,7 @@ export default {
       if (!shapeVm.shape.properties.name) {
         return this.activeShapeVm = null
       }
-      shapeVm.highlight(this.styles.highlight)
+      shapeVm.highlight(this.styles['区块选中'])
       this.activeShapeVm = shapeVm
     },
 

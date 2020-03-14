@@ -49,7 +49,7 @@ export default {
           return this.styles[shape.properties.class || 'fallback'] || this.styles.fallback
         case 'LineString':
           return {
-            ...this.styles['-4'],
+            ...this.styles['车流线'],
             'stroke-width': shape.properties.LineWt,
             fill: 'none',
           }

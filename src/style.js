@@ -61,24 +61,24 @@ export default {
     ...borderStyle,
   },
   // 导航线样式
-  '-1': {
+  '导航线': {
     stroke: 'hsl(126, 95%, 33%)',
     'stroke-width': 200,
     fill: 'transparent',
   },
   // 定位点样式
-  '-2': {
+  '定位点': {
     fill: 'hsl(65, 21%, 57%)',
   },
   // 目的地定位点样式
-  '-3': {
+  '目的地': {
     fill: 'hsl(126, 95%, 33%)',
   },
   // 车流线样式
-  '-4': {
-    stroke: '#c6c6c6',
+  '车流线': {
+    stroke: 'transparent',
   },
-  highlight: {
+  '区块选中': {
     fill: 'hsl(37, 45%, 72%)',
   },
 }
