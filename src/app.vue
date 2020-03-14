@@ -355,7 +355,7 @@ export default {
 
     updatePosition (position) {
       const { positionX, positionY, positionZ } = position
-      this.position = [positionX, positionY, positionZ]
+      this.position = [parseFloat(positionX), parseFloat(positionY), parseInt(positionZ)]
       if (!this.floor) this.switchFloor(this.getFloor(positionZ))
     },
 
@@ -424,7 +424,7 @@ export default {
         return
       }
       const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
-      const [sx, sy, sz] = this.$refs.mapRef.getOriginPoint(this.position)
+      const [sx, sy, sz] = this.position
       const ez = this.activeShapeVm.shape.properties.floor || this.floor.id
       const [ex, ey] = this.$refs.mapRef.getOriginPoint(this.activeShapeVm.textCenter)
       this.setMessage(message, { closeable: false })
