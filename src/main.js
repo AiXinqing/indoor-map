@@ -14,7 +14,7 @@ new Vue({
   el: '#app',
   render: h => h(App, {
     props: {
-      storage: true,
+      storage: false,
     },
   }),
 })

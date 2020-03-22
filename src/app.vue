@@ -3,18 +3,7 @@
     class="app"
     @click="handleOtherClick"
   >
-    <svg-map
-      ref="mapRef"
-      v-if="json"
-      :size="size"
-      :geojson="json"
-      :shapes="navigateLine"
-      :styles="styles"
-      :markers="markers"
-      :selected-shape="selectedShape"
-      @click-shape="handleShapeClick"
-    />
-    <div class="ui-layer">
+    <header>
       <div class="search-component">
         <div class="search-input">
           <input
@@ -65,6 +54,21 @@
           </div>
         </div>
       </div>
+    </header>
+    <main>
+      <svg-map
+        ref="mapRef"
+        v-if="json"
+        :size="size"
+        :geojson="json"
+        :shapes="navigateLine"
+        :styles="styles"
+        :markers="markers"
+        :selected-shape="selectedShape"
+        @click-shape="handleShapeClick"
+      />
+    </main>
+    <div class="ui-layer">
       <div class="button-group">
         <div
           v-for="item in floors"
@@ -112,6 +116,7 @@
         </button>
       </div>
     </div>
+    <footer>底部</footer>
     <div
       v-if="message.content"
       class="message-box"
@@ -225,7 +230,7 @@ export default {
   },
 
   mounted () {
-    const { width, height } = document.body.getBoundingClientRect()
+    const { width, height } = document.querySelector('main').getBoundingClientRect()
     this.size = [width, height]
 
     this.createSocketConnect()
@@ -489,11 +494,13 @@ export default {
     height: 100%;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .map-container {
-    width: 100%;
-    height: 100%;
+  main {
+    flex: 1 0 0;
   }
 
   .ui-layer {
@@ -604,13 +611,14 @@ export default {
     color: #666;
   }
 
-  .search-component {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    right: 24px;
+  header {
+    padding: 12px 24px;
     color: #666;
     font-size: 14px;
+  }
+
+  .search-component {
+    position: relative;
   }
 
   .search-input input {
