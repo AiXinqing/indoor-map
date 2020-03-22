@@ -39,6 +39,12 @@ module.exports = {
             loader: 'style-loader',
           },
           { loader: 'css-loader', options: { importLoaders: 1, sourceMap: true } },
+          {
+            loader: 'postcss-loader',
+          },
+          {
+            loader: 'sass-loader',
+          },
         ]
       },
     ],
