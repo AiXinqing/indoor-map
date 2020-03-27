@@ -4,56 +4,7 @@
     @click="handleOtherClick"
   >
     <header>
-      <div class="search-component">
-        <div class="search-input">
-          <input
-            v-model="searchKey"
-            placeholder="输入搜索关键词"
-            type="text"
-            @change="doSearch"
-          />
-          <svg
-            v-if="searchResults"
-            width="14px"
-            height="14px"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            @click="cleanSearch"
-          >
-            <path
-              d="M1,1L15,15L8,8L1,15L15,1"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2px"
-            />
-          </svg>
-        </div>
-        <div
-          v-if="searchResults"
-          class="search-results"
-          @touchmove="handleScrollTouchMove"
-        >
-          <div
-            v-for="result in searchResults"
-            :key="result.properties.uuid"
-            class="search-result-item"
-            @click="focusShape(result)"
-          >
-            <div class="search-result-item-title">
-              {{ result.properties.name }}
-            </div>
-            <div class="search-result-item-description">
-              所属楼层: {{ result.properties.floor }}
-            </div>
-          </div>
-          <div
-            v-if="!searchResults.length"
-            class="blankslate"
-          >
-            没有找到相关的信息
-          </div>
-        </div>
-      </div>
+      <search @select-shape="focusShape" />
     </header>
     <main>
       <svg-map
@@ -67,39 +18,53 @@
         :selected-shape="selectedShape"
         @click-shape="handleShapeClick"
       />
-    </main>
-    <div class="ui-layer">
-      <div class="button-group">
+      <div class="ui-layer">
+        <div class="button-group">
+          <div
+            v-for="item in floors"
+            :key="item.id"
+            :class="{ active: item === floor }"
+            class="floor-button"
+            @click="switchFloor(item)"
+          >
+            {{ item.alias }}
+          </div>
+        </div>
         <div
-          v-for="item in floors"
-          :key="item.id"
-          :class="{ active: item === floor }"
-          class="floor-button"
-          @click="switchFloor(item)"
+          class="locate-button"
+          @click="locateToCenter"
         >
-          {{ item.alias }}
+          <svg
+            width="100%"
+            height="100%"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 413.099 413.099"
+          >
+            <path d="M206.549,0L206.549,0c-82.6,0-149.3,66.7-149.3,149.3c0,28.8,9.2,56.3,22,78.899l97.3,168.399c6.1,11,18.4,16.5,30,16.5
+        c11.601,0,23.3-5.5,30-16.5l97.3-168.299c12.9-22.601,22-49.601,22-78.901C355.849,66.8,289.149,0,206.549,0z M206.549,193.4
+        c-30,0-54.5-24.5-54.5-54.5s24.5-54.5,54.5-54.5s54.5,24.5,54.5,54.5C261.049,169,236.549,193.4,206.549,193.4z"/>
+          </svg>
         </div>
       </div>
-      <div
-        class="locate-button"
-        @click="locateToCenter"
-      >
-        <svg
-          width="100%"
-          height="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 413.099 413.099"
-        >
-          <path d="M206.549,0L206.549,0c-82.6,0-149.3,66.7-149.3,149.3c0,28.8,9.2,56.3,22,78.899l97.3,168.399c6.1,11,18.4,16.5,30,16.5
-			c11.601,0,23.3-5.5,30-16.5l97.3-168.299c12.9-22.601,22-49.601,22-78.901C355.849,66.8,289.149,0,206.549,0z M206.549,193.4
-			c-30,0-54.5-24.5-54.5-54.5s24.5-54.5,54.5-54.5s54.5,24.5,54.5,54.5C261.049,169,236.549,193.4,206.549,193.4z"/>
-        </svg>
-      </div>
+    </main>
+    <footer
+      class="footer"
+    >
       <div
         v-if="activeShapeVm"
         class="detail-container"
       >
-        <span>{{ activeShapeVm.shape.properties.name }}</span>
+        <div class="shape-detail">
+          <span class="shape-name">
+            {{ activeShapeVm.shape.properties.name }}
+          </span>
+          <div
+            v-if="activeShapeVm.shape.properties.description"
+            class="shape-description"
+          >
+            {{ activeShapeVm.shape.properties.description }}
+          </div>
+        </div>
         <button
           v-if="navigateLine.length"
           class="button"
@@ -115,26 +80,20 @@
           去这里
         </button>
       </div>
-    </div>
-    <footer>底部</footer>
-    <div
-      v-if="message.content"
-      class="message-box"
-      @click="handleMessageClick"
-    >
-      <div>{{ message.content }}</div>
-    </div>
+    </footer>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
+import Search from './components/search.vue'
 import styles from './style'
 
 export default {
   components: {
     SvgMap,
+    Search,
   },
 
   props: {
@@ -147,8 +106,6 @@ export default {
 
   data () {
     return {
-      searchKey: '',
-      searchResults: null,
       floors: [],
       size: [0, 0],
       floor: null,
@@ -238,36 +195,10 @@ export default {
   },
 
   methods: {
-    doSearch () {
-      if (!this.searchKey) {
-        this.searchResults = null
-        return
-      }
-      axios.get('/search', {
-        params: {
-          name: this.searchKey,
-        },
-      })
-      .then(({ data }) => {
-        this.searchResults = data.data
-      })
-    },
-
-    cleanSearch () {
-      this.searchResults = null
-      this.searchKey = ''
-    },
-
     focusShape (shape) {
-      this.cleanSearch()
       const floor = this.floors.find(item => item.alias === shape.properties.floor)
       this.switchFloor(floor)
       this.selectedShape = shape
-    },
-
-    // 禁止滚动被橡皮筋弄失效
-    handleScrollTouchMove (event) {
-      event._isScroll = true
     },
 
     fetchFloors () {
@@ -423,10 +354,11 @@ export default {
     displayNavigate () {
       this.selectedShape = null
       if (!this.position) {
-        this.setMessage('没有获取到您的定位', {
-          duration: 3000,
-        })
-        return
+        this.position = [21549.9, 9139.2, -2]
+        // this.setMessage('没有获取到您的定位', {
+        //   duration: 3000,
+        // })
+        // return
       }
       const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
       const [sx, sy, sz] = this.position
@@ -501,14 +433,24 @@ export default {
 
   main {
     flex: 1 0 0;
+    position: relative;
   }
 
   .ui-layer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 2;
+
+    span {
+      font-size: 20px;
+      color: #333;
+      flex-grow: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 
   .detail-container {
@@ -518,15 +460,7 @@ export default {
     flex-direction: row;
     align-items: center;
     padding: 10px 16px;
-  }
-
-  .ui-layer span {
-    font-size: 20px;
-    color: #333;
-    flex-grow: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    justify-content: space-between;
   }
 
   .button-group {
@@ -617,70 +551,7 @@ export default {
     font-size: 14px;
   }
 
-  .search-component {
-    position: relative;
-  }
-
-  .search-input input {
-    width: 100%;
-    padding: 8px 26px 8px 12px;
-    font-size: inherit;
-    color: inherit;
-    border: 1px solid #ddd;
-    box-shadow: none;
-    border-radius: 5px;
-    outline: none;
-    background-color: white;
-    -webkit-appearance: none;
-  }
-
-  .search-input svg {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-  }
-
-  .search-input input::-webkit-input-placeholder {
-    color: #999;
-  }
-
-  .search-input input:focus {
-    outline: none;
-    box-shadow: 0 1px 5px 0px hsl(208, 86%, 31%);
-    border-color: hsl(208, 86%, 31%);
-  }
-
-  .search-results {
-    position: absolute;
-    top: 100%;
-    margin-top: 4px;
-    left: 0;
-    right: 0;
-    max-height: calc(60vh - 65px);
-    overflow: auto;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  .search-result-item {
-    padding: 4px 12px;
-    border-top: 1px solid #f6f6f6;
-  }
-
-  .search-result-item:first-child {
-    border-top: none;
-  }
-
-  .search-result-item-description {
-    color: #999;
-    font-size: 12px;
-    margin-top: 4px;
-  }
-
-  .search-results .blankslate {
-    padding: 20px 12px;
-    text-align: center;
-    font-size: 16px;
+  footer {
+    height: 59px;
   }
 </style>
