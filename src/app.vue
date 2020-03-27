@@ -53,6 +53,7 @@
       <div
         v-if="activeShapeVm"
         class="detail-container"
+        @click.stop
       >
         <div class="shape-detail">
           <span class="shape-name">
@@ -461,6 +462,17 @@ export default {
     align-items: center;
     padding: 10px 16px;
     justify-content: space-between;
+
+    .shape-name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .shape-description {
+      font-size: 0.8em;
+      color: #666;
+    }
   }
 
   .button-group {
