@@ -33,6 +33,29 @@ module.exports = {
         loader: 'vue-loader'
       },
       {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/',
+              esModule: false
+            }
+          },
+        ]
+      },
+      // 下面几行才是 html-loader 的配置内容
+      {
+        test: /\.html$/,
+        use: [{
+          loader: 'html-loader',
+          options: {
+            minimize: true
+          }
+        }],
+      },
+      {
         test: /\.(scss|css)$/,
         use: [
           {

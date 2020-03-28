@@ -89,6 +89,9 @@
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
     />
+    <div class="logo">
+      <img src="./assets/1.png" alt="logo">
+    </div>
   </div>
 </template>
 
@@ -465,10 +468,12 @@ export default {
   .detail-container {
     background-color: hsl(0, 0%, 100%);
     box-shadow: 0 0 5px 1px #ccc;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 10px 16px;
+    padding-left: 64px;
     justify-content: space-between;
 
     .shape-name {
@@ -595,6 +600,20 @@ export default {
     .navigate-layer {
       top: 0;
       box-shadow: 0 0 5px 1px #ccc;
+    }
+  }
+
+  .logo {
+    position: fixed;
+    bottom: 0;
+    left: 6px;
+    z-index: 200;
+    width: 58px;
+    height: 59px;
+    display: flex;
+
+    img {
+      max-width: 100%;
     }
   }
 </style>
