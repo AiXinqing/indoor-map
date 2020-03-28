@@ -32,7 +32,7 @@
         v-for="result in searchResults"
         :key="result.properties.uuid"
         class="search-result-item"
-        @click="handleShapeSelect(result)"
+        @click.stop="handleShapeSelect(result)"
       >
         <div class="search-result-item-title">
           {{ result.properties.name }}
@@ -112,6 +112,7 @@ export default {
     cleanSearch () {
       this.searchResults = []
       this.searchKey = ''
+      this.$emit('clean-search')
       this._cleanTimer()
     },
 

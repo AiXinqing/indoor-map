@@ -1,5 +1,6 @@
 <template>
   <div
+    :class="{ 'ui-layer-open': showNavigateUI }"
     class="app"
     @click="handleOtherClick"
   >
@@ -76,12 +77,18 @@
         <button
           v-else
           class="button"
-          @click="displayNavigate"
+          @click="showNavigateLayer"
         >
           去这里
         </button>
       </div>
     </footer>
+    <navigate-layer
+      v-if="showNavigateUI && activeShapeVm"
+      :target-shape="activeShapeVm.shape"
+      @cancel="showNavigateUI = false"
+      @navigate="displayNavigate"
+    />
   </div>
 </template>
 
@@ -89,12 +96,14 @@
 import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
 import Search from './components/search.vue'
+import NavigateLayer from './components/navigate.vue'
 import styles from './style'
 
 export default {
   components: {
     SvgMap,
     Search,
+    NavigateLayer,
   },
 
   props: {
@@ -118,6 +127,7 @@ export default {
       styles: styles,
       selectedShape: null,
       activeShapeVm: null,
+      showNavigateUI: false,
       message: {
         closeable: true,
         content: '',
@@ -352,29 +362,36 @@ export default {
       this.navigatePathPoints = []
     },
 
-    displayNavigate () {
+    showNavigateLayer () {
       this.selectedShape = null
-      if (!this.position) {
-        this.position = [21549.9, 9139.2, -2]
-        // this.setMessage('没有获取到您的定位', {
-        //   duration: 3000,
-        // })
-        // return
+      this.showNavigateUI = true
+    },
+
+    displayNavigate (targets) {
+      this.showNavigateUI = false
+      const { start, end } = targets
+      const message = `正在为您规划到${end.properties.name}的路线`
+      const [sx, sy, sz] = start
+        ? [start.properties.x_center, start.properties.y_center, start.properties.floor]
+        : this.position
+      if (!start && !this.position) {
+        return
       }
-      const message = `正在为您规划到${this.activeShapeVm.shape.properties.name}的路线`
-      const [sx, sy, sz] = this.position
-      const ez = this.activeShapeVm.shape.properties.floor || this.floor.id
-      const [ex, ey] = this.$refs.mapRef.getOriginPoint(this.activeShapeVm.textCenter)
+      const [ex, ey, ez] = [
+        end.properties.x_center,
+        end.properties.y_center,
+        end.properties.floor || this.floor.id
+      ]
       this.setMessage(message, { closeable: false })
       axios.post('/direction', {
         startPosition: {
-          positionX: sx.toFixed(3),
-          positionY: sy.toFixed(3),
+          positionX: `${sx}`,
+          positionY: `${sy}`,
           positionZ: `${sz}`,
         },
         endPosition: {
-          positionX: ex.toFixed(3),
-          positionY: ey.toFixed(3),
+          positionX: `${ex}`,
+          positionY: `${sy}`,
           positionZ: `${ez}`,
         }
       })
@@ -443,15 +460,6 @@ export default {
     left: 0;
     right: 0;
     z-index: 2;
-
-    span {
-      font-size: 20px;
-      color: #333;
-      flex-grow: 1;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
   }
 
   .detail-container {
@@ -536,7 +544,7 @@ export default {
     line-height: 21px;
     padding: 6px 16px;
     letter-spacing: 2px;
-    border: none;
+    border: 1px solid hsl(208, 85%, 31%);
     border-radius: 17px;
     outline: none;
     cursor: pointer;
@@ -561,9 +569,32 @@ export default {
     padding: 12px 24px;
     color: #666;
     font-size: 14px;
+    height: 59px;
   }
 
   footer {
     height: 59px;
+  }
+
+  .navigate-layer {
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    position: fixed;
+    top: 100%;
+    background-color: white;
+    left: 0;
+    transition: top ease-in-out .3s;
+  }
+
+  .ui-layer-open {
+    header {
+      visibility: hidden;
+    }
+
+    .navigate-layer {
+      top: 0;
+      box-shadow: 0 0 5px 1px #ccc;
+    }
   }
 </style>
