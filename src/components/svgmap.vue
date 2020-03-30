@@ -71,6 +71,8 @@ import PolygonShape from './shapes/Polygon.vue'
 import PointShape from './shapes/Point.vue'
 import LineString from './shapes/LineString.vue'
 
+const DEFAULT_ZOOM = 0.6
+
 export default {
   inheritAttrs: false,
 
@@ -104,7 +106,7 @@ export default {
     },
     zoom: {
       type: Number,
-      default: 1.2,
+      default: DEFAULT_ZOOM,
     },
 
     selectedShape: {
@@ -241,7 +243,7 @@ export default {
       this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
       this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
       this.rotateAngle = 0
-      this.setZoom(1.2)
+      this.setZoom(DEFAULT_ZOOM)
       this.setOriginZoom()
     },
 
