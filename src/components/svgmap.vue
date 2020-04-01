@@ -72,6 +72,8 @@ import PointShape from './shapes/Point.vue'
 import LineString from './shapes/LineString.vue'
 
 const DEFAULT_ZOOM = 0.6
+const MAX_ZOOM = 2
+const MIN_ZOOM = 0.05
 
 export default {
   inheritAttrs: false,
@@ -201,7 +203,7 @@ export default {
     },
 
     setZoom (zoom) {
-      this.currentZoom = zoom
+      this.currentZoom = Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM)
     },
 
     setOriginZoom () {
