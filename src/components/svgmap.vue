@@ -74,6 +74,8 @@ import LineString from './shapes/LineString.vue'
 const DEFAULT_ZOOM = 0.6
 const MAX_ZOOM = 2
 const MIN_ZOOM = 0.05
+const ROTATE_SILL = 5
+const SCALE_SILL = 0.1
 
 export default {
   inheritAttrs: false,
@@ -126,6 +128,12 @@ export default {
       rotateAngle: 0,
       originZoom: this.zoom,
       currentZoom: this.zoom,
+      multipointState: {
+        scale: 1,
+        angle: 0,
+        scaleFired: false,
+        rotateFired: false,
+      },
     }
   },
 
@@ -182,9 +190,16 @@ export default {
         this.translate(dx, dy)
       },
       pinch: (evt) => {
+        if (Math.abs(1/evt.zoom - 1) < SCALE_SILL) return
+        if (this.multipointState.rotateFired) return
+        this.multipointState.scaleFired = true
         this.setZoom(this.originZoom / evt.zoom)
       },
+      multipointStart: (evt) => {
+        this.resetFiredState()
+      },
       multipointEnd: () => {
+        this.resetFiredState()
         this.setOriginZoom()
       },
       doubleTap: () => {
@@ -192,12 +207,30 @@ export default {
         this.setOriginZoom()
       },
       rotate: (evt) => {
-        this.rotate(evt.angle)
+        if (this.multipointState.scaleFired) return
+        if (this.multipointState.rotateFired) {
+          this.rotate(evt.angle)
+        } else {
+          this.multipointState.angle += evt.angle
+          if (Math.abs(this.multipointState.angle) > ROTATE_SILL) {
+            this.multipointState.rotateFired = true
+            this.rotate(this.multipointState.angle)
+          }
+        }
       },
     })
   },
 
   methods: {
+    resetFiredState () {
+      this.multipointState = {
+        scale: 1,
+        angle: 0,
+        scaleFired: false,
+        rotateFired: false,
+      }
+    },
+
     rotate (angle) {
       this.rotateAngle += angle
     },
