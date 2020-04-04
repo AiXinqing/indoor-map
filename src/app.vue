@@ -54,11 +54,9 @@
       <div
         v-if="activeShapeVm"
         class="floater"
+        @click.stop
       >
-        <div
-          class="detail-container"
-          @click.stop
-        >
+        <div class="detail-container">
           <div class="shape-detail">
             <span class="shape-name">
               {{ activeShapeVm.shape.properties.name }}
@@ -124,20 +122,13 @@ export default {
     NavigateLayer,
   },
 
-  props: {
-    // 是否开启缓存
-    storage: {
-      type: Boolean,
-      default: true,
-    },
-  },
-
   data () {
     return {
       floors: [],
       size: [0, 0],
       floor: null,
       position: null,
+      sharePosition: null,
       json: null,
       fetching: false,
       navigatePathPoints: [],
@@ -219,13 +210,27 @@ export default {
     const { width, height } = document.querySelector('main').getBoundingClientRect()
     this.size = [width, height]
 
-    this.checkShareInfo()
-
-    this.socket = this.createSocketConnect()
     this.fetchStyles()
+    this.checkShareInfo()
+    this.socket = this.createSocketConnect()
   },
 
   methods: {
+    checkUpdate () {
+      return new Promise((resolve, reject) => {
+        const dataVersion = localStorage.getItem('data-version')
+        if (dataVersion) {
+          axios.get('/refresh/currentVersion')
+            .then((res) => {
+              resolve(res.data !== dataVersion)
+            })
+            .catch((err) => reject(err))
+        } else {
+          resolve(false)
+        }
+      })
+    },
+
     checkShareInfo () {
       const search = window.location.search
       const share = search && (search.match(/share=([^&]*)/) || ['', ''])[1]
@@ -248,6 +253,7 @@ export default {
           positionX: position[0],
           positionY: position[1],
           positionZ: this.floor.id,
+          uuid: this.activeShapeVm.shape.properties.uuid,
         },
       })
     },
@@ -315,7 +321,7 @@ export default {
           this.floor = this.floors[0]
           this.drawFloor()
         })
-        return
+        return ws
       }
 
       ws.onopen = () => {
@@ -328,7 +334,7 @@ export default {
       }
 
       ws.onmessage = (evt) => {
-        this.updatePosition(JSON.parse(evt.data))
+        this.updatePosition(JSON.parse(evt.data), floorsRequest)
       }
 
       ws.onerror = () => {
@@ -344,14 +350,22 @@ export default {
           this.json = data.data
         })
         .catch(() => {
-          this.setMessage('获取楼层数据失败', { duration: 3000 })
+          this.setMessage('获取楼层数据失败')
         })
     },
 
-    updatePosition (position) {
+    updatePosition (position, floorsRequest = null) {
       const { positionX, positionY, positionZ } = position
       this.position = [parseFloat(positionX), parseFloat(positionY), parseInt(positionZ)]
-      if (!this.floor) this.switchFloor(this.getFloor(positionZ))
+      if (!this.floor) {
+        if (this.floors.length) {
+          this.switchFloor(this.getFloor(positionZ) || this.floors[0])
+        } else {
+          floorsRequest.then(() => {
+            this.switchFloor(this.getFloor(positionZ) || this.floors[0])
+          })
+        }
+      }
     },
 
     locateToCenter () {
@@ -366,30 +380,40 @@ export default {
       }
     },
 
-    fetchFloor (floor) {
-      if (this.storage) {
-        const cache = localStorage.getItem(`floor-id-${floor.id}`)
-        if (cache) {
-          return Promise.resolve(JSON.parse(cache))
-        }
-      }
+    _fetchFloor (floor) {
       if (this.fetching) {
         this.source.cancel('cancel')
         this.source = axios.CancelToken.source()
       }
       this.fetching = true
-      this.setMessage('正在载入地图数据', { closeable: false })
+      this.setMessage('正在载入地图数据')
       return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).then((res) => {
-        this.setMessage('正在载入地图数据', { closeable: true, duration: 300 })
-        if (this.storage) {
-          localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
-        }
+        localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
         return res
       }).finally(() => {
         this.fetching = false
+        this.setMessage('')
       })
+    },
+
+    fetchFloor (floor) {
+      const cache = localStorage.getItem(`floor-id-${floor.id}`)
+      if (cache) {
+        return new Promise((resolve, reject) => {
+          this.checkUpdate().then((needUpdate) => {
+            if (needUpdate) {
+              this._fetchFloor(floor)
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+            } else {
+              resolve(JSON.parse(cache))
+            }
+          }).catch(err => reject(err))
+        })
+      }
+      return this._fetchFloor(floor)
     },
 
     switchFloor (floor) {

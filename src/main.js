@@ -12,9 +12,5 @@ document.body.addEventListener('touchmove', function (e) {
 
 new Vue({
   el: '#app',
-  render: h => h(App, {
-    props: {
-      storage: false,
-    },
-  }),
+  render: h => h(App),
 })
