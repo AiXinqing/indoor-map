@@ -237,7 +237,6 @@ export default {
       if (share) {
         const shareData = decodeURIComponent(share)
         this.sharePosition = shareData
-        console.log(shareData)
       }
     },
 
@@ -293,9 +292,7 @@ export default {
             return acc
           }, { ...styles })
         })
-        .catch((err) => {
-          console.log(err)
-        })
+        .catch(() => {})
     },
 
     setMessage (content, options = {}) {
@@ -324,13 +321,6 @@ export default {
       const ws = new WebSocket('wss://xsocket.yunzaitech.com')
       const floorsRequest = this.fetchFloors()
 
-      if (!openId) {
-        floorsRequest.then(() => {
-          this.floor = this.floors[0]
-          this.drawFloor()
-        })
-      }
-
       ws.onopen = () => {
         const connectdata = {
           from: 'Web',
@@ -341,6 +331,18 @@ export default {
         this.$on('fireShare', () => {
           this.shareToFriend(ws)
         })
+        // 1s 后没有拿到定位信息，就显示第一楼的数据
+        setTimeout(() => {
+          if (!this.position && !this.floor) {
+            if (this.floors.length) {
+              this.switchFloor(this.floors[0])
+            } else {
+              floorsRequest.then(() => {
+                this.switchFloor(this.floors[0])
+              })
+            }
+          }
+        }, 1000)
       }
 
       ws.onmessage = (evt) => {
@@ -363,9 +365,6 @@ export default {
     },
 
     updatePosition (position, floorsRequest = null) {
-      console.log('获取到了定位')
-      console.log(this.floor)
-      console.log(this.floors.length)
       const { positionX, positionY, positionZ } = position
       this.position = [parseFloat(positionX), parseFloat(positionY), parseInt(positionZ)]
       if (!this.floor) {
