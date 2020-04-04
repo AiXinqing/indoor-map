@@ -244,7 +244,7 @@ export default {
       const search = window.location.search
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const position = this.activeShapeVm.textCenter
-      this.socket.send({
+      const shareData = {
         form: 'Web',
         type: 'Message',
         openid: openId,
@@ -255,7 +255,9 @@ export default {
           positionZ: this.floor.id,
           uuid: this.activeShapeVm.shape.properties.uuid,
         },
-      })
+      }
+      console.log(shareData)
+      this.socket.send(JSON.stringify(shareData))
     },
 
     focusShape (shape) {
