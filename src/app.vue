@@ -328,10 +328,10 @@ export default {
           this.floor = this.floors[0]
           this.drawFloor()
         })
-        return ws
       }
 
       ws.onopen = () => {
+        console.log('onopen')
         const connectdata = {
           from: 'Web',
           type: 'Connect',
@@ -339,19 +339,34 @@ export default {
         }
         ws.send(JSON.stringify(connectdata))
         this.$on('fireShare', () => {
-          this.shareToFriend(ws)
+          const position = this.activeShapeVm.textCenter
+          const shareData = {
+            form: 'Web',
+            type: 'Message',
+            openid: openId,
+            data: {
+              name: this.activeShapeVm.shape.properties.name,
+              positionX: position[0],
+              positionY: position[1],
+              positionZ: this.floor.id,
+              uuid: this.activeShapeVm.shape.properties.uuid,
+            },
+          }
+          console.log('发送分享数据')
+          console.log(shareData)
+          ws.send(JSON.stringify(shareData))
         })
       }
 
       ws.onmessage = (evt) => {
+        console.log('onmessage')
         this.updatePosition(JSON.parse(evt.data), floorsRequest)
       }
 
       ws.onerror = () => {
+        console.log('onerror')
         this.setMessage('获取位置失败，请确认是否开启了蓝牙，如果没有，分享和定位功能均不能使用')
       }
-
-      return ws
     },
 
     drawFloor () {
