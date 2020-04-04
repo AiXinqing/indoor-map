@@ -82,6 +82,12 @@
           去这里
         </button>
       </div>
+      <div
+        class="share-button"
+        @click="shareToFriend"
+      >
+        分享给朋友
+      </div>
     </footer>
     <navigate-layer
       v-if="showNavigateUI && activeShapeVm"
@@ -204,11 +210,39 @@ export default {
     const { width, height } = document.querySelector('main').getBoundingClientRect()
     this.size = [width, height]
 
-    this.createSocketConnect()
+    this.checkShareInfo()
+
+    this.socket = this.createSocketConnect()
     this.fetchStyles()
   },
 
   methods: {
+    checkShareInfo () {
+      const search = window.location.search
+      const share = search && (search.match(/share=([^&]*)/) || ['', ''])[1]
+      if (share) {
+        const shareData = decodeURIComponent(share)
+        this.sharePosition = shareData
+      }
+    },
+
+    shareToFriend () {
+      const search = window.location.search
+      const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
+      const position = this.activeShapeVm.textCenter
+      this.socket.send({
+        form: 'Web',
+        type: 'Message',
+        openid: openId,
+        data: {
+          name: this.activeShapeVm.shape.properties.name,
+          positionX: position[0],
+          positionY: position[1],
+          positionZ: this.floor.id,
+        },
+      })
+    },
+
     focusShape (shape) {
       const floor = this.floors.find(item => item.alias === shape.properties.floor)
       this.switchFloor(floor)
@@ -291,6 +325,8 @@ export default {
       ws.onerror = () => {
         this.setMessage('获取不到你的定位，请确认是否开启了蓝牙', { duration: 2000 })
       }
+
+      return ws
     },
 
     drawFloor () {
