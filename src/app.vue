@@ -85,7 +85,7 @@
         </div>
         <div
           class="share-button"
-          @click="shareToFriend"
+          @click="fireShareFunc"
         >
           分享给朋友
         </div>
@@ -212,7 +212,7 @@ export default {
 
     this.fetchStyles()
     this.checkShareInfo()
-    this.socket = this.createSocketConnect()
+    this.createSocketConnect()
   },
 
   methods: {
@@ -240,7 +240,13 @@ export default {
       }
     },
 
-    shareToFriend () {
+    fireShareFunc () {
+      if (this.shareStamp && (Date.now() - this.shareStamp < 600)) return
+      this.shareStamp = Date.now()
+      this.$emit('fireShare')
+    },
+
+    shareToFriend (ws) {
       const search = window.location.search
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const position = this.activeShapeVm.textCenter
@@ -256,7 +262,7 @@ export default {
           uuid: this.activeShapeVm.shape.properties.uuid,
         },
       }
-      this.socket.send(JSON.stringify(shareData))
+      ws.send(JSON.stringify(shareData))
     },
 
     focusShape (shape) {
@@ -332,6 +338,9 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
+        this.$on('fireShare', () => {
+          this.shareToFriend(ws)
+        })
       }
 
       ws.onmessage = (evt) => {
