@@ -235,7 +235,7 @@ export default {
       const search = window.location.search
       const share = search && (search.match(/share=([^&]*)/) || ['', ''])[1]
       if (share) {
-        const shareData = decodeURIComponent(share)
+        const shareData = JSON.parse(decodeURIComponent(share))
         this.sharePosition = shareData
       }
     },
@@ -278,6 +278,16 @@ export default {
             alias: alias,
             id: data.data[alias],
           }))
+          if (this.sharePosition) {
+            const shareFloor = this.getFloor(this.sharePosition.positionZ)
+            this.switchFloor(shareFloor)
+            this.selectedShape = {
+              properties: {
+                uuid: this.sharePosition.uuid,
+                name: this.sharePosition.name,
+              }
+            }
+          }
         })
     },
 
@@ -333,6 +343,8 @@ export default {
         })
         // 1s 后没有拿到定位信息，就显示第一楼的数据
         setTimeout(() => {
+          // 如果有分享的位置，则优先展示分享的位置的楼层
+          if (this.sharePosition) return
           if (!this.position && !this.floor) {
             if (this.floors.length) {
               this.switchFloor(this.floors[0])
@@ -367,6 +379,7 @@ export default {
     updatePosition (position, floorsRequest = null) {
       const { positionX, positionY, positionZ } = position
       this.position = [parseFloat(positionX), parseFloat(positionY), parseInt(positionZ)]
+      if (this.sharePosition) return
       if (!this.floor) {
         if (this.floors.length) {
           this.switchFloor(this.getFloor(positionZ) || this.floors[0])
@@ -431,6 +444,10 @@ export default {
       if (floor === this.floor) return
       this.floor = floor
       this.drawFloor()
+    },
+
+    getFloorByName (floorName) {
+      return this.floors.find(item => item.alias === floorName)
     },
 
     getFloor (floorId, offset = 0) {
