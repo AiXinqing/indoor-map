@@ -256,7 +256,6 @@ export default {
           uuid: this.activeShapeVm.shape.properties.uuid,
         },
       }
-      console.log(shareData)
       this.socket.send(JSON.stringify(shareData))
     },
 

@@ -1,7 +1,7 @@
 <template>
   <polyline
     :points="points"
-    :style="styles"
+    :style="lineStyles"
   />
 </template>
 
@@ -15,6 +15,13 @@ export default {
     points () {
       const points = this.shape.geometry.coordinates
       return points.map(point => `${point[0]},${point[1]}`).join(' ')
+    },
+
+    lineStyles () {
+      return {
+        ...this.styles,
+        fill: 'transparent',
+      }
     },
   },
 }

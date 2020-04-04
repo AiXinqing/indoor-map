@@ -19,6 +19,7 @@
 import ShapeMixins from './shapes_mixin'
 import PolygonShape from './Polygon.vue'
 import LineString from './LineString.vue'
+import PointShape from './Point.vue'
 
 export default {
   inheritAttrs: false,
@@ -26,6 +27,7 @@ export default {
   components: {
     PolygonShape,
     LineString,
+    PointShape,
   },
   mixins: [ShapeMixins],
 
@@ -51,7 +53,6 @@ export default {
           return {
             ...this.styles['车流线'],
             'strokeWidth': shape.properties.LineWt,
-            fill: 'none',
           }
       }
     },
@@ -62,6 +63,8 @@ export default {
           return 'polygon-shape'
         case 'LineString':
           return 'line-string'
+        case 'Point':
+          return 'point-shape'
         default:
       }
     },
