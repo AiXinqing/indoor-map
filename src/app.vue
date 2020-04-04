@@ -237,6 +237,7 @@ export default {
       if (share) {
         const shareData = decodeURIComponent(share)
         this.sharePosition = shareData
+        console.log(shareData)
       }
     },
 
@@ -331,7 +332,6 @@ export default {
       }
 
       ws.onopen = () => {
-        console.log('onopen')
         const connectdata = {
           from: 'Web',
           type: 'Connect',
@@ -344,12 +344,10 @@ export default {
       }
 
       ws.onmessage = (evt) => {
-        console.log('onmessage')
         this.updatePosition(JSON.parse(evt.data), floorsRequest)
       }
 
       ws.onerror = () => {
-        console.log('onerror')
         this.setMessage('获取位置失败，请确认是否开启了蓝牙，如果没有，分享和定位功能均不能使用')
       }
     },
@@ -365,6 +363,9 @@ export default {
     },
 
     updatePosition (position, floorsRequest = null) {
+      console.log('获取到了定位')
+      console.log(this.floor)
+      console.log(this.floors.length)
       const { positionX, positionY, positionZ } = position
       this.position = [parseFloat(positionX), parseFloat(positionY), parseInt(positionZ)]
       if (!this.floor) {
