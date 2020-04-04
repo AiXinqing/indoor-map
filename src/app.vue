@@ -53,40 +53,49 @@
     >
       <div
         v-if="activeShapeVm"
-        class="detail-container"
-        @click.stop
+        class="floater"
       >
-        <div class="shape-detail">
-          <span class="shape-name">
-            {{ activeShapeVm.shape.properties.name }}
-          </span>
-          <div
-            v-if="activeShapeVm.shape.properties.description"
-            class="shape-description"
-          >
-            {{ activeShapeVm.shape.properties.description }}
+        <div
+          class="detail-container"
+          @click.stop
+        >
+          <div class="shape-detail">
+            <span class="shape-name">
+              {{ activeShapeVm.shape.properties.name }}
+            </span>
+            <div
+              v-if="activeShapeVm.shape.properties.description"
+              class="shape-description"
+            >
+              {{ activeShapeVm.shape.properties.description }}
+            </div>
           </div>
+          <button
+            v-if="navigateLine.length"
+            class="button"
+            @click="cleanNavigate"
+          >
+            取消路线
+          </button>
+          <button
+            v-else
+            class="button"
+            @click="showNavigateLayer"
+          >
+            去这里
+          </button>
         </div>
-        <button
-          v-if="navigateLine.length"
-          class="button"
-          @click="cleanNavigate"
+        <div
+          class="share-button"
+          @click="shareToFriend"
         >
-          取消路线
-        </button>
-        <button
-          v-else
-          class="button"
-          @click="showNavigateLayer"
-        >
-          去这里
-        </button>
+          分享给朋友
+        </div>
       </div>
       <div
-        class="share-button"
-        @click="shareToFriend"
-      >
-        分享给朋友
+        v-else
+        class="message-box">
+        {{ message.content }}
       </div>
     </footer>
     <navigate-layer
@@ -501,15 +510,18 @@ export default {
     z-index: 2;
   }
 
-  .detail-container {
+  .floater {
+    display: block;
+    box-shadow: 0 1px 4px 1px gray;
+    border-radius: 4px;
     background-color: hsl(0, 0%, 100%);
-    box-shadow: 0 0 5px 1px #ccc;
-    height: 100%;
+  }
+
+  .detail-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     padding: 10px 16px;
-    padding-left: 64px;
     justify-content: space-between;
 
     .shape-name {
@@ -592,18 +604,24 @@ export default {
     color: white;
   }
 
+  .share-button {
+    display: block;
+    text-align: center;
+    padding: 10px 24px;
+    font-size: 14px;
+    border-top: 1px solid hsl(0, 0%, 87%);
+    color: hsl(208, 86%, 31%);
+  }
+
   .message-box {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
     color: #666;
+    position: absolute;
+    bottom: 10px;
+    left: 80px;
+    text-align: center;
   }
 
   header {
@@ -611,10 +629,15 @@ export default {
     color: #666;
     font-size: 14px;
     height: 59px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 4px 0 gray;
   }
 
   footer {
-    height: 59px;
+    height: 116px;
+    padding: 10px 24px 10px 80px;
+    position: relative;
   }
 
   .navigate-layer {
@@ -642,10 +665,10 @@ export default {
   .logo {
     position: fixed;
     bottom: 0;
-    left: 6px;
+    left: 0px;
     z-index: 200;
-    width: 58px;
-    height: 59px;
+    width: 80px;
+    height: 81px;
     display: flex;
 
     img {
