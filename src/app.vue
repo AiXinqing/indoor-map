@@ -251,7 +251,7 @@ export default {
       const openId = search && (search.match(/openid=([^&]*)/) || ['', ''])[1]
       const position = this.activeShapeVm.textCenter
       const shareData = {
-        form: 'Web',
+        from: 'Web',
         type: 'Message',
         openid: openId,
         data: {
@@ -339,22 +339,7 @@ export default {
         }
         ws.send(JSON.stringify(connectdata))
         this.$on('fireShare', () => {
-          const position = this.activeShapeVm.textCenter
-          const shareData = {
-            form: 'Web',
-            type: 'Message',
-            openid: openId,
-            data: {
-              name: this.activeShapeVm.shape.properties.name,
-              positionX: position[0],
-              positionY: position[1],
-              positionZ: this.floor.id,
-              uuid: this.activeShapeVm.shape.properties.uuid,
-            },
-          }
-          console.log('发送分享数据')
-          console.log(shareData)
-          ws.send(JSON.stringify(shareData))
+          this.shareToFriend(ws)
         })
       }
 
