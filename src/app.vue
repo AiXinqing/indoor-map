@@ -338,7 +338,7 @@ export default {
       }
 
       ws.onerror = () => {
-        this.setMessage('获取不到你的定位，请确认是否开启了蓝牙', { duration: 2000 })
+        this.setMessage('获取位置失败，请确认是否开启了蓝牙，如果没有，分享和定位功能均不能使用')
       }
 
       return ws
@@ -645,7 +645,8 @@ export default {
     position: absolute;
     bottom: 10px;
     left: 80px;
-    text-align: center;
+    text-align: left;
+    padding: 5px 24px 5px 0;
   }
 
   header {
@@ -659,7 +660,7 @@ export default {
   }
 
   footer {
-    height: 116px;
+    height: 120px;
     padding: 10px 24px 10px 80px;
     position: relative;
   }
