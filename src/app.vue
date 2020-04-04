@@ -226,7 +226,7 @@ export default {
             })
             .catch((err) => reject(err))
         } else {
-          resolve(false)
+          resolve(true)
         }
       })
     },
