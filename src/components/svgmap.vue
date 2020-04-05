@@ -307,7 +307,7 @@ export default {
     position: absolute;
     top: 5px;
     width: $compass-size;
-    left: 24px;
+    left: 16px;
     text-align: center;
     display: flex;
     flex-direction: column;

@@ -28,48 +28,13 @@
     <footer
       class="footer"
     >
-      <div
+      <shape-detail
         v-if="activeShapeVm"
-        class="floater"
-        @click.stop
-      >
-        <div class="detail-container">
-          <div class="shape-detail">
-            <span class="shape-name">
-              {{ activeShapeVm.shape.properties.name }}
-            </span>
-            <div
-              v-if="activeShapeVm.shape.properties.description"
-              class="shape-description"
-            >
-              {{ activeShapeVm.shape.properties.description }}
-            </div>
-          </div>
-          <button
-            v-if="navigateLine.length"
-            class="button"
-            @click="cleanNavigate"
-          >
-            取消路线
-          </button>
-          <button
-            v-else
-            class="button"
-            @click="showNavigateLayer"
-          >
-            去这里
-          </button>
-        </div>
-        <div
-          class="share-button"
-          @click="fireShareFunc"
-        >
-          分享给朋友
-        </div>
-      </div>
-      <div
-        v-else
-        class="message-box">
+        :shape="activeShapeVm.shape"
+        @fire-share="fireShareFunc"
+        @show-navigate-ui="showNavigateLayer"
+      />
+      <div class="message-box">
         {{ message.content }}
       </div>
     </footer>
@@ -89,6 +54,7 @@
 import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
 import Search from './components/search.vue'
+import ShapeDetail from './components/detail.vue'
 import NavigateLayer from './components/navigate.vue'
 import UILayer from './components/ui.vue'
 import styles from './style'
@@ -98,6 +64,7 @@ export default {
     SvgMap,
     Search,
     UILayer,
+    ShapeDetail,
     NavigateLayer,
   },
 
@@ -220,8 +187,6 @@ export default {
     },
 
     fireShareFunc () {
-      if (this.shareStamp && (Date.now() - this.shareStamp < 600)) return
-      this.shareStamp = Date.now()
       this.$emit('fireShare')
     },
 
@@ -517,6 +482,8 @@ export default {
 </script>
 
 <style lang="scss">
+  $side-space: 16px;
+
   .app {
     width: 100%;
     height: 100%;
@@ -528,7 +495,7 @@ export default {
   }
 
   header {
-    padding: 12px 24px;
+    padding: 12px $side-space;
     color: #666;
     font-size: 14px;
     height: 59px;
@@ -543,35 +510,11 @@ export default {
   }
 
   footer {
-    height: 120px;
-    padding: 10px 24px 10px 80px;
+    height: 40px;
+    padding: 10px $side-space 10px 80px;
     position: relative;
-
-    .floater {
-      display: block;
-      box-shadow: 0 1px 4px 1px gray;
-      border-radius: 4px;
-      background-color: hsl(0, 0%, 100%);
-    }
-
-    .detail-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 10px 16px;
-      justify-content: space-between;
-
-      .shape-name {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-
-      .shape-description {
-        font-size: 0.8em;
-        color: #666;
-      }
-    }
+    z-index: 2;
+    box-shadow: 0 0 4px 0 gray;
   }
 
   .button {
@@ -588,15 +531,6 @@ export default {
     color: white;
   }
 
-  .share-button {
-    display: block;
-    text-align: center;
-    padding: 10px 24px;
-    font-size: 14px;
-    border-top: 1px solid hsl(0, 0%, 87%);
-    color: hsl(208, 86%, 31%);
-  }
-
   .message-box {
     display: flex;
     justify-content: center;
@@ -606,7 +540,7 @@ export default {
     bottom: 10px;
     left: 80px;
     text-align: left;
-    padding: 5px 24px 5px 0;
+    padding: 5px $side-space 5px 0;
   }
 
   .navigate-layer {
@@ -634,10 +568,10 @@ export default {
   .logo {
     position: fixed;
     bottom: 0;
-    left: 0px;
+    left: 6px;
     z-index: 200;
-    width: 80px;
-    height: 81px;
+    width: 60px;
+    height: 61px;
     display: flex;
 
     img {

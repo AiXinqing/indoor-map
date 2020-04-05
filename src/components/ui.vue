@@ -54,8 +54,9 @@ export default {
 <style lang="scss">
   .ui-layer {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 20px;
+    width: 40px;
+    left: 16px;
     right: 0;
     z-index: 2;
 
@@ -68,9 +69,6 @@ export default {
       border-radius: 5px;
       color: #333;
       cursor: pointer;
-      position: absolute;
-      bottom: 100%;
-      left: 16px;
       margin-bottom: 12px;
 
       &.active {
@@ -84,10 +82,7 @@ export default {
       width: 40px;
       background: hsl(0, 0%, 100%);
       border-radius: 5px;
-      position: absolute;
-      left: 16px;
-      bottom: 100%;
-      margin-bottom: 64px;
+      margin-bottom: 12px;
 
       .floor-button {
         text-align: center;
