@@ -19,34 +19,11 @@
         :selected-shape="selectedShape"
         @click-shape="handleShapeClick"
       />
-      <div class="ui-layer">
-        <div class="button-group">
-          <div
-            v-for="item in floors"
-            :key="item.id"
-            :class="{ active: item === floor }"
-            class="floor-button"
-            @click="switchFloor(item)"
-          >
-            {{ item.alias }}
-          </div>
-        </div>
-        <div
-          class="locate-button"
-          @click="locateToCenter"
-        >
-          <svg
-            width="100%"
-            height="100%"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 413.099 413.099"
-          >
-            <path d="M206.549,0L206.549,0c-82.6,0-149.3,66.7-149.3,149.3c0,28.8,9.2,56.3,22,78.899l97.3,168.399c6.1,11,18.4,16.5,30,16.5
-        c11.601,0,23.3-5.5,30-16.5l97.3-168.299c12.9-22.601,22-49.601,22-78.901C355.849,66.8,289.149,0,206.549,0z M206.549,193.4
-        c-30,0-54.5-24.5-54.5-54.5s24.5-54.5,54.5-54.5s54.5,24.5,54.5,54.5C261.049,169,236.549,193.4,206.549,193.4z"/>
-          </svg>
-        </div>
-      </div>
+      <UILayer
+        :floorId="floor && floor.id"
+        :floors="floors"
+        @onlocate="locateToCenter"
+      />
     </main>
     <footer
       class="footer"
@@ -113,12 +90,14 @@ import axios from 'axios'
 import SvgMap from './components/svgmap.vue'
 import Search from './components/search.vue'
 import NavigateLayer from './components/navigate.vue'
+import UILayer from './components/ui.vue'
 import styles from './style'
 
 export default {
   components: {
     SvgMap,
     Search,
+    UILayer,
     NavigateLayer,
   },
 
@@ -548,97 +527,51 @@ export default {
     align-items: stretch;
   }
 
+  header {
+    padding: 12px 24px;
+    color: #666;
+    font-size: 14px;
+    height: 59px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 4px 0 gray;
+  }
+
   main {
     flex: 1 0 0;
     position: relative;
   }
 
-  .ui-layer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
-  }
+  footer {
+    height: 120px;
+    padding: 10px 24px 10px 80px;
+    position: relative;
 
-  .floater {
-    display: block;
-    box-shadow: 0 1px 4px 1px gray;
-    border-radius: 4px;
-    background-color: hsl(0, 0%, 100%);
-  }
-
-  .detail-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px 16px;
-    justify-content: space-between;
-
-    .shape-name {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+    .floater {
+      display: block;
+      box-shadow: 0 1px 4px 1px gray;
+      border-radius: 4px;
+      background-color: hsl(0, 0%, 100%);
     }
 
-    .shape-description {
-      font-size: 0.8em;
-      color: #666;
+    .detail-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px 16px;
+      justify-content: space-between;
+
+      .shape-name {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .shape-description {
+        font-size: 0.8em;
+        color: #666;
+      }
     }
-  }
-
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    width: 40px;
-    background: hsl(0, 0%, 100%);
-    border-radius: 5px;
-    position: absolute;
-    left: 16px;
-    bottom: 100%;
-    margin-bottom: 64px;
-  }
-
-  .floor-button {
-    text-align: center;
-    padding: 8px;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    margin-top: -1px;
-  }
-
-  .floor-button:first-child {
-    margin-top: 0;
-    border-radius: 5px 5px 0 0;
-  }
-
-  .floor-button:last-child {
-    border-radius: 0 0 5px 5px;
-  }
-
-  .floor-button.active {
-    background-color: hsl(208, 86%, 31%);
-    border-color: hsl(208, 86%, 31%);
-    color: white;
-  }
-
-  .locate-button {
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    background-color: white;
-    border-radius: 5px;
-    color: #333;
-    cursor: pointer;
-    position: absolute;
-    bottom: 100%;
-    left: 16px;
-    margin-bottom: 12px;
-  }
-
-  .locate-button.active {
-    color: hsl(208, 86%, 31%);
   }
 
   .button {
@@ -674,22 +607,6 @@ export default {
     left: 80px;
     text-align: left;
     padding: 5px 24px 5px 0;
-  }
-
-  header {
-    padding: 12px 24px;
-    color: #666;
-    font-size: 14px;
-    height: 59px;
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 0 4px 0 gray;
-  }
-
-  footer {
-    height: 120px;
-    padding: 10px 24px 10px 80px;
-    position: relative;
   }
 
   .navigate-layer {
