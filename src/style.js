@@ -4,10 +4,29 @@ const borderStyle = {
 }
 
 export default {
+  // 默认样式
   fallback: {
     fill: '#f3f3f3',
     ...borderStyle,
   },
+  // 导航规划路径
+  'navigatePath': {
+    stroke: 'hsl(126, 95%, 33%)',
+    'strokeWidth': 200,
+  },
+  // 定位点
+  'location': {
+    fill: 'hsl(65, 21%, 57%)',
+  },
+  // 选中样式
+  'selectedShape': {
+    fill: 'hsl(37, 45%, 72%)',
+  },
+  // 目标点样式
+  'target': {
+    fill: 'hsl(126, 95%, 33%)',
+  },
+
   // 导航线样式
   '导航线': {
     stroke: 'hsl(126, 95%, 33%)',
