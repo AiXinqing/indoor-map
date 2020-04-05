@@ -34,18 +34,12 @@
           />
         </g>
         <nav-path
+          ref="navigateRef"
+          v-if="navigatePath"
           :zoom="currentZoom"
           :scale="scale"
           :rotate="rotateAngle"
-          :shape="{
-            geometry: {
-              coordinates: [
-                [24709.16506147286, 25032.539548334706],
-                [34709.16506147286, 25032.539548334706],
-                [34709.16506147286, 35032.539548334706],
-              ]
-            }
-          }"
+          :shape="navigatePath"
         />
         <g aria-label="makers-group">
           <point-shape
@@ -78,7 +72,7 @@
 
 <script>
 import AlloyFinger from 'alloyfinger'
-import reduceFloorData, { reduceData } from '../reduce'
+import reduceFloorData, { reduceData, getGeojsonRange } from '../reduce'
 
 import GeoJson from './shapes/GeoJSON.vue'
 import PolygonShape from './shapes/Polygon.vue'
@@ -92,7 +86,20 @@ const MIN_ZOOM = 0.05
 const ROTATE_SILL = 5
 const SCALE_SILL = 0.1
 
-const example_point = [24709.16506147286, 25032.539548334706]
+const example_path = {
+  type: 'Feature',
+  properties: {
+    name: '路线',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [24709.1652021, -11543.5394744],
+      [34709.16506147286, -11543.5394744],
+      [34709.16506147286, -21543.5394744],
+    ]
+  },
+}
 
 export default {
   inheritAttrs: false,
@@ -152,6 +159,7 @@ export default {
         scaleFired: false,
         rotateFired: false,
       },
+      navigatePath: null,
     }
   },
 
@@ -290,13 +298,22 @@ export default {
       return [x - offsetX, offsetY - y, ...rest]
     },
 
-    setFitView (range) {
+    simulatePath (path = example_path) {
+      const reducedPath = reduceData(path, this.offset)
+      const range = getGeojsonRange(reducedPath)
+      this.setFitView(range, 1.5)
+      this.navigatePath = reducedPath
+      this.$nextTick(() => {
+        this.$refs.navigateRef.simulateNav()
+      })
+    },
+
+    setFitView (range, zoom = DEFAULT_ZOOM) {
       const { Xmin, Xmax, Ymin, Ymax } = range
       const [width, height] = this.size
       this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
       this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
-      this.rotateAngle = 0
-      this.setZoom(DEFAULT_ZOOM)
+      this.setZoom(zoom)
       this.setOriginZoom()
     },
 

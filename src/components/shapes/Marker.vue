@@ -9,7 +9,7 @@
     />
     <text
       v-if="centerText"
-      :font-size="10 * scale * zoom"
+      :font-size="0.4 * size * scale * zoom"
       :x="point[0]"
       :y="point[1] - 2 * shapeSize / 3"
       dy="0.1em"
@@ -48,11 +48,16 @@ export default {
       type: Number,
       default: 0,
     },
+
+    size: {
+      type: Number,
+      default: 25,
+    },
   },
 
   computed: {
     shapeSize () {
-      return 25 * this.scale * this.zoom
+      return this.size * this.scale * this.zoom
     },
 
     point () {
@@ -85,7 +90,9 @@ export default {
     },
 
     rotateParams () {
-      const angle = 360 - (this.rotate % 360)
+      const angle = this.type === 'pop'
+        ? 360 - (this.rotate % 360)
+        : (270 - this.direction) % 360
       const [x, y] = this.point
       return {
         transform: `rotate(${angle}, ${x}, ${y})`
