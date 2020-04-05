@@ -1,10 +1,25 @@
 <template>
-  <path
-    :d="pathParams"
-    :stroke-width="3 * zoom * scale"
-    stroke="blue"
-    fill="blue"
-  />
+  <g
+    v-bind="rotateParams"
+  >
+    <path
+      v-bind="styles"
+      :d="pathParams"
+      :stroke-width="3 * zoom * scale"
+    />
+    <text
+      v-if="centerText"
+      :font-size="10 * scale * zoom"
+      :x="point[0]"
+      :y="point[1] - 2 * shapeSize / 3"
+      dy="0.1em"
+      fill="white"
+      text-anchor="middle"
+      dominant-baseline="middle"
+    >
+      {{ centerText }}
+    </text>
+  </g>
 </template>
 
 <script>
@@ -40,8 +55,12 @@ export default {
       return 25 * this.scale * this.zoom
     },
 
+    point () {
+      return this.shape.geometry.coordinates
+    },
+
     popParams () {
-      const [x, y] = this.shape.geometry.coordinates
+      const [x, y] = this.point
       const r = this.shapeSize / 3
       const [spx, spy] = [0, 0]
       const [mpx, mpy] = [-0.5 * r * Math.sqrt(3), -1.5 * r]
@@ -50,7 +69,7 @@ export default {
     },
 
     arrowParams () {
-      const [x, y] = this.shape.geometry.coordinates
+      const [x, y] = this.point
       const r = this.shapeSize / (1 + Math.sqrt(2))
       const [spx, spy] = [0, Math.sqrt(2) * r]
       const tmp = 0.5 * r * Math.sqrt(2)
@@ -63,6 +82,14 @@ export default {
       return this.type === 'pop'
         ? this.popParams
         : this.arrowParams
+    },
+
+    rotateParams () {
+      const angle = 360 - (this.rotate % 360)
+      const [x, y] = this.point
+      return {
+        transform: `rotate(${angle}, ${x}, ${y})`
+      }
     },
   },
 }

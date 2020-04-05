@@ -33,6 +33,20 @@
             v-on="$listeners"
           />
         </g>
+        <nav-path
+          :zoom="currentZoom"
+          :scale="scale"
+          :rotate="rotateAngle"
+          :shape="{
+            geometry: {
+              coordinates: [
+                [24709.16506147286, 25032.539548334706],
+                [34709.16506147286, 25032.539548334706],
+                [34709.16506147286, 35032.539548334706],
+              ]
+            }
+          }"
+        />
         <g aria-label="makers-group">
           <point-shape
             v-for="marker in reducedMarkers"
@@ -70,12 +84,15 @@ import GeoJson from './shapes/GeoJSON.vue'
 import PolygonShape from './shapes/Polygon.vue'
 import PointShape from './shapes/Point.vue'
 import LineString from './shapes/LineString.vue'
+import NavPath from './shapes/NavPath.vue'
 
 const DEFAULT_ZOOM = 0.6
 const MAX_ZOOM = 2
 const MIN_ZOOM = 0.05
 const ROTATE_SILL = 5
 const SCALE_SILL = 0.1
+
+const example_point = [24709.16506147286, 25032.539548334706]
 
 export default {
   inheritAttrs: false,
@@ -85,6 +102,7 @@ export default {
     PolygonShape,
     LineString,
     PointShape,
+    NavPath,
   },
 
   props: {

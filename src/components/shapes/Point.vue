@@ -2,6 +2,8 @@
   <text
     v-bind="textProps"
     dy="0.1em"
+    text-anchor="middle"
+    dominant-baseline="middle"
   >
     {{ pointText }}
   </text>
