@@ -1,10 +1,10 @@
 <template>
-  <circle
-    :cx="center[0]"
-    :cy="center[1]"
-    :r="radius"
-    :style="styles"
-  />
+  <text
+    v-bind="textProps"
+    dy="0.1em"
+  >
+    {{ pointText }}
+  </text>
 </template>
 
 <script>
@@ -13,16 +13,21 @@ import ShapeMixins from './shapes_mixin'
 export default {
   mixins: [ShapeMixins],
 
-  props: {
-    radius: {
-      type: Number,
-      default: 1,
-    },
-  },
-
   computed: {
-    center () {
-      return this.shape.geometry.coordinates
+    pointText () {
+      return this.shape.properties.name
+    },
+
+    textProps () {
+      const angle = 360 - (this.rotate % 360)
+      const [x, y] = this.shape.geometry.coordinates
+      return {
+        transform: `rotate(${angle}, ${x}, ${y})`,
+        fontSize: this.zoom * this.scale * 14,
+        x,
+        y,
+        ...this.styles,
+      }
     },
   },
 }
