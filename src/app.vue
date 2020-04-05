@@ -35,7 +35,7 @@
         @show-navigate-ui="showNavigateLayer"
       />
       <div class="message-box">
-        {{ message.content }}
+        {{ message }}
       </div>
     </footer>
     <navigate-layer
@@ -83,10 +83,7 @@ export default {
       selectedShape: null,
       activeShapeVm: null,
       showNavigateUI: false,
-      message: {
-        closeable: true,
-        content: '',
-      },
+      message: '',
     }
   },
 
@@ -249,22 +246,13 @@ export default {
         .catch(() => {})
     },
 
-    setMessage (content, options = {}) {
-      this.message_timer && clearTimeout(this.message_timer)
-      const closeable = options.hasOwnProperty('closeable')
-        ? options.closeable
-        : true
-      const duration = options.hasOwnProperty('duration')
-        ? options.duration
-        : -1
-      this.message = {
-        content,
-        closeable,
-      }
+    setMessage (content, duration = 0) {
+      this.message = content
       if (duration > 0) {
-        this.message_timer = setTimeout(() => {
-          this.message.content = ''
-          options.cb && options.cb()
+        if (this._message_timer) clearTimeout(this._message_timer)
+        this._message_timer = setTimeout(() => {
+          this.message = ''
+          this._message_timer = null
         }, duration)
       }
     },
@@ -316,7 +304,7 @@ export default {
           this.json = data.data
         })
         .catch(() => {
-          this.setMessage('获取楼层数据失败')
+          this.setMessage('获取楼层数据失败', 2000)
         })
     },
 
@@ -425,7 +413,7 @@ export default {
         end.properties.y_center,
         end.properties.floor || this.floor.id
       ]
-      this.setMessage(message, { closeable: false })
+      this.setMessage(message)
       axios.post('/direction', {
         startPosition: {
           positionX: `${sx}`,
@@ -439,15 +427,11 @@ export default {
         }
       })
         .then(({ data }) => {
-          this.setMessage(message, {
-            cb: () => {
-              this.navigatePathPoints = data.data
-            },
-            duration: 1000,
-          })
+          this.navigatePathPoints = data.data
+          this.setMessage('')
         })
         .catch(() => {
-          this.setMessage('获取路线失败', { duration: 2000 })
+          this.setMessage('获取路线失败', 2000)
         })
     },
 
