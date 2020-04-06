@@ -99,5 +99,16 @@ export default {
       }
     },
   },
+
+  watch: {
+    direction: {
+      immediate: true,
+      handler (val, old) {
+        if (Math.abs(val - (old || 0)) > 10) {
+          this.$emit('nav-rotate', this.direction)
+        }
+      },
+    },
+  },
 }
 </script>

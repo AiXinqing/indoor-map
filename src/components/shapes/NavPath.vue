@@ -4,8 +4,21 @@
       :points="linePoints"
       :style="lineStyles"
     />
-    <g v-show="!simulation">
+    <marker-shape
+      v-if="simulatePoint"
+      :shape="simulatePoint"
+      :zoom="this.zoom"
+      :scale="this.scale"
+      :rotate="this.rotate"
+      :styles="simulatePoint.style"
+      :size="16"
+      :direction="simulatePoint.angle"
+      type="arrow"
+      @nav-rotate="handleNavRotate"
+    />
+    <g>
       <marker-shape
+        v-show="!simulation"
         :scale="this.scale"
         :zoom="this.zoom"
         :rotate="this.rotate"
@@ -24,17 +37,6 @@
         type="pop"
       />
     </g>
-    <marker-shape
-      v-if="simulatePoint"
-      :shape="simulatePoint"
-      :zoom="this.zoom"
-      :scale="this.scale"
-      :rotate="this.rotate"
-      :styles="simulatePoint.style"
-      :size="16"
-      :direction="simulatePoint.angle"
-      type="arrow"
-    />
   </g>
 </template>
 
@@ -109,8 +111,14 @@ export default {
   },
 
   methods: {
+    handleNavRotate (angle) {
+      if (this.simulation) {
+        this.$emit('nav-rotate', angle)
+      }
+    },
+
     simulateNav () {
-      const speed = 2
+      const speed = 1.5
       const length = this.pointsWithDistance[this.pointsWithDistance.length - 1].distance
       const startTime = Date.now()
       const iterator = () => {

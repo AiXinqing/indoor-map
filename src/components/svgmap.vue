@@ -32,6 +32,7 @@
           :rotate="rotateAngle"
           :shape="navigatePath"
           @simulate-end="handleSimulateEnd"
+          @nav-rotate="handleNavRotate"
         />
         <g aria-label="makers-group">
           <point-shape
@@ -77,21 +78,6 @@ const MAX_ZOOM = 2
 const MIN_ZOOM = 0.05
 const ROTATE_SILL = 5
 const SCALE_SILL = 0.1
-
-const example_path = {
-  type: 'Feature',
-  properties: {
-    name: '路线',
-  },
-  geometry: {
-    type: 'LineString',
-    coordinates: [
-      [24709.1652021, -11543.5394744],
-      [34709.16506147286, -11543.5394744],
-      [34709.16506147286, -21543.5394744],
-    ]
-  },
-}
 
 export default {
   inheritAttrs: false,
@@ -265,7 +251,34 @@ export default {
   },
 
   methods: {
+    handleNavRotate (angle) {
+      if (this._simulate_timer) {
+        cancelAnimationFrame(this._simulate_timer)
+      }
+      const start = this.getPositiveAngle() % 360
+      this._prev_angle = start
+      this._startTime = Date.now()
+      const end = ((angle - 90) + 360) % 360
+      const delta = (end - start + 360) % 360
+      const da = delta < 180 ? delta : delta - 360
+      const iterator = () => {
+        const la = (Date.now() - this._startTime) / 500
+        this.setRotate(this._prev_angle + da * la)
+        if (la < 1) {
+          this._simulate_timer = requestAnimationFrame(iterator)
+        } else {
+          this.setRotate(end)
+          delete this._startTime
+          delete this._simulate_timer
+        }
+      }
+      this._simulate_timer = requestAnimationFrame(iterator)
+    },
+
     handleSimulateEnd () {
+      this.setRotate(this._start_angle)
+      delete this._start_angle
+      delete this._prev_angle
       this.$emit('simulate-end')
     },
 
@@ -278,8 +291,16 @@ export default {
       }
     },
 
+    getPositiveAngle () {
+      return this.rotateAngle % 360 + 360
+    },
+
+    setRotate (angle) {
+      this.rotateAngle = angle
+    },
+
     rotate (angle) {
-      this.rotateAngle += angle
+      this.setRotate(this.rotateAngle + angle)
     },
 
     setZoom (zoom) {
@@ -320,6 +341,7 @@ export default {
     },
 
     simulateNav () {
+      this._start_angle = this.rotateAngle
       this.$refs.navigateRef.simulateNav()
     },
 
