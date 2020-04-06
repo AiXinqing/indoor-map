@@ -138,6 +138,7 @@ export default {
       const pointIndex = this.pointsWithDistance.findIndex(i => i.distance > distance)
       if (pointIndex < 0) {
         this.simulation = false
+        this.$emit('simulate-end')
         this.simulatePoint = null
         return null
       }

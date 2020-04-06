@@ -18,6 +18,7 @@
         :navigate-points="navigatePoints"
         :selected-shape="selectedShape"
         @click-shape="handleShapeClick"
+        @simulate-end="endSimulate"
       />
       <UILayer
         :floorId="floor && floor.id"
@@ -29,7 +30,7 @@
       class="footer"
     >
       <shape-detail
-        v-if="activeShapeVm"
+        v-if="activeShapeVm && !simulating"
         :shape="activeShapeVm.shape"
         :navigate-points="navigatePoints"
         @fire-share="fireShareFunc"
@@ -86,6 +87,7 @@ export default {
       activeShapeVm: null,
       showNavigateUI: false,
       message: '',
+      simulating: false,
     }
   },
 
@@ -381,8 +383,13 @@ export default {
       this.navigatePathPoints = []
     },
 
+    endSimulate () {
+      this.simulating = false
+    },
+
     showNavigateLayer () {
       if (this.navigatePoints.length) {
+        this.simulating = true
         this.$refs.mapRef.simulateNav()
       } else {
         this.selectedShape = null

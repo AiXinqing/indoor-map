@@ -31,6 +31,7 @@
           :scale="scale"
           :rotate="rotateAngle"
           :shape="navigatePath"
+          @simulate-end="handleSimulateEnd"
         />
         <g aria-label="makers-group">
           <point-shape
@@ -264,6 +265,10 @@ export default {
   },
 
   methods: {
+    handleSimulateEnd () {
+      this.$emit('simulate-end')
+    },
+
     resetFiredState () {
       this.multipointState = {
         scale: 1,
