@@ -96,6 +96,7 @@ export default {
     border-radius: 4px;
     box-shadow: 0 1px 4px 0 gray;
     background: white;
+    z-index: 3;
 
     .detail-container {
       display: flex;

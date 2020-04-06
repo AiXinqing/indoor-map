@@ -21,6 +21,9 @@ export default {
   'selectedShape': {
     fill: 'hsl(37, 45%, 72%)',
   },
+  'simulatePosition': {
+    fill: 'hsl(156, 93%, 38%)',
+  },
   // 目标点样式
   'target': {
     fill: 'hsl(116, 93%, 38%)',

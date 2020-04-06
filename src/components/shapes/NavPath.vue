@@ -123,9 +123,7 @@ export default {
               coordinates: point.point,
             },
             angle: point.angle,
-            style: {
-              fill: 'red',
-            },
+            style: this.styles['simulatePosition'],
           }
 
           if (d < length) requestAnimationFrame(iterator)
