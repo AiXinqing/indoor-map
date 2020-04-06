@@ -12,11 +12,10 @@ export default {
   // 导航规划路径
   'navigatePath': {
     stroke: 'hsl(126, 95%, 33%)',
-    'strokeWidth': 200,
   },
   // 定位点
   'location': {
-    fill: 'hsl(65, 21%, 57%)',
+    fill: 'hsl(208, 86%, 31%)',
   },
   // 选中样式
   'selectedShape': {
@@ -24,7 +23,7 @@ export default {
   },
   // 目标点样式
   'target': {
-    fill: 'hsl(126, 95%, 33%)',
+    fill: 'hsl(116, 93%, 38%)',
   },
 
   // 导航线样式

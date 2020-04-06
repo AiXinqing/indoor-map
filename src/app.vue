@@ -13,9 +13,9 @@
         v-if="json"
         :size="size"
         :geojson="json"
-        :shapes="navigateLine"
         :styles="styles"
         :markers="markers"
+        :navigate-points="navigatePoints"
         :selected-shape="selectedShape"
         @click-shape="handleShapeClick"
       />
@@ -31,8 +31,10 @@
       <shape-detail
         v-if="activeShapeVm"
         :shape="activeShapeVm.shape"
+        :navigate-points="navigatePoints"
         @fire-share="fireShareFunc"
         @show-navigate-ui="showNavigateLayer"
+        @cancel-navigate="cleanNavigate"
       />
       <div class="message-box">
         {{ message }}
@@ -92,23 +94,9 @@ export default {
       return this.position && this.position[2]
     },
 
-    navigateLine () {
-      const points = this.floor
+    navigatePoints () {
+      return this.floor
         ? this.navigatePathPoints.filter(item => item[2] === this.floor.id)
-        : []
-      return points.length
-        ? [{
-            type: 'Feature',
-            properties: {
-              name: '导航线',
-              uuid: `navigate-path-${this.floor.id}`,
-              class: '导航线',
-            },
-            geometry: {
-              type: 'LineString',
-              coordinates: points,
-            },
-          }]
         : []
     },
 
@@ -294,7 +282,7 @@ export default {
       }
 
       ws.onerror = () => {
-        this.setMessage('获取位置失败，请确认是否开启了蓝牙，如果没有，分享和定位功能均不能使用')
+        this.setMessage('获取位置失败，请确认是否开启了蓝牙')
       }
     },
 
@@ -394,24 +382,33 @@ export default {
     },
 
     showNavigateLayer () {
-      this.selectedShape = null
-      this.showNavigateUI = true
+      if (this.navigatePoints.length) {
+        this.$refs.mapRef.simulateNav()
+      } else {
+        this.selectedShape = null
+        this.showNavigateUI = true
+      }
     },
 
     displayNavigate (targets) {
       this.showNavigateUI = false
       const { start, end } = targets
-      const message = `正在为您规划到${end.properties.name}的路线`
-      const [sx, sy, sz] = start
-        ? [start.properties.x_center, start.properties.y_center, start.properties.floor]
-        : this.position
       if (!start && !this.position) {
+        this.setMessage('当前位置不可用')
         return
       }
+      const message = `正在为您规划到${end.properties.name}的路线`
+      const [sx, sy, sz] = start
+        ? [
+          start.properties.x_center,
+          start.properties.y_center,
+          this.getFloorByName(start.properties.floor).id
+        ]
+        : this.position
       const [ex, ey, ez] = [
         end.properties.x_center,
         end.properties.y_center,
-        end.properties.floor || this.floor.id
+        this.getFloorByName(end.properties.floor).id || this.floor.id
       ]
       this.setMessage(message)
       axios.post('/direction', {
@@ -506,13 +503,18 @@ export default {
     background: hsl(208, 86%, 31%);
     font-size: 14px;
     line-height: 21px;
-    padding: 6px 16px;
-    letter-spacing: 2px;
+    padding: 4px 10px;
+    letter-spacing: 1px;
     border: 1px solid hsl(208, 85%, 31%);
     border-radius: 17px;
     outline: none;
     cursor: pointer;
     color: white;
+
+    &.button-reverse {
+      color: hsl(208, 86%, 31%);
+      background-color: white;
+    }
   }
 
   .message-box {

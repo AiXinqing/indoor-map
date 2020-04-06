@@ -15,12 +15,21 @@
           {{ shape.properties.description }}
         </div>
       </div>
-      <button
-        class="button"
-        @click="showNavigateLayer"
-      >
-        去这里
-      </button>
+      <div class="buttons">
+        <button
+          v-if="navigatePoints.length"
+          class="button button-reverse"
+          @click="cancelNavigate"
+        >
+          取消
+        </button>
+        <div
+          class="button"
+          @click="showNavigateLayer"
+        >
+          {{ buttonText }}
+        </div>
+      </div>
     </div>
     <div
       class="share-button"
@@ -34,6 +43,11 @@
 <script>
 export default {
   props: {
+    navigatePoints: {
+      type: Array,
+      default: () => [],
+    },
+
     shape: {
       type: Object,
       required: true,
@@ -46,9 +60,21 @@ export default {
     }
   },
 
+  computed: {
+    buttonText () {
+      return this.navigatePoints.length
+        ? '模拟导航'
+        : '去这里'
+    },
+  },
+
   methods: {
     showNavigateLayer () {
       this.$emit('show-navigate-ui')
+    },
+
+    cancelNavigate () {
+      this.$emit('cancel-navigate')
     },
 
     share () {
@@ -76,6 +102,7 @@ export default {
       flex-direction: row;
       align-items: center;
       padding: 10px 16px;
+      min-height: 55px;
       justify-content: space-between;
 
       .shape-name {
@@ -97,6 +124,19 @@ export default {
       font-size: 14px;
       border-top: 1px solid hsl(0, 0%, 87%);
       color: hsl(208, 86%, 31%);
+    }
+
+    .buttons {
+      white-space: nowrap;
+      display: flex;
+
+      .button {
+        margin-right: 6px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
     }
   }
 </style>

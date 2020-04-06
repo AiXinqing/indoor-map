@@ -22,20 +22,11 @@
             :selected-shape="selectedShape"
             v-on="$listeners"
           />
-          <component
-            v-for="shape in reducedShapes"
-            :key="shape.properties.uuid"
-            :is="_getComponent(shape)"
-            :styles="_getStyle(shape)"
-            :shape="shape"
-            :zoom="currentZoom"
-            :scale="scale"
-            v-on="$listeners"
-          />
         </g>
         <nav-path
           ref="navigateRef"
           v-if="navigatePath"
+          :styles="styles"
           :zoom="currentZoom"
           :scale="scale"
           :rotate="rotateAngle"
@@ -121,10 +112,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    shapes: {
-      type: Array,
-      default: () => [],
-    },
     geojson: {
       type: Object,
       required: true,
@@ -136,6 +123,11 @@ export default {
     zoom: {
       type: Number,
       default: DEFAULT_ZOOM,
+    },
+
+    navigatePoints: {
+      type: Array,
+      default: () => [],
     },
 
     selectedShape: {
@@ -175,6 +167,30 @@ export default {
         this.$nextTick(() => {
           this.$emit('floor-change', this)
         })
+      },
+    },
+
+    navigatePoints: {
+      immediate: true,
+      handler (val) {
+        if (val && val.length) {
+          const reducedPath = reduceData({
+            type: 'Feature',
+            properties: {
+              name: '路线',
+              class: 'navigatePath',
+            },
+            geometry: {
+              type: 'LineString',
+              coordinates: val,
+            },
+          }, this.offset)
+          const range = getGeojsonRange(reducedPath)
+          this.setFitView(range, 1.5)
+          this.navigatePath = reducedPath
+        } else {
+          this.navigatePath = null
+        }
       },
     },
   },
@@ -298,14 +314,8 @@ export default {
       return [x - offsetX, offsetY - y, ...rest]
     },
 
-    simulatePath (path = example_path) {
-      const reducedPath = reduceData(path, this.offset)
-      const range = getGeojsonRange(reducedPath)
-      this.setFitView(range, 1.5)
-      this.navigatePath = reducedPath
-      this.$nextTick(() => {
-        this.$refs.navigateRef.simulateNav()
-      })
+    simulateNav () {
+      this.$refs.navigateRef.simulateNav()
     },
 
     setFitView (range, zoom = DEFAULT_ZOOM) {

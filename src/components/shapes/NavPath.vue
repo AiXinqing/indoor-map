@@ -67,9 +67,8 @@ export default {
 
     lineStyles () {
       return {
-        ...this.styles,
-        stroke: 'red',
-        'stroke-width': 1 * this.scale * this.zoom,
+        ...this.styles[this.shape.properties.class],
+        'stroke-width': 2 * this.scale * this.zoom,
         fill: 'transparent',
       }
     },
@@ -79,9 +78,7 @@ export default {
         geometry: {
           coordinates: this.points[0],
         },
-        style: {
-          fill: 'hsl(208, 86%, 31%)',
-        },
+        style: this.styles['location'],
       }
     },
 
@@ -90,9 +87,7 @@ export default {
         geometry: {
           coordinates: this.points[this.points.length - 1],
         },
-        style: {
-          fill: 'hsl(116, 93%, 38%)',
-        }
+        style: this.styles['target']
       }
     },
 
