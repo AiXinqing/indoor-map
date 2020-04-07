@@ -23,12 +23,12 @@
         >
           取消
         </button>
-        <div
+        <button
           class="button"
           @click="showNavigateLayer"
         >
           {{ buttonText }}
-        </div>
+        </button>
       </div>
     </div>
     <div
