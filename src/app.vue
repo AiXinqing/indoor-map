@@ -498,7 +498,7 @@ export default {
   }
 
   footer {
-    height: 40px;
+    height: 60px;
     padding: 10px $side-space 10px 80px;
     position: relative;
     z-index: 2;
@@ -530,7 +530,7 @@ export default {
     align-items: center;
     color: #666;
     position: absolute;
-    bottom: 10px;
+    bottom: 4px;
     left: 80px;
     text-align: left;
     padding: 5px $side-space 5px 0;
@@ -560,7 +560,7 @@ export default {
 
   .logo {
     position: fixed;
-    bottom: 0;
+    bottom: 20px;
     left: 6px;
     z-index: 200;
     width: 60px;
