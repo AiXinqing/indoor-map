@@ -426,16 +426,20 @@ export default {
         },
         endPosition: {
           positionX: `${ex}`,
-          positionY: `${sy}`,
+          positionY: `${ey}`,
           positionZ: `${ez}`,
         }
       })
         .then(({ data }) => {
-          this.navigatePathPoints = data.data
-          this.setMessage('')
+          if (data.data.length < 2) {
+            this.setMessage('路线规划失败, 请重试', 5000)
+          } else {
+            this.navigatePathPoints = data.data
+            this.setMessage('')
+          }
         })
         .catch(() => {
-          this.setMessage('获取路线失败', 2000)
+          this.setMessage('路线规划失败, 请重试', 5000)
         })
     },
 
