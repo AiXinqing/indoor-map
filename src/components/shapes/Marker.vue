@@ -7,13 +7,18 @@
       :d="pathParams"
       :stroke-width="3 * zoom * scale"
     />
+    <circle
+      v-if="centerText"
+      v-bind="circleParams"
+      fill="white"
+    />
     <text
       v-if="centerText"
-      :font-size="0.4 * size * scale * zoom"
+      :font-size="0.3 * size * scale * zoom"
       :x="point[0]"
       :y="point[1] - 2 * shapeSize / 3"
+      :fill="styles.fill"
       dy="0.1em"
-      fill="white"
       text-anchor="middle"
       dominant-baseline="middle"
     >
@@ -51,7 +56,7 @@ export default {
 
     size: {
       type: Number,
-      default: 25,
+      default: 40,
     },
   },
 
@@ -89,6 +94,16 @@ export default {
         : this.arrowParams
     },
 
+    circleParams () {
+      const [x, y] = this.point
+      const r = this.shapeSize / 3
+      return {
+        cx: x,
+        cy: y - 2 * r,
+        r: r * 0.7,
+      }
+    },
+
     rotateParams () {
       const angle = this.type === 'pop'
         ? 360 - (this.rotate % 360)
@@ -104,7 +119,7 @@ export default {
     direction: {
       immediate: true,
       handler (val, old) {
-        if (Math.abs(val - (old || 0)) > 10) {
+        if (Math.abs(val - (old || 0)) > 5) {
           this.$emit('nav-rotate', this.direction)
         }
       },

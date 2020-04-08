@@ -118,7 +118,7 @@ export default {
     },
 
     simulateNav () {
-      const speed = 1.5
+      const speed = 3
       const length = this.pointsWithDistance[this.pointsWithDistance.length - 1].distance
       const startTime = Date.now()
       const iterator = () => {
