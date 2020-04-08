@@ -56,7 +56,7 @@ export default {
 
     size: {
       type: Number,
-      default: 40,
+      default: 35,
     },
   },
 
