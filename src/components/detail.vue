@@ -90,7 +90,7 @@ export default {
 <style lang="scss">
   .shape-details {
     position: fixed;
-    bottom: 30px;
+    bottom: 8vh;
     left: 76px;
     right: 16px;
     border-radius: 4px;

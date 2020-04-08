@@ -503,7 +503,7 @@ export default {
   }
 
   footer {
-    height: 60px;
+    height: 9vh;
     padding: 10px $side-space 10px 80px;
     position: relative;
     z-index: 2;
@@ -565,12 +565,13 @@ export default {
 
   .logo {
     position: fixed;
-    bottom: 20px;
+    bottom: 9vh;
     left: 6px;
     z-index: 200;
     width: 60px;
     height: 61px;
     display: flex;
+    margin-bottom: -40px;
 
     img {
       max-width: 100%;

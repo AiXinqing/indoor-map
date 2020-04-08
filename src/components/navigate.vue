@@ -160,7 +160,10 @@ export default {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    padding: 12px 24px;
+    padding: 0 24px;
+    margin-bottom: 9vh;
+    position: relative;
+    top: 20px;
 
     .cancel-button {
       background-color: transparent;
