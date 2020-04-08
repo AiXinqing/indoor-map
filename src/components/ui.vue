@@ -47,6 +47,10 @@ export default {
     locateToCenter () {
       this.$emit('onlocate')
     },
+
+    switchFloor (floor) {
+      this.$emit('switch-floor', floor)
+    },
   },
 }
 </script>

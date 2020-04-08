@@ -24,6 +24,7 @@
         :floorId="floor && floor.id"
         :floors="floors"
         @onlocate="locateToCenter"
+        @switch-floor="switchFloor"
       />
     </main>
     <footer
