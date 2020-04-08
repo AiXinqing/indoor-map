@@ -25,7 +25,8 @@ export default {
       const [x, y] = this.shape.geometry.coordinates
       return {
         transform: `rotate(${angle}, ${x}, ${y})`,
-        fontSize: this.zoom * this.scale * 14,
+        fill: 'red',
+        'font-size': this.zoom * this.scale * (this.shape.properties.size || 14),
         x,
         y,
         ...this.styles,
