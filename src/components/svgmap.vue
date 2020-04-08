@@ -46,19 +46,13 @@
       </g>
     </svg>
     <div class="compass-container">
-      <span>N</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 100"
-        version="1.1"
-        class="compass-icon"
+      <img
+        :style="{
+          transform: 'rotate(' + rotateAngle + 'deg)',
+        }"
+        src="../assets/compass.png"
+        alt="compass"
       >
-        <circle cx="50" cy="50" stroke-width="5" r="45" fill="transparent" stroke="currentColor"></circle>
-        <g :transform="'rotate(' + rotateAngle + ', 50, 50)'">
-          <path d="M50,15L40,50L60,50Z" fill="red"></path>
-          <path d="M50,85L40,50L60,50Z" fill="currentColor"></path>
-        </g>
-      </svg>
     </div>
   </div>
 </template>
@@ -378,7 +372,7 @@ export default {
 
   .compass-container {
     position: absolute;
-    top: 5px;
+    top: 10px;
     width: $compass-size;
     left: 16px;
     text-align: center;
@@ -386,9 +380,8 @@ export default {
     flex-direction: column;
     align-items: center;
 
-    .compass-icon {
-      width: $compass-size;
-      height: $compass-size;
+    img {
+      width: 100%;
     }
   }
 </style>
