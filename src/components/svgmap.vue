@@ -177,6 +177,7 @@ export default {
           this.navigatePath = reducedPath
         } else {
           this.navigatePath = null
+          this.setFitView(reduceFloorData(this.geojson).range)
         }
       },
     },

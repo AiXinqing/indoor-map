@@ -406,6 +406,7 @@ export default {
         return
       }
       const message = `正在为您规划到${end.properties.name}的路线`
+      this.setMessage(message)
       const [sx, sy, sz] = start
         ? [
           start.properties.x_center,
@@ -418,7 +419,6 @@ export default {
         end.properties.y_center,
         this.getFloorByName(end.properties.floor).id || this.floor.id
       ]
-      this.setMessage(message)
       axios.post('/direction', {
         startPosition: {
           positionX: `${sx}`,
@@ -440,7 +440,7 @@ export default {
           }
         })
         .catch(() => {
-          this.setMessage('路线规划失败, 请重试', 5000)
+          this.setMessage('路线规划失败, 请确认起止点是否正确', 5000)
         })
     },
 
