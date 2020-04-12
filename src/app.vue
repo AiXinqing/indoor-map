@@ -261,6 +261,7 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
+        this.setMessage('正在获取定位')
         this.$on('fireShare', () => {
           this.shareToFriend(ws)
         })
@@ -268,12 +269,23 @@ export default {
         setTimeout(() => {
           // 如果有分享的位置，则优先展示分享的位置的楼层
           if (this.sharePosition) return
+          this.setMessage('没有获取到定位信息')
           if (!this.position && !this.floor) {
             if (this.floors.length) {
               this.switchFloor(this.floors[0])
+              if (this.positionFloor) {
+                this.setMessage('')
+              } else {
+                this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+              }
             } else {
               floorsRequest.then(() => {
                 this.switchFloor(this.floors[0])
+                if (this.positionFloor) {
+                  this.setMessage('')
+                } else {
+                  this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+                }
               })
             }
           }
@@ -281,6 +293,7 @@ export default {
       }
 
       ws.onmessage = (evt) => {
+        this.setMessage('')
         this.updatePosition(JSON.parse(evt.data), floorsRequest)
       }
 
@@ -315,6 +328,10 @@ export default {
     },
 
     locateToCenter () {
+      if (!this.positionFloor) {
+        this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+        return
+      }
       if (this.floor.id != this.positionFloor) {
         this.switchFloor(this.getFloor(this.positionFloor))
         this.$refs.mapRef.$once('floor-change', (vm) => {
