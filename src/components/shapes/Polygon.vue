@@ -108,7 +108,7 @@ export default {
       handler () {
         if (!this.selectedShape) return
         if (this.selectedShape.properties.uuid === this.shape.properties.uuid) {
-          this.$emit('click-shape', this)
+          this.handleClick()
         }
       },
     },
@@ -116,7 +116,11 @@ export default {
 
   methods: {
     handleClick () {
-      this.$emit('click-shape', this)
+      if (this.shape.properties.disabled) {
+        this.$emit('click-shape', null)
+      } else {
+        this.$emit('click-shape', this)
+      }
     },
 
     highlight (style) {

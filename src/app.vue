@@ -469,6 +469,10 @@ export default {
     },
 
     handleShapeClick (shapeVm) {
+      if (!shapeVm) {
+        this.activeShapeVm && this.activeShapeVm.blur()
+        return
+      }
       if (this.activeShapeVm) {
         this.activeShapeVm.blur()
         if (shapeVm === this.activeShapeVm) {
