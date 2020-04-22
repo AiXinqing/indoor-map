@@ -4,7 +4,7 @@
     class="app"
     @click="handleOtherClick"
   >
-    <header>
+    <header @click.stop>
       <search @select-shape="focusShape" />
     </header>
     <main>
@@ -29,6 +29,7 @@
     </main>
     <footer
       class="footer"
+      @click.stop
     >
       <shape-detail
         v-if="activeShapeVm && !simulating"
@@ -48,7 +49,10 @@
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
     />
-    <div class="logo">
+    <div
+      class="logo"
+      @click.stop
+    >
       <img src="./assets/1.png" alt="logo">
     </div>
   </div>
