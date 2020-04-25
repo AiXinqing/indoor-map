@@ -1,24 +1,39 @@
 <template>
   <g>
-    <polygon
-      :points="points"
-      :style="shapeStyle"
-      :class="shape.properties.class"
-      @click.stop="handleClick"
-    />
-    <text
-      v-if="shapeText"
-      v-bind="textRotate"
-      :font-size="textSize"
-      :x="textCenter[0]"
-      :y="textCenter[1]"
-      dy="0.1em"
-      fill="#666"
-      text-anchor="middle"
-      dominant-baseline="middle"
+    <g
+      class="polygon-shadow"
+      v-if="shadow && shadowPoints.length"
     >
-      {{ shapeText }}
-    </text>
+      <path
+        v-for="path in sideShadowPaths"
+        :key="path"
+        :d="path"
+        fill="#a9a9a9"
+        stroke="#999"
+        stroke-width="5"
+      />
+    </g>
+    <template v-else>
+      <polygon
+        :points="points"
+        :style="shapeStyle"
+        :class="shape.properties.class"
+        @click.stop="handleClick"
+      />
+      <text
+        v-if="shapeText"
+        v-bind="textRotate"
+        :font-size="textSize"
+        :x="textCenter[0]"
+        :y="textCenter[1]"
+        dy="0.1em"
+        fill="#666"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
+        {{ shapeText }}
+      </text>
+    </template>
   </g>
 </template>
 
@@ -33,6 +48,11 @@ export default {
       type: Object,
       default: null,
     },
+
+    shadow: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data () {
@@ -45,6 +65,29 @@ export default {
     points () {
       const points = this.shape.geometry.coordinates[0]
       return points.map(point => `${point[0]},${point[1]}`).join(' ')
+    },
+
+    shadowPoints () {
+      const { elev } = this.shape.properties
+      const shadowScaler = 0.2
+      if (elev) {
+        const shadowLength = parseInt(elev) * shadowScaler
+        const dy = shadowLength * Math.cos(this.rotate * Math.PI / 180)
+        const dx = shadowLength * Math.sin(this.rotate * Math.PI / 180)
+        return this.shape.geometry.coordinates[0].map(([px, py]) => [px + dx, py + dy])
+      }
+      return []
+    },
+
+    sideShadowPaths () {
+      const points = this.shape.geometry.coordinates[0]
+      return points.map((item, index, arr) => {
+        const prevIndex = index === 0 ? arr.length - 1 : index - 1
+        const cs = this.shadowPoints[index]
+        const pt = arr[prevIndex]
+        const ps = this.shadowPoints[prevIndex]
+        return `M${item[0]},${item[1]}L${cs[0]},${cs[1]}L${ps[0]},${ps[1]}L${pt[0]},${pt[1]}Z`
+      })
     },
 
     shapeText () {

@@ -1,15 +1,36 @@
 <template>
   <g class="geojson-shape">
-    <component
-      v-for="shape in shapes"
+    <polygon-shape
+      v-for="shape in polygonShapes"
       :key="shape.properties.uuid"
-      :is="getComponent(shape)"
       :styles="getStyle(shape)"
       :shape="shape"
-      :zoom="zoom"
-      :scale="scale"
-      :rotate="rotate"
-      :selected-shape="selectedShape"
+      v-bind="attrs"
+      shadow
+      v-on="$listeners"
+    />
+    <polygon-shape
+      v-for="shape in shadowedShapes"
+      :key="shape.properties.uuid"
+      :styles="getStyle(shape)"
+      :shape="shape"
+      v-bind="attrs"
+      v-on="$listeners"
+    />
+    <line-string
+      v-for="shape in lineShapes"
+      :key="shape.properties.uuid"
+      :styles="getStyle(shape)"
+      :shape="shape"
+      v-bind="attrs"
+      v-on="$listeners"
+    />
+    <point-shape
+      v-for="shape in pointShapes"
+      :key="shape.properties.uuid"
+      :styles="getStyle(shape)"
+      :shape="shape"
+      v-bind="attrs"
       v-on="$listeners"
     />
   </g>
@@ -39,8 +60,40 @@ export default {
   },
 
   computed: {
+    attrs () {
+      return {
+        zoom: this.zoom,
+        scale: this.scale,
+        rotate: this.rotate,
+        selectedShape: this.selectedShape,
+      }
+    },
     shapes () {
       return this.shape.features
+    },
+
+    polygonShapes () {
+      return this.shapes.filter(item => item.geometry.type === 'Polygon')
+    },
+
+    pointShapes () {
+      return this.shapes.filter(item => item.geometry.type === 'Point')
+    },
+
+    lineShapes () {
+      return this.shapes.filter(item => item.geometry.type === 'LineString')
+    },
+
+    shadowedShapes () {
+      return this.polygonShapes.filter((item) => {
+        return item.properties.elev && (parseInt(item.properties.elev) > 0)
+      })
+    },
+
+    unshadowedShapes () {
+      return this.polygonShapes.filter((item) => {
+        return !item.properties.elev || (parseInt(item.properties.elev) <= 0)
+      })
     },
   },
 
@@ -55,25 +108,6 @@ export default {
             'strokeWidth': shape.properties.LineWt,
           }
       }
-    },
-
-    getComponent (shape) {
-      switch (shape.geometry.type) {
-        case 'Polygon':
-          return 'polygon-shape'
-        case 'LineString':
-          return 'line-string'
-        case 'Point':
-          return 'point-shape'
-        default:
-      }
-    },
-
-    randomColor () {
-      const r = Math.round(Math.random() * 255)
-      const g = Math.round(Math.random() * 255)
-      const b = Math.round(Math.random() * 255)
-      return `rgb(${r},${g},${b})`
     },
   },
 }
