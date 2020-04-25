@@ -2,7 +2,7 @@
   <g class="geojson-shape">
     <polygon-shape
       v-for="shape in polygonShapes"
-      :key="shape.properties.uuid"
+      :key="shape.properties.uuid + '-shadow'"
       :styles="getStyle(shape)"
       :shape="shape"
       v-bind="attrs"
