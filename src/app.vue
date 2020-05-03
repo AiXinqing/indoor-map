@@ -586,9 +586,9 @@ export default {
     color: #666;
     font-size: 14px;
     height: 59px;
-    position: relative;
+    width: 100%;
+    position: absolute;
     z-index: 2;
-    box-shadow: 0 0 4px 0 gray;
   }
 
   main {
