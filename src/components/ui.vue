@@ -11,7 +11,7 @@
         <i-button
           v-for="item in floors"
           :key="item.id"
-          :type="item.id === floorId ? 'primary' : 'default'"
+          :type="item.id === floorId ? 'success' : 'default'"
           @click="switchFloor(item)"
         >
           {{ item.alias }}
