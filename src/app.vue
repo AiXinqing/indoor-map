@@ -44,7 +44,7 @@
       @navigate="displayNavigate"
     />
     <div
-      :class="{ loading: fetching }"
+      :class="{ loading: loadingContent }"
       class="loading-box"
     >
       <div class="loading-content">
@@ -52,7 +52,7 @@
           src="./assets/loading.png"
           alt="loading"
         >
-        <span>正在加载地图</span>
+        <span>{{ loadingContent }}</span>
       </div>
     </div>
   </div>
@@ -60,6 +60,7 @@
 
 <script>
 import axios from 'axios'
+import { Message } from 'view-design'
 import SvgMap from './components/svgmap.vue'
 import Search from './components/search.vue'
 import ShapeDetail from './components/detail.vue'
@@ -84,14 +85,13 @@ export default {
       position: null,
       sharePosition: null,
       json: null,
-      fetching: false,
+      loadingContent: '',
       navigatePathPoints: [],
       source: axios.CancelToken.source(),
       styles: styles,
       selectedShape: null,
       activeShapeVm: null,
       showNavigateUI: false,
-      message: '',
       simulating: false,
     }
   },
@@ -147,7 +147,7 @@ export default {
   mounted () {
     const { width, height } = document.querySelector('main').getBoundingClientRect()
     this.size = [width, height]
-    this.fetching = true
+    this.setLoadingText('正在加载地图')
 
     this.fetchStyles()
     this.checkShareInfo()
@@ -242,15 +242,15 @@ export default {
         .catch(() => {})
     },
 
-    setMessage (content, duration = 0) {
-      this.message = content
-      if (duration > 0) {
-        if (this._message_timer) clearTimeout(this._message_timer)
-        this._message_timer = setTimeout(() => {
-          this.message = ''
-          this._message_timer = null
-        }, duration)
-      }
+    setMessage (content, duration = 3) {
+      Message.warning({
+        content,
+        duration,
+      })
+    },
+
+    setLoadingText (text) {
+      this.loadingContent = text
     },
 
     createSocketConnect () {
@@ -266,7 +266,6 @@ export default {
           openid: openId,
         }
         ws.send(JSON.stringify(connectdata))
-        this.setMessage('正在获取定位')
         this.$on('fireShare', () => {
           this.shareToFriend(ws)
         })
@@ -274,22 +273,17 @@ export default {
         setTimeout(() => {
           // 如果有分享的位置，则优先展示分享的位置的楼层
           if (this.sharePosition) return
-          this.setMessage('没有获取到定位信息')
           if (!this.position && !this.floor) {
             if (this.floors.length) {
               this.switchFloor(this.floors[0])
-              if (this.positionFloor) {
-                this.setMessage('')
-              } else {
-                this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+              if (!this.positionFloor) {
+                this.setMessage('定位失败，请确认是否开启蓝牙')
               }
             } else {
               floorsRequest.then(() => {
                 this.switchFloor(this.floors[0])
-                if (this.positionFloor) {
-                  this.setMessage('')
-                } else {
-                  this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+                if (!this.positionFloor) {
+                  this.setMessage('定位失败，请确认是否开启蓝牙')
                 }
               })
             }
@@ -298,12 +292,11 @@ export default {
       }
 
       ws.onmessage = (evt) => {
-        this.setMessage('')
         this.updatePosition(JSON.parse(evt.data), floorsRequest)
       }
 
       ws.onerror = () => {
-        this.setMessage('获取位置失败，请确认是否开启了蓝牙')
+        this.setMessage('定位失败，请确认是否开启蓝牙')
       }
     },
 
@@ -313,7 +306,7 @@ export default {
           this.json = data.data
         })
         .catch(() => {
-          this.setMessage('获取楼层数据失败', 2000)
+          this.setMessage('获取楼层数据失败')
         })
     },
 
@@ -334,7 +327,7 @@ export default {
 
     locateToCenter () {
       if (!this.positionFloor) {
-        this.setMessage('定位失败，请确认是否允许开启蓝牙', 4000)
+        this.setMessage('定位失败，请确认是否开启蓝牙')
         return
       }
       if (this.floor.id != this.positionFloor) {
@@ -349,20 +342,18 @@ export default {
     },
 
     _fetchFloor (floor) {
-      if (this.fetching) {
+      if (this.loadingContent) {
         this.source.cancel('cancel')
         this.source = axios.CancelToken.source()
       }
-      this.fetching = true
-      this.setMessage('正在载入地图数据')
+      this.setLoadingText('正在加载地图')
       return axios.get(`/getByFloor/${floor.alias}`, {
         cancelToken: this.source.token
       }).then((res) => {
         localStorage.setItem(`floor-id-${floor.id}`, JSON.stringify(res))
         return res
       }).finally(() => {
-        this.fetching = false
-        this.setMessage('')
+        this.setLoadingText('')
       })
     },
 
@@ -428,7 +419,7 @@ export default {
         return
       }
       const message = `正在为您规划到${end.properties.name}的路线`
-      this.setMessage(message)
+      this.setLoadingText(message)
       const [sx, sy, sz] = start
         ? [
           start.properties.x_center,
@@ -455,14 +446,16 @@ export default {
       })
         .then(({ data }) => {
           if (data.data.length < 2) {
-            this.setMessage('路线规划失败, 请重试', 5000)
+            this.setMessage('路线规划失败')
           } else {
             this.navigatePathPoints = data.data
-            this.setMessage('')
           }
         })
         .catch(() => {
-          this.setMessage('路线规划失败, 请确认起止点是否正确', 5000)
+          this.setMessage('路线规划失败')
+        })
+        .finally(() => {
+          this.setLoadingText('')
         })
     },
 
@@ -489,12 +482,6 @@ export default {
       }
       shapeVm.highlight(this.styles['区块选中'])
       this.activeShapeVm = shapeVm
-    },
-
-    handleMessageClick () {
-      if (this.message.closeable) {
-        this.message.content = ''
-      }
     },
   },
 }
@@ -640,18 +627,6 @@ export default {
       color: hsl(208, 86%, 31%);
       background-color: white;
     }
-  }
-
-  .message-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #666;
-    position: absolute;
-    bottom: 4px;
-    left: 80px;
-    text-align: left;
-    padding: 5px $side-space 5px 0;
   }
 
   .navigate-layer {
