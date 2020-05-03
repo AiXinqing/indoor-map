@@ -227,8 +227,7 @@ export default {
         this.setOriginZoom()
       },
       doubleTap: () => {
-        this.setZoom(this.currentZoom * 0.85)
-        this.setOriginZoom()
+        this.zoomIn()
       },
       rotate: (evt) => {
         if (this.multipointState.scaleFired) return
@@ -300,6 +299,16 @@ export default {
 
     setZoom (zoom) {
       this.currentZoom = Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM)
+    },
+
+    zoomIn () {
+      this.setZoom(this.currentZoom * 0.85)
+      this.setOriginZoom()
+    },
+
+    zoomOut () {
+      this.setZoom(this.currentZoom / 0.85)
+      this.setOriginZoom()
     },
 
     setOriginZoom () {

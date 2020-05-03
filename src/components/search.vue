@@ -133,6 +133,10 @@ export default {
     position: relative;
     z-index: 30;
 
+    input {
+      -webkit-appearance: none;
+    }
+
     .search-results {
       position: absolute;
       top: 100%;

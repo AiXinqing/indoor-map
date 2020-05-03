@@ -25,6 +25,8 @@
         :floors="floors"
         @onlocate="locateToCenter"
         @switch-floor="switchFloor"
+        @zoom-in="handleZoomIn"
+        @zoom-out="handleZoomOut"
       />
     </main>
     <footer
@@ -39,9 +41,6 @@
         @show-navigate-ui="showNavigateLayer"
         @cancel-navigate="cleanNavigate"
       />
-      <div class="message-box">
-        {{ message }}
-      </div>
     </footer>
     <navigate-layer
       v-if="showNavigateUI && activeShapeVm"
@@ -49,12 +48,6 @@
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
     />
-    <div
-      class="logo"
-      @click.stop
-    >
-      <img src="./assets/1.png" alt="logo">
-    </div>
     <div
       :class="{ loading: fetching }"
       class="loading-box"
@@ -360,6 +353,14 @@ export default {
       }
     },
 
+    handleZoomIn () {
+      this.$refs.mapRef.zoomIn()
+    },
+
+    handleZoomOut () {
+      this.$refs.mapRef.zoomOut()
+    },
+
     _fetchFloor (floor) {
       if (this.fetching) {
         this.source.cancel('cancel')
@@ -595,9 +596,12 @@ export default {
     }
 
     footer {
-      height: 9vh;
-      padding: 10px $side-space 10px 80px;
-      position: relative;
+      position: absolute;
+      left: 80px;
+      right: 80px;
+      bottom: 12px;
+      border-radius: 4px;
+      background-color: white;
       z-index: 2;
       box-shadow: 0 0 4px 0 gray;
     }
@@ -686,21 +690,6 @@ export default {
     .navigate-layer {
       top: 0;
       box-shadow: 0 0 5px 1px #ccc;
-    }
-  }
-
-  .logo {
-    position: fixed;
-    bottom: 9vh;
-    left: 6px;
-    z-index: 200;
-    width: 60px;
-    height: 61px;
-    display: flex;
-    margin-bottom: -40px;
-
-    img {
-      max-width: 100%;
     }
   }
 </style>
