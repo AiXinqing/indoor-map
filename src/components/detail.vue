@@ -3,45 +3,54 @@
     class="shape-details"
     @click.stop
   >
-    <div class="detail-container">
-      <div class="shape-text">
-        <div class="shape-name">
-          {{ shape.properties.name }}
+    <div class="shape-details__wrapper">
+      <div class="detail-container">
+        <div class="shape-text">
+          <div class="shape-name">
+            {{ shape.properties.name }}
+          </div>
+          <div
+            v-if="shape.properties.description"
+            class="shape-description"
+          >
+            {{ shape.properties.description }}
+          </div>
         </div>
-        <div
-          v-if="shape.properties.description"
-          class="shape-description"
-        >
-          {{ shape.properties.description }}
+        <div class="buttons">
+          <button
+            v-if="navigatePoints.length"
+            class="button button-reverse"
+            @click="cancelNavigate"
+          >
+            取消
+          </button>
+          <button
+            class="button"
+            @click="showNavigateLayer"
+          >
+            {{ buttonText }}
+          </button>
         </div>
       </div>
-      <div class="buttons">
-        <button
-          v-if="navigatePoints.length"
-          class="button button-reverse"
-          @click="cancelNavigate"
-        >
-          取消
-        </button>
-        <button
-          class="button"
-          @click="showNavigateLayer"
-        >
-          {{ buttonText }}
-        </button>
+      <div
+        class="share-button"
+        @click="share"
+      >
+        <icon type="md-paper-plane" size="18" />
+        <span>发送位置给好友</span>
       </div>
-    </div>
-    <div
-      class="share-button"
-      @click="share"
-    >
-      分享给朋友
     </div>
   </div>
 </template>
 
 <script>
+import { Icon } from 'view-design'
+
 export default {
+  components: {
+    Icon,
+  },
+
   props: {
     navigatePoints: {
       type: Array,
@@ -89,14 +98,13 @@ export default {
 
 <style lang="scss">
   .shape-details {
-    position: fixed;
-    bottom: 9vh;
-    left: 76px;
-    right: 16px;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px 0 gray;
-    background: white;
-    z-index: 3;
+    padding: 6px 16px 18px;
+
+    .shape-details__wrapper {
+      border-radius: 4px;
+      box-shadow: 0 1px 4px 0 gray;
+      background: white;
+    }
 
     .detail-container {
       display: flex;

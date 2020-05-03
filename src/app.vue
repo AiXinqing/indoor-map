@@ -20,6 +20,8 @@
         @click-shape="handleShapeClick"
         @simulate-end="endSimulate"
       />
+    </main>
+    <footer>
       <UILayer
         :floorId="floor && floor.id"
         :floors="floors"
@@ -28,11 +30,6 @@
         @zoom-in="handleZoomIn"
         @zoom-out="handleZoomOut"
       />
-    </main>
-    <footer
-      class="footer"
-      @click.stop
-    >
       <shape-detail
         v-if="activeShapeVm && !simulating"
         :shape="activeShapeVm.shape"
@@ -596,20 +593,16 @@ export default {
     }
 
     footer {
-      position: absolute;
-      left: 80px;
-      right: 80px;
-      bottom: 12px;
-      border-radius: 4px;
-      background-color: white;
-      z-index: 2;
-      box-shadow: 0 0 4px 0 gray;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
   }
 
   .loading-box {
     position: fixed;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     display: flex;
     align-items: center;

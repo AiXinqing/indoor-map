@@ -45,7 +45,6 @@
         <img src="../assets/1.png" alt="logo">
       </div>
     </div>
-    <div class="shape-detail"></div>
   </div>
 </template>
 
