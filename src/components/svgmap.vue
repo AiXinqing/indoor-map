@@ -372,7 +372,7 @@ export default {
 
   .compass-container {
     position: absolute;
-    top: 10px;
+    top: 60px;
     width: $compass-size;
     left: 16px;
     text-align: center;

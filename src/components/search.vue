@@ -1,27 +1,15 @@
 <template>
   <div class="search-component">
     <div class="search-input">
-      <input
+      <i-input
         v-model="searchKey"
         :placeholder="placeholder"
         type="text"
-        @input="debounceSearch"
-      >
-      <svg
-        v-if="searchKey"
-        width="14px"
-        height="14px"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        @click="cleanSearch"
-      >
-        <path
-          d="M1,1L15,15L8,8L1,15L15,1"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2px"
-        />
-      </svg>
+        prefix="ios-search"
+        clearable
+        @on-change="debounceSearch"
+        @on-clear="cleanSearch"
+      />
     </div>
     <div
       v-if="showResults"
@@ -53,8 +41,13 @@
 
 <script>
 import axios from 'axios'
+import { Input } from 'view-design'
 
 export default {
+  components: {
+    IInput: Input,
+  },
+
   props: {
     placeholder: {
       type: String,
@@ -139,37 +132,6 @@ export default {
   .search-component {
     position: relative;
     z-index: 30;
-
-    .search-input {
-      input {
-        width: 100%;
-        padding: 8px 26px 8px 12px;
-        font-size: inherit;
-        color: inherit;
-        border: 1px solid #ddd;
-        box-shadow: none;
-        border-radius: 5px;
-        outline: none;
-        background-color: white;
-        -webkit-appearance: none;
-
-        &::-webkit-input-placeholder {
-          color: #999;
-        }
-
-        &:focus {
-          outline: none;
-          box-shadow: 0 1px 5px 0 hsl(208, 86%, 31%);
-          border-color: hsl(208, 86%, 31%);
-        }
-      }
-
-      svg {
-        position: absolute;
-        right: 12px;
-        top: 12px;
-      }
-    }
 
     .search-results {
       position: absolute;

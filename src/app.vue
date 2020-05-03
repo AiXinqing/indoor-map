@@ -579,29 +579,28 @@ export default {
     align-items: stretch;
     background-color: hsl(176, 74%, 46%);
     background-image: linear-gradient(to bottom, hsl(176, 74%, 46%), hsl(166, 36%, 77%));
-  }
 
-  header {
-    padding: 12px $side-space;
-    color: #666;
-    font-size: 14px;
-    height: 59px;
-    width: 100%;
-    position: absolute;
-    z-index: 2;
-  }
+    header {
+      padding: 12px $side-space;
+      color: #666;
+      font-size: 14px;
+      width: 100%;
+      position: absolute;
+      z-index: 2;
+    }
 
-  main {
-    flex: 1 0 0;
-    position: relative;
-  }
+    main {
+      flex: 1 0 0;
+      position: relative;
+    }
 
-  footer {
-    height: 9vh;
-    padding: 10px $side-space 10px 80px;
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 0 4px 0 gray;
+    footer {
+      height: 9vh;
+      padding: 10px $side-space 10px 80px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 4px 0 gray;
+    }
   }
 
   .loading-box {
