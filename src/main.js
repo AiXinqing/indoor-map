@@ -3,6 +3,7 @@ import 'assets/style.css'
 import Vue from 'vue'
 import App from './app.vue'
 import axios from 'axios'
+import 'view-design/dist/styles/iview.css'
 axios.defaults.baseURL = 'https://xrequest.yunzaitech.com'
 
 document.body.addEventListener('touchmove', function (e) {

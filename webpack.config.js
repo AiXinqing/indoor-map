@@ -45,6 +45,10 @@ module.exports = {
           },
         ]
       },
+      {
+        test: /\.(svg|ttf|eot|woff)\??.*$/,
+        loader: 'url-loader?limit=10000'
+      },
       // 下面几行才是 html-loader 的配置内容
       {
         test: /\.html$/,
