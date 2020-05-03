@@ -377,7 +377,7 @@ export default {
 </script>
 
 <style lang="scss">
-  $compass-size: 45px;
+  $compass-size: 32px;
 
   .compass-container {
     position: absolute;
