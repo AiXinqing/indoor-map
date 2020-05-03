@@ -55,6 +55,18 @@
     >
       <img src="./assets/1.png" alt="logo">
     </div>
+    <div
+      :class="{ loading: fetching }"
+      class="loading-box"
+    >
+      <div class="loading-content">
+        <img
+          src="./assets/loading.png"
+          alt="loading"
+        >
+        <span>正在加载地图</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -147,6 +159,7 @@ export default {
   mounted () {
     const { width, height } = document.querySelector('main').getBoundingClientRect()
     this.size = [width, height]
+    this.fetching = true
 
     this.fetchStyles()
     this.checkShareInfo()
@@ -502,6 +515,60 @@ export default {
 <style lang="scss">
   $side-space: 16px;
 
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    12% {
+      transform: rotate(0deg);
+    }
+    13% {
+      transform: rotate(45deg);
+    }
+    24% {
+      transform: rotate(45deg);
+    }
+    25% {
+      transform: rotate(90deg);
+    }
+    37% {
+      transform: rotate(90deg);
+    }
+    38% {
+      transform: rotate(135deg);
+    }
+    49% {
+      transform: rotate(135deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    62% {
+      transform: rotate(180deg);
+    }
+    63% {
+      transform: rotate(225deg);
+    }
+    74% {
+      transform: rotate(225deg);
+    }
+    75% {
+      transform: rotate(270deg);
+    }
+    87% {
+      transform: rotate(270deg);
+    }
+    88% {
+      transform: rotate(315deg);
+    }
+    99% {
+      transform: rotate(315deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
   .app {
     width: 100%;
     height: 100%;
@@ -535,6 +602,39 @@ export default {
     position: relative;
     z-index: 2;
     box-shadow: 0 0 4px 0 gray;
+  }
+
+  .loading-box {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: -1;
+
+    &.loading {
+      z-index: 200;
+    }
+
+    .loading-content {
+      background-color: white;
+      border-radius: 4px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    img {
+      display: block;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s ease-in-out infinite;
+      transform-origin: 15.5px 14.5px;
+      margin-bottom: 12px;
+    }
   }
 
   .button {
