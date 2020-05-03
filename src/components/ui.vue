@@ -38,15 +38,7 @@
 </template>
 
 <script>
-import { ButtonGroup, Button, Icon } from 'view-design'
-
 export default {
-  components: {
-    ButtonGroup,
-    IButton: Button,
-    Icon,
-  },
-
   props: {
     floors: {
       type: Array,

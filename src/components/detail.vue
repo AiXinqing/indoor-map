@@ -36,13 +36,7 @@
 </template>
 
 <script>
-import { Icon } from 'view-design'
-
 export default {
-  components: {
-    Icon,
-  },
-
   props: {
     navigatePoints: {
       type: Array,

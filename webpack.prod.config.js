@@ -18,7 +18,8 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
+        options: { sourceMap: false }
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
@@ -51,7 +52,7 @@ module.exports = {
         test: /\.(scss|css)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { importLoaders: 1 } },
+          { loader: 'css-loader', options: { importLoaders: 1, sourceMap: false } },
           {
             loader: 'postcss-loader',
           },

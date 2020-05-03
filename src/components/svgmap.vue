@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import { ButtonGroup, Button, Icon } from 'view-design'
 import AlloyFinger from 'alloyfinger'
 import reduceFloorData, { reduceData, getGeojsonRange } from '../reduce'
 
@@ -98,9 +97,6 @@ export default {
     LineString,
     PointShape,
     NavPath,
-    ButtonGroup,
-    IButton: Button,
-    Icon,
   },
 
   props: {

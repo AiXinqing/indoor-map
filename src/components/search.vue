@@ -41,13 +41,8 @@
 
 <script>
 import axios from 'axios'
-import { Input } from 'view-design'
 
 export default {
-  components: {
-    IInput: Input,
-  },
-
   props: {
     placeholder: {
       type: String,

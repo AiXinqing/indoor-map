@@ -3,6 +3,17 @@ import 'assets/style.css'
 import Vue from 'vue'
 import App from './app.vue'
 import axios from 'axios'
+import {
+  Button,
+  ButtonGroup,
+  Icon,
+  Input
+} from 'view-design'
+
+Vue.component('IButton', Button)
+Vue.component('ButtonGroup', ButtonGroup)
+Vue.component('Icon', Icon)
+Vue.component('IInput', Input)
 import 'view-design/dist/styles/iview.css'
 axios.defaults.baseURL = 'https://xrequest.yunzaitech.com'
 
