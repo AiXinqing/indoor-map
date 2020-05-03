@@ -510,6 +510,8 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    background-color: hsl(176, 74%, 46%);
+    background-image: linear-gradient(to bottom, hsl(176, 74%, 46%), hsl(166, 36%, 77%));
   }
 
   header {
