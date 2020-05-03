@@ -128,7 +128,7 @@ export default {
       align-items: center;
       justify-content: center;
       position: absolute;
-      right: 16px;
+      right: 12px;
       top: -27px;
       background-color: #19be6b;
       padding: 4px;

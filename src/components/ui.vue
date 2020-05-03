@@ -28,17 +28,6 @@
       </div>
     </div>
     <div class="right-ui">
-      <button-group
-        vertical
-        class="controls"
-      >
-        <i-button @click="zoomIn">
-          <icon type="md-add" size="18" />
-        </i-button>
-        <i-button @click="zoomOut">
-          <icon type="md-remove" size="18" />
-        </i-button>
-      </button-group>
       <div
         class="logo"
       >
@@ -78,14 +67,6 @@ export default {
     switchFloor (floor) {
       this.$emit('switch-floor', floor)
     },
-
-    zoomIn () {
-      this.$emit('zoom-in')
-    },
-
-    zoomOut () {
-      this.$emit('zoom-out')
-    },
   },
 }
 </script>
@@ -94,7 +75,7 @@ export default {
   .ui-layer {
     flex-direction: column;
     position: relative;
-    bottom: 20px;
+    bottom: 12px;
     z-index: 2;
 
     .left-ui,
@@ -108,18 +89,12 @@ export default {
     }
 
     .right-ui {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      right: 16px;
+      left: 54px;
     }
 
     .floors {
       margin-bottom: 12px;
-    }
 
-    .controls,
-    .floors {
       button {
         padding: 0;
       }
@@ -143,8 +118,7 @@ export default {
 
     .logo {
       position: relative;
-      bottom: -10px;
-      right: -8px;
+      bottom: -15px;
       z-index: 200;
       width: 50px;
       height: 51px;

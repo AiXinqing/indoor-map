@@ -45,7 +45,11 @@
         </g>
       </g>
     </svg>
-    <div class="compass-container">
+    <div
+      class="compass-container"
+      @click.stop
+      @dblclick.stop
+    >
       <img
         :style="{
           transform: 'rotate(' + rotateAngle + 'deg)',
@@ -53,11 +57,23 @@
         src="../assets/compass.png"
         alt="compass"
       >
+      <button-group
+        vertical
+        class="controls"
+      >
+        <i-button @click="zoomIn">
+          <icon type="md-add" size="18" />
+        </i-button>
+        <i-button @click="zoomOut">
+          <icon type="md-remove" size="18" />
+        </i-button>
+      </button-group>
     </div>
   </div>
 </template>
 
 <script>
+import { ButtonGroup, Button, Icon } from 'view-design'
 import AlloyFinger from 'alloyfinger'
 import reduceFloorData, { reduceData, getGeojsonRange } from '../reduce'
 
@@ -82,6 +98,9 @@ export default {
     LineString,
     PointShape,
     NavPath,
+    ButtonGroup,
+    IButton: Button,
+    Icon,
   },
 
   props: {
@@ -391,6 +410,14 @@ export default {
 
     img {
       width: 100%;
+    }
+
+    .controls {
+      margin-top: 12px;
+
+      button {
+        padding: 0;
+      }
     }
   }
 </style>

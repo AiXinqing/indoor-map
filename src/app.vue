@@ -27,8 +27,6 @@
         :floors="floors"
         @onlocate="locateToCenter"
         @switch-floor="switchFloor"
-        @zoom-in="handleZoomIn"
-        @zoom-out="handleZoomOut"
       />
       <shape-detail
         v-if="activeShapeVm && !simulating"
@@ -348,14 +346,6 @@ export default {
         if (!this.$refs.mapRef) return
         this.$refs.mapRef.setCenter(this.positionCenter)
       }
-    },
-
-    handleZoomIn () {
-      this.$refs.mapRef.zoomIn()
-    },
-
-    handleZoomOut () {
-      this.$refs.mapRef.zoomOut()
     },
 
     _fetchFloor (floor) {
