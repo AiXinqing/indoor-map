@@ -4,34 +4,27 @@
     @click.stop
   >
     <div class="layer-header">
-      <icon
+      <svg
         class="back-icon"
-        type="ios-arrow-back"
-        size="18"
-        @click.native="cancelNavigate"
-      />
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        @click="cancelNavigate"
+      >
+        <path d="M11,2L5,8L11,14" fill="transparent" stroke-width="2" stroke="currentColor" />
+      </svg>
       <div class="inputs">
-        <div class="point-inputs">
-          <search
-            :initValue="shapeName"
-            placeholder="当前位置，可搜索更换"
-            @select-shape="updateStartShape"
-            @clean-search="cleanStartShape"
-          />
-          <search
-            :initValue="targetName"
-            placeholder="搜索更换"
-            @select-shape="updateEndShape"
-            @clean-search="cleanEndShape"
-          />
-        </div>
-        <div class="points-exchanger" @click="swapPoints">
-          <icon
-            :style="{ transform: 'rotate(90deg)' }"
-            type="md-swap"
-            size="18"
-          />
-        </div>
+        <search
+          :class="{ 'default-input': startShape }"
+          :placeholder="shapeName"
+          @select-shape="updateStartShape"
+          @clean-search="cleanStartShape"
+        />
+        <input
+          :value="targetName"
+          class="target-input"
+          readonly
+          type="text"
+        />
       </div>
     </div>
     <div class="layer-body"></div>
@@ -76,35 +69,21 @@ export default {
 
   computed: {
     shapeName () {
-      return this.startShape ? this.startShape.properties.name : ''
+      return this.startShape ? this.startShape.properties.name : '当前位置, 可搜索更换'
     },
 
     targetName () {
-      return this.targetShape ? this.targetShape.properties.name : '当前位置'
+      return this.targetShape.properties.name
     },
   },
 
   methods: {
-    swapPoints () {
-      const start = this.startShape
-      this.startShape = this.endShape
-      this.endShape = start
-    },
-
     updateStartShape (shape) {
       this.startShape = shape
     },
 
     cleanStartShape () {
       this.startShape = null
-    },
-
-    updateEndShape (shape) {
-      this.endShape = shape
-    },
-
-    cleanEndShape () {
-      this.endShape = null
     },
 
     cancelNavigate () {
@@ -132,37 +111,42 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding: 12px 12px;
+    padding: 12px 18px;
 
     .back-icon {
       margin-top: 8px;
       margin-right: 8px;
       display: flex;
+      width: 18px;
+      height: 18px;
       color: gray;
     }
 
     .inputs {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+      padding: 0 6px;
       flex-grow: 1;
       color: #333;
 
-      .point-inputs {
-        flex-grow: 1;
-        padding: 0 6px;
-
-        .search-component {
-          margin-bottom: 6px;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-        }
+      .default-input input::-webkit-input-placeholder {
+        color: inherit !important;
       }
+    }
 
-      .points-exchanger {
-        margin-left: 8px;
+    .target-input {
+      margin-top: 8px;
+      width: 100%;
+      padding: 8px 26px 8px 12px;
+      font-size: inherit;
+      color: inherit;
+      border: 1px solid #ddd;
+      box-shadow: none;
+      border-radius: 5px;
+      outline: none;
+      background-color: #eee;
+      -webkit-appearance: none;
+
+      &:focus {
+        outline: none;
       }
     }
   }
