@@ -30,6 +30,7 @@
         fill="#666"
         text-anchor="middle"
         dominant-baseline="middle"
+        @click.stop="handleClick"
       >
         {{ shapeText }}
       </text>
