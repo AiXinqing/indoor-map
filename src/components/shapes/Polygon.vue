@@ -20,6 +20,13 @@
         :class="shape.properties.class"
         @click.stop="handleClick"
       />
+      <g v-if="iconAttrs">
+        <path :d="iconPath" fill="white"/>
+        <image
+          v-bind="iconAttrs"
+          :xlink:href="require('../../assets/' + shape.properties.icon.toLowerCase() + '.png')"
+        />
+      </g>
       <text
         v-if="shapeText"
         v-bind="textRotate"
@@ -127,6 +134,31 @@ export default {
       }
       // 最大显示的字号为14px
       return Math.min(max, this.zoom * this.scale * 14)
+    },
+
+    iconAttrs () {
+      if (this.shape.properties.icon) {
+        return {
+          x: this.textCenter[0] - this.zoom * this.scale * 9,
+          y: this.textCenter[1] - this.zoom * this.scale * 9
+            - this.zoom * this.scale * 11 * Math.sqrt(2),
+          width: this.zoom * this.scale * 18,
+          height: this.zoom * this.scale * 18,
+        }
+      }
+      return null
+    },
+
+    iconPath () {
+      if (!this.iconAttrs) return ''
+      const [x, y] = this.textCenter
+      const r = 28 * this.zoom * this.scale / (1 + Math.sqrt(2))
+      const dy = y - Math.sqrt(2) * r
+      const [spx, spy] = [0, Math.sqrt(2) * r]
+      const tmp = 0.5 * r * Math.sqrt(2)
+      const [mpx, mpy] = [-tmp, tmp]
+      const [epx, epy] = [tmp, tmp]
+      return `M${spx + x},${spy + dy}L${mpx + x},${mpy + dy}A${r} ${r} 0 1 1 ${epx + x} ${epy + dy}Z`
     },
 
     range () {
