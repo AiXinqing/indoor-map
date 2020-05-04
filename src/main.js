@@ -7,12 +7,16 @@ import {
   Button,
   ButtonGroup,
   Icon,
-  Input
+  Input,
+  Row,
+  Col,
 } from 'view-design'
 
 Vue.component('IButton', Button)
 Vue.component('ButtonGroup', ButtonGroup)
 Vue.component('Icon', Icon)
+Vue.component('IRow', Row)
+Vue.component('ICol', Col)
 Vue.component('IInput', Input)
 import 'view-design/dist/styles/iview.css'
 axios.defaults.baseURL = 'https://xrequest.yunzaitech.com'

@@ -38,11 +38,6 @@
 <script>
 export default {
   props: {
-    navigatePoints: {
-      type: Array,
-      default: () => [],
-    },
-
     shape: {
       type: Object,
       required: true,
@@ -55,21 +50,9 @@ export default {
     }
   },
 
-  computed: {
-    buttonText () {
-      return this.navigatePoints.length
-        ? '模拟导航'
-        : '去这里'
-    },
-  },
-
   methods: {
     showNavigateLayer () {
       this.$emit('show-navigate-ui')
-    },
-
-    cancelNavigate () {
-      this.$emit('cancel-navigate')
     },
 
     share () {
