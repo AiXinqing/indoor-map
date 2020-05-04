@@ -38,6 +38,7 @@
   "dependencies": {
     "alloyfinger": "^0.1.16",
     "axios": "^0.19.1",
+    "color-js": "^1.0.5",
     "view-design": "^4.2.0",
     "vue": "^2.6.11"
   }

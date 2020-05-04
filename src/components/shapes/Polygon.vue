@@ -8,9 +8,9 @@
         v-for="path in sideShadowPaths"
         :key="path"
         :d="path"
-        fill="#a9a9a9"
-        stroke="#999"
-        stroke-width="5"
+        :fill="shadowColor"
+        :stroke="shapeStyle.fill"
+        :stroke-width="5"
       />
     </g>
     <template v-else>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+const Color = require('color-js')
 import ShapeMixins from './shapes_mixin'
 
 export default {
@@ -102,9 +103,17 @@ export default {
 
     shapeStyle () {
       return {
+        fill: 'transparent',
         ...this.styles,
         ...this.highlightStyle,
       }
+    },
+
+    shadowColor () {
+      const { fill } = this.shapeStyle
+      const result = Color(fill).darkenByRatio(0.2)
+      result.alpha = result.alpha * (1 - 0.1)
+      return result.toCSS()
     },
 
     textSize () {
