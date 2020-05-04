@@ -56,6 +56,7 @@
         }"
         src="../assets/compass.png"
         alt="compass"
+        @click="rotateAngle = 0"
       >
       <button-group
         vertical
