@@ -48,11 +48,16 @@ export default {
       type: String,
       default: '输入搜索关键词',
     },
+
+    initValue: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {
     return {
-      searchKey: '',
+      searchKey: this.initValue,
       searchResults: [],
       searchTimer: null,
       searching: false,
@@ -62,7 +67,13 @@ export default {
 
   computed: {
     showResults () {
-      return this.searchKey && !this.searching
+      return this.searchKey && !this.searching && (this.searchKey !== this.initValue)
+    },
+  },
+
+  watch: {
+    initValue () {
+      this.searchKey = this.initValue
     },
   },
 
