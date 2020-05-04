@@ -29,12 +29,17 @@
         @switch-floor="switchFloor"
       />
       <shape-detail
-        v-if="activeShapeVm && !simulating"
+        v-if="activeShapeVm && !simulating && !navigatePoints.length"
         :shape="activeShapeVm.shape"
-        :navigate-points="navigatePoints"
         @fire-share="fireShareFunc"
         @show-navigate-ui="showNavigateLayer"
+      />
+      <navigate-info
+        v-if="navigatePathPoints.length"
+        :navigate-points="navigatePathPoints"
+        :simulating="simulating"
         @cancel-navigate="cleanNavigate"
+        @simulate-navigate="simulateNavigate"
       />
     </footer>
     <navigate-layer
@@ -65,6 +70,7 @@ import SvgMap from './components/svgmap.vue'
 import Search from './components/search.vue'
 import ShapeDetail from './components/detail.vue'
 import NavigateLayer from './components/navigate.vue'
+import NavigateInfo from './components/navigate-info.vue'
 import UILayer from './components/ui.vue'
 import styles from './style'
 
@@ -75,6 +81,7 @@ export default {
     UILayer,
     ShapeDetail,
     NavigateLayer,
+    NavigateInfo,
   },
 
   data () {
@@ -402,13 +409,13 @@ export default {
     },
 
     showNavigateLayer () {
-      if (this.navigatePoints.length) {
-        this.simulating = true
-        this.$refs.mapRef.simulateNav()
-      } else {
-        this.selectedShape = null
-        this.showNavigateUI = true
-      }
+      this.selectedShape = null
+      this.showNavigateUI = true
+    },
+
+    simulateNavigate () {
+      this.simulating = true
+      this.$refs.mapRef.simulateNav()
     },
 
     displayNavigate (targets) {
