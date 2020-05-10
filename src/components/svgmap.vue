@@ -184,7 +184,7 @@ export default {
             },
           }, this.offset)
           const range = getGeojsonRange(reducedPath)
-          this.setFitView(range, 1.5)
+          this.setFitViewByZoom(range)
           this.navigatePath = reducedPath
         } else {
           this.navigatePath = null
@@ -372,6 +372,16 @@ export default {
       this.scale = Math.max((Xmax - Xmin) / width, (Ymax -Ymin) / height)
       this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
       this.setZoom(zoom)
+      this.setOriginZoom()
+    },
+
+    setFitViewByZoom (range) {
+      const { Xmin, Xmax, Ymin, Ymax } = range
+      const [width, height] = this.size
+      const delta = Math.max(Xmax - Xmin, Ymax - Ymin)
+      const scale = Math.max(delta / width, delta / height)
+      this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
+      this.setZoom(scale * 1.5 / this.scale)
       this.setOriginZoom()
     },
 
