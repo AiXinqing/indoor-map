@@ -12,18 +12,24 @@
       />
       <div class="inputs">
         <div class="point-inputs">
-          <search
-            :initValue="shapeName"
-            placeholder="当前位置，可搜索更换"
-            @select-shape="updateStartShape"
-            @clean-search="cleanStartShape"
-          />
-          <search
-            :initValue="targetName"
-            placeholder="当前位置，可搜索更换"
-            @select-shape="updateEndShape"
-            @clean-search="cleanEndShape"
-          />
+          <div class="point-input">
+            <search
+              :initValue="shapeName"
+              placeholder="当前位置，可搜索更换"
+              @select-shape="updateStartShape"
+              @clean-search="cleanStartShape"
+            />
+            <div class="point-input-tag">起点</div>
+          </div>
+          <div class="point-input">
+            <search
+              :initValue="targetName"
+              placeholder="当前位置，可搜索更换"
+              @select-shape="updateEndShape"
+              @clean-search="cleanEndShape"
+            />
+            <div class="point-input-tag">终点</div>
+          </div>
         </div>
         <div class="points-exchanger" @click="swapPoints">
           <icon
@@ -149,7 +155,7 @@ export default {
       margin-top: 8px;
       margin-right: 8px;
       display: flex;
-      color: #2d8cf0;
+      color: white;
     }
 
     .inputs {
@@ -162,19 +168,33 @@ export default {
       .point-inputs {
         flex-grow: 1;
         padding: 0 6px;
+        margin-right: -25px;
 
-        .search-component {
+        .point-input {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
           margin-bottom: 6px;
 
           &:last-child {
             margin-bottom: 0;
           }
+
+          .search-component {
+            flex: 1 0 0;
+          }
+
+          .point-input-tag {
+            margin-left: 11px;
+            font-size: 12px;
+            color: white;
+          }
         }
       }
 
       .points-exchanger {
-        margin-left: 8px;
-        color: #2d8cf0;
+        margin-left: -2px;
+        color: white;
       }
     }
   }
