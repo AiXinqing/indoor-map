@@ -288,7 +288,7 @@ export default {
     },
 
     handleSimulateEnd () {
-      this.setRotate(this._start_angle)
+      this.setRotate(this._start_angle || 0)
       delete this._start_angle
       delete this._prev_angle
       this.$emit('simulate-end')
