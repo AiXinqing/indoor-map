@@ -45,7 +45,7 @@ export default {
     },
 
     floorId: {
-      type: String,
+      type: [String, Number],
     },
 
     simulating: {
