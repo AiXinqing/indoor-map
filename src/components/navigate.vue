@@ -51,7 +51,7 @@
         取消
       </i-button>
       <i-button @click="startNavigate" type="success" shape="circle">
-        导航
+        路线
       </i-button>
     </div>
   </div>
@@ -174,7 +174,7 @@ export default {
           display: flex;
           flex-direction: row;
           align-items: center;
-          margin-bottom: 6px;
+          margin-bottom: 10px;
 
           &:last-child {
             margin-bottom: 0;

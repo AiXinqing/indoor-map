@@ -1,5 +1,5 @@
 <template>
-  <div class="search-component">
+  <div class="search-component" :class="{ focus: showResults }">
     <div class="search-input">
       <i-input
         v-model="searchKey"
@@ -138,6 +138,10 @@ export default {
   .search-component {
     position: relative;
     z-index: 30;
+
+    &.focus {
+      z-index: 31;
+    }
 
     input {
       -webkit-appearance: none;
