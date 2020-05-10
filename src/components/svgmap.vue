@@ -189,6 +189,7 @@ export default {
         } else {
           this.navigatePath = null
           this.setFitView(reduceFloorData(this.geojson).range)
+          this.handleSimulateEnd()
         }
       },
     },
