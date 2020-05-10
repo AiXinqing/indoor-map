@@ -1,7 +1,6 @@
 <template>
   <div class="navigate-info" @click.stop>
     <div class="navigate-info__wrapper">
-      <div class="navigate-message"></div>
       <i-row class="buttons" :gutter="16">
         <i-col span="12">
           <i-button
@@ -25,6 +24,9 @@
           </i-button>
         </i-col>
       </i-row>
+      <div class="navigate-message" v-if="navigateFloors.length > 0">
+        本次路径规划共跨越{{ navigateFloors.length }}层楼，当前只显示了{{currentFloor && currentFloor.alias}}的路径。你可以切换楼层查看全部其余楼层的路径
+      </div>
     </div>
   </div>
 </template>
@@ -37,9 +39,37 @@ export default {
       default: () => [],
     },
 
+    getFloor: {
+      type: Function,
+      required: true,
+    },
+
+    floorId: {
+      type: String,
+    },
+
     simulating: {
       type: Boolean,
       default: false,
+    },
+  },
+
+  computed: {
+    groupedPoints () {
+      const result = {}
+      this.navigatePoints.forEach((point) => {
+        const [x, y, z] = point
+        result[z] = (result[z] || []).concat([point])
+      })
+      return result
+    },
+
+    navigateFloors () {
+      return Object.keys(this.groupedPoints).map(item => this.getFloor(item))
+    },
+
+    currentFloor () {
+      return this.getFloor(this.floorId)
     },
   },
 
@@ -63,6 +93,10 @@ export default {
       padding: 8px 12px;
       background-color: white;
       border-radius: 4px;
+    }
+
+    .navigate-message {
+      margin-top: 8px;
     }
   }
 </style>

@@ -38,6 +38,8 @@
         v-if="navigatePathPoints.length"
         :navigate-points="navigatePathPoints"
         :simulating="simulating"
+        :floorId="floor && floor.id"
+        :get-floor="getFloor"
         @cancel-navigate="cleanNavigate"
         @simulate-navigate="simulateNavigate"
       />
@@ -394,7 +396,7 @@ export default {
     },
 
     getFloor (floorId, offset = 0) {
-      const floorIndex = this.floors.findIndex(item => item.id === floorId)
+      const floorIndex = this.floors.findIndex(item => item.id == floorId)
       const index = floorIndex + offset
       if (index < 0 || index >= this.floors.length) return undefined
       return this.floors[index]
