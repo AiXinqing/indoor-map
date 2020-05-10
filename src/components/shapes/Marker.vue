@@ -5,19 +5,13 @@
     <path
       v-bind="styles"
       :d="pathParams"
-      :stroke-width="3 * zoom * scale"
-    />
-    <circle
-      v-if="centerText"
-      v-bind="circleParams"
-      fill="white"
     />
     <text
       v-if="centerText"
-      :font-size="0.3 * size * scale * zoom"
-      :x="point[0]"
-      :y="point[1] - 2 * shapeSize / 3"
-      :fill="styles.fill"
+      :font-size="shapeSize * 0.66"
+      :x="textCenter[0]"
+      :y="textCenter[1]"
+      fill="white"
       dy="0.1em"
       text-anchor="middle"
       dominant-baseline="middle"
@@ -56,7 +50,7 @@ export default {
 
     size: {
       type: Number,
-      default: 35,
+      default: 20,
     },
   },
 
@@ -69,13 +63,18 @@ export default {
       return this.shape.geometry.coordinates
     },
 
-    popParams () {
+    // shapeSize 表示字体尺寸
+    popPath () {
       const [x, y] = this.point
-      const r = this.shapeSize / 3
-      const [spx, spy] = [0, 0]
-      const [mpx, mpy] = [-0.5 * r * Math.sqrt(3), -1.5 * r]
-      const [epx, epy] = [0.5 * r * Math.sqrt(3), -1.5 * r]
-      return `M${spx + x},${spy + y}L${mpx + x},${mpy + y}A${r} ${r} 0 1 1 ${epx + x} ${epy + y}Z`
+      const r = (this.size + 6) * this.scale * this.zoom / 2
+      const d = r * Math.sqrt(2) / 2
+      return `M${x},${y}L${x-d},${y-d}A${r} ${r} 0 1 1 ${x+d} ${y-d}Z`
+    },
+
+    textCenter () {
+      const r = (this.size + 6) * this.scale * this.zoom / 2
+      const d = r * Math.sqrt(2)
+      return [this.point[0], this.point[1] - d]
     },
 
     arrowParams () {
@@ -90,7 +89,7 @@ export default {
 
     pathParams () {
       return this.type === 'pop'
-        ? this.popParams
+        ? this.popPath
         : this.arrowParams
     },
 

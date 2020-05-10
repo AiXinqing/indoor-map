@@ -381,7 +381,7 @@ export default {
       const delta = Math.max(Xmax - Xmin, Ymax - Ymin)
       const scale = Math.max(delta / width, delta / height)
       this.center = [(Xmax + Xmin) / 2, (Ymax + Ymin) / 2]
-      this.setZoom(scale * 1.5 / this.scale)
+      this.setZoom(scale * 1.2 / this.scale)
       this.setOriginZoom()
     },
 

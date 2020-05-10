@@ -33,7 +33,7 @@
         :rotate="this.rotate"
         :shape="endPoint"
         :styles="endPoint.style"
-        centerText="止"
+        centerText="终"
         type="pop"
       />
     </g>
