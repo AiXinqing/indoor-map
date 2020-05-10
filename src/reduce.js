@@ -13,7 +13,7 @@ function getRange (point, range = {}) {
     range.Xmin = Math.min(range.Xmin, x)
     range.Xmax = Math.max(range.Xmax, x)
     range.Ymin = Math.min(range.Ymin, y)
-    range.Ymax = Math.max(range.Ymin, y)
+    range.Ymax = Math.max(range.Ymax, y)
   } else {
     range.Xmin = x
     range.Xmax = x
