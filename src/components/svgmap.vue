@@ -49,6 +49,7 @@
       class="compass-container"
       @click.stop
       @dblclick.stop
+      @touchend.stop
     >
       <img
         :style="{

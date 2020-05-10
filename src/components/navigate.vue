@@ -20,7 +20,7 @@
           />
           <search
             :initValue="targetName"
-            placeholder="搜索更换"
+            placeholder="当前位置，可搜索更换"
             @select-shape="updateEndShape"
             @clean-search="cleanEndShape"
           />
@@ -36,18 +36,17 @@
     </div>
     <div class="layer-body"></div>
     <div class="layer-footer">
-      <button
-        class="button"
-        @click="startNavigate"
-      >
-        导航
-      </button>
-      <button
-        class="button cancel-button"
+      <i-button
+        class="cancel-button"
+        type="primary"
+        shape="circle"
         @click="cancelNavigate"
       >
         取消
-      </button>
+      </i-button>
+      <i-button @click="startNavigate" type="success" shape="circle">
+        导航
+      </i-button>
     </div>
   </div>
 </template>
@@ -71,6 +70,7 @@ export default {
     return {
       startShape: null,
       endShape: this.targetShape,
+      size: [0, 0],
     }
   },
 
@@ -80,8 +80,13 @@ export default {
     },
 
     targetName () {
-      return this.targetShape ? this.targetShape.properties.name : '当前位置'
+      return this.endShape ? this.endShape.properties.name : ''
     },
+  },
+
+  mounted () {
+    const { width, height } = document.querySelector('.layer-body').getBoundingClientRect()
+    this.size = [width, height]
   },
 
   methods: {
@@ -126,19 +131,25 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    background-color: hsl(176, 74%, 46%);
+    background-image: linear-gradient(to bottom, hsl(176, 74%, 46%), hsl(166, 36%, 77%));
   }
 
-  .layer-header {
+  .layer-header,
+  .layer-footer {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+  }
+
+  .layer-header {
     padding: 12px 12px;
 
     .back-icon {
       margin-top: 8px;
       margin-right: 8px;
       display: flex;
-      color: gray;
+      color: #2d8cf0;
     }
 
     .inputs {
@@ -163,27 +174,20 @@ export default {
 
       .points-exchanger {
         margin-left: 8px;
+        color: #2d8cf0;
       }
     }
   }
 
   .layer-body {
-    padding: 12px 24px;
     flex: 1 0 0;
   }
 
   .layer-footer {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    padding: 0 24px;
-    margin-bottom: 9vh;
-    position: relative;
-    top: 20px;
+    justify-content: flex-end;
+    padding: 12px 24px;
 
     .cancel-button {
-      background-color: transparent;
-      color: hsl(208, 85%, 31%);
       margin-right: 12px;
     }
   }
