@@ -391,17 +391,6 @@ export default {
       this.setOriginZoom()
     },
 
-    _getComponent (shape) {
-      switch (shape.geometry.type) {
-        case 'Polygon':
-          return 'polygon-shape'
-        case 'LineString':
-          return 'line-string'
-        default:
-          return 'point-shape'
-      }
-    },
-
     _getStyle (shape) {
       return this.styles[shape.properties.class || 'fallback'] || this.styles.fallback
     },

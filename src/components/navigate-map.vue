@@ -15,7 +15,16 @@
         :scale="scale"
         :rotate="0"
         :selected-shape="selectedShape"
-        v-on="$listeners"
+        @click-shape="handleShapeClick"
+      />
+      <MarkerShape
+        v-if="endMarker"
+        type="pop"
+        center-text="终"
+        :shape="endMarker"
+        :scale="scale"
+        :zoom="currentZoom"
+        :style="styles.target"
       />
     </svg>
   </div>
@@ -23,14 +32,16 @@
 
 <script>
 import AlloyFinger from 'alloyfinger'
-import reduceFloorData from '../reduce'
+import reduceFloorData, { reduceData } from '../reduce'
 import GeoJson from './shapes/GeoJSON.vue'
+import MarkerShape from './shapes/Marker.vue'
 
 export default {
   inheritAttrs: false,
 
   components: {
     GeoJson,
+    MarkerShape,
   },
 
   props: {
@@ -61,6 +72,8 @@ export default {
       reducedData: null,
       originZoom: this.zoom,
       currentZoom: this.zoom,
+      startPoint: null,
+      endPoint: null,
     }
   },
 
@@ -89,6 +102,12 @@ export default {
         h * this.scale * zoom,
       ]
     },
+
+    endMarker () {
+      return this.endPoint
+        ? reduceData(this.endPoint, this.offset)
+        : null
+    },
   },
 
   mounted () {
@@ -110,6 +129,24 @@ export default {
   },
 
   methods: {
+    handleShapeClick (shapeVm) {
+      const { properties } = shapeVm.shape
+      this.endPoint = {
+        type: 'Feature',
+        properties: {
+          class: 'target',
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [
+            parseFloat(properties.x_center),
+            parseFloat(properties.y_center),
+          ],
+        },
+      }
+      console.log(shapeVm.shape)
+    },
+
     setFitView (range, zoom = 0.6) {
       const { Xmin, Xmax, Ymin, Ymax } = range
       const [width, height] = this.size
@@ -136,6 +173,18 @@ export default {
       const [cx, cy] = this.center
       const zoom = this.currentZoom
       this.center = [cx - x * this.scale * zoom, cy - y * this.scale * zoom]
+    },
+
+    getOriginPoint (point) {
+      const [x, y, ...rest] = point
+      const [offsetX, offsetY] = this.offset
+      return [x + offsetX, -y - offsetY, ...rest]
+    },
+
+    getOffsetPoint (point) {
+      const [x, y, ...rest] = point
+      const [offsetX, offsetY] = this.offset
+      return [x - offsetX, offsetY - y, ...rest]
     },
   },
 }
