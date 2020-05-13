@@ -40,7 +40,14 @@
         </div>
       </div>
     </div>
-    <div class="layer-body"></div>
+    <div class="layer-body">
+      <navigate-map
+        v-if="mapReady"
+        :size="size"
+        :geojson="geojson"
+        :styles="styles"
+      />
+    </div>
     <div class="layer-footer">
       <i-button
         class="cancel-button"
@@ -59,13 +66,23 @@
 
 <script>
 import Search from './search.vue'
+import NavigateMap from './navigate-map.vue'
 
 export default {
   components: {
-    Search
+    Search,
+    NavigateMap,
   },
 
   props: {
+    geojson: {
+      type: Object,
+    },
+
+    styles: {
+      type: Object,
+    },
+
     targetShape: {
       type: Object,
       required: true,
@@ -77,6 +94,7 @@ export default {
       startShape: null,
       endShape: this.targetShape,
       size: [0, 0],
+      mapReady: false,
     }
   },
 
@@ -93,6 +111,7 @@ export default {
   mounted () {
     const { width, height } = document.querySelector('.layer-body').getBoundingClientRect()
     this.size = [width, height]
+    this.mapReady = true
   },
 
   methods: {

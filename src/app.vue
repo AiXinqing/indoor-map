@@ -47,6 +47,8 @@
     <navigate-layer
       v-if="showNavigateUI && activeShapeVm"
       :target-shape="activeShapeVm.shape"
+      :geojson="json"
+      :styles="styles"
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
     />
