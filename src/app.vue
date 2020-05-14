@@ -478,7 +478,7 @@ export default {
     },
 
     handleShapeClick (shapeVm) {
-      if (!shapeVm) {
+      if (shapeVm.shape.properties.disabeld) {
         this.activeShapeVm && this.activeShapeVm.blur()
         return
       }

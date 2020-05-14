@@ -168,12 +168,8 @@ export default {
   },
 
   methods: {
-    handleClick () {
-      if (this.shape.properties.disabled) {
-        this.$emit('click-shape', null)
-      } else {
-        this.$emit('click-shape', this)
-      }
+    handleClick (event) {
+      this.$emit('click-shape', this, event)
     },
 
     highlight (style) {

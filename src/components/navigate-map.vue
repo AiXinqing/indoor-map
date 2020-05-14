@@ -13,7 +13,6 @@
         :styles="styles"
         :zoom="currentZoom"
         :scale="scale"
-        :rotate="0"
         :selected-shape="selectedShape"
         @click-shape="handleShapeClick"
       />
@@ -25,6 +24,15 @@
         :scale="scale"
         :zoom="currentZoom"
         :style="styles.target"
+      />
+      <MarkerShape
+        v-if="startMarker"
+        type="pop"
+        center-text="起"
+        :shape="endMarker"
+        :scale="scale"
+        :zoom="currentZoom"
+        :style="styles.start"
       />
     </svg>
   </div>
@@ -57,12 +65,14 @@ export default {
       type: Object,
       required: true,
     },
-
-    currentPosition: {
+    endPoint: {
       type: Object,
       default: null,
     },
-
+    startPoint: {
+      type: Object,
+      default: null,
+    },
     selectedShape: {
       type: Object,
       default: null,
@@ -77,8 +87,6 @@ export default {
       reducedData: null,
       originZoom: this.zoom,
       currentZoom: this.zoom,
-      startPoint: null,
-      endPoint: null,
     }
   },
 
@@ -113,6 +121,12 @@ export default {
         ? reduceData(this.endPoint, this.offset)
         : null
     },
+
+    startMarker () {
+      return this.startPoint
+        ? reduceData(this.startPoint, this.offset)
+        : null
+    },
   },
 
   mounted () {
@@ -134,22 +148,16 @@ export default {
   },
 
   methods: {
-    handleShapeClick (shapeVm) {
-      const { properties } = shapeVm.shape
-      this.endPoint = {
-        type: 'Feature',
-        properties: {
-          class: 'target',
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [
-            parseFloat(properties.x_center),
-            parseFloat(properties.y_center),
-          ],
-        },
-      }
-      console.log(shapeVm.shape)
+    handleShapeClick (shapeVm, event) {
+      this.$emit('shape-clicked', shapeVm, this.getPoint(event))
+    },
+
+    getPoint (event) {
+      const { clientX, clientY } = event
+      const { top, left } = this.$el.getBoundingClientRect()
+      const px = (clientX - left) * this.scale * this.currentZoom + this.viewBox[0]
+      const py = (clientY - top) * this.scale * this.currentZoom + this.viewBox[1]
+      return this.getOriginPoint([px, py])
     },
 
     setFitView (range, zoom = 0.6) {

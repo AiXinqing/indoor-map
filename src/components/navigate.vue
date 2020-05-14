@@ -54,6 +54,9 @@
         :size="size"
         :geojson="geojson"
         :styles="styles"
+        :start-point="startShape"
+        :end-point="endShape"
+        @shape-clicked="handleShapeClicked"
       />
     </div>
     <div class="layer-footer">
@@ -100,7 +103,7 @@ export default {
   data () {
     return {
       startShape: null,
-      endShape: this.targetShape,
+      endShape: this.getShapePoint(this.targetShape, '未知建筑'),
       size: [0, 0],
       mapReady: false,
       // 0 表示起点，1表示终点
@@ -135,6 +138,15 @@ export default {
       this.mode = 1
     },
 
+    handleShapeClicked (shapeVm, point) {
+      const position = this.getShapePoint(shapeVm.shape, '未知地点', point)
+      if (this.mode) {
+        this.endShape = position
+      } else {
+        this.startShape = position
+      }
+    },
+
     swapPoints () {
       const start = this.startShape
       this.startShape = this.endShape
@@ -142,7 +154,7 @@ export default {
     },
 
     updateStartShape (shape) {
-      this.startShape = shape
+      this.startShape = this.getShapePoint(shape, '未知建筑')
     },
 
     cleanStartShape () {
@@ -150,7 +162,25 @@ export default {
     },
 
     updateEndShape (shape) {
-      this.endShape = shape
+      this.endShape = this.getShapePoint(shape, '未知建筑')
+    },
+
+    getShapePoint (shape, placeholder, coordinates) {
+      const cd = coordinates || [
+            parseFloat(shape.properties.x_center),
+            parseFloat(shape.properties.y_center),
+          ]
+      return {
+        type: 'Feature',
+        properties: {
+          uuid: shape.properties.uuid,
+          name: shape.properties.name || placeholder,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: cd,
+        },
+      }
     },
 
     cleanEndShape () {
