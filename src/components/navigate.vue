@@ -51,6 +51,7 @@
     <div class="layer-body">
       <navigate-map
         v-if="mapReady"
+        ref="navigateMapRef"
         :size="size"
         :geojson="geojson"
         :styles="styles"
@@ -200,9 +201,15 @@ export default {
     },
 
     getShapePoint (shape, placeholder, coordinates) {
-      const cd = coordinates || [
+      const positionZ = shape.properties.floor
+        ? this.$parent.getFloorByName(shape.properties.floor).id
+        : this.floorId
+      const cd = coordinates
+        ? [...coordinates, positionZ]
+        : [
             parseFloat(shape.properties.x_center),
             parseFloat(shape.properties.y_center),
+            positionZ,
           ]
       return {
         type: 'Feature',

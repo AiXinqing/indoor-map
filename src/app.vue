@@ -46,7 +46,7 @@
     </footer>
     <navigate-layer
       v-if="showNavigateUI && activeShapeVm"
-      :floorId="floor && floor.id"
+      :floor-id="floor && floor.id"
       :floors="floors"
       :target-shape="activeShapeVm.shape"
       :geojson="json"
@@ -429,24 +429,18 @@ export default {
     displayNavigate (targets) {
       this.showNavigateUI = false
       const { start, end } = targets
-      if (!start && !this.position) {
+      if ((!start || !end) && !this.position) {
         this.setMessage('当前位置不可用')
         return
       }
       const message = `正在为您规划到${end.properties.name}的路线`
       this.setLoadingText(message)
       const [sx, sy, sz] = start
-        ? [
-          start.properties.x_center,
-          start.properties.y_center,
-          this.getFloorByName(start.properties.floor).id
-        ]
+        ? start.geometry.coordinates
         : this.position
-      const [ex, ey, ez] = [
-        end.properties.x_center,
-        end.properties.y_center,
-        this.getFloorByName(end.properties.floor).id || this.floor.id
-      ]
+      const [ex, ey, ez] = end
+        ? end.geometry.coordinates
+        : this.position
       axios.post('/direction', {
         startPosition: {
           positionX: `${sx}`,
