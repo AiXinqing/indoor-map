@@ -55,6 +55,7 @@
         :geojson="geojson"
         :styles="styles"
         :start-point="startShape"
+        :current-floor="getFloor(floorId)"
         :end-point="endShape"
         @shape-clicked="handleShapeClicked"
       />
@@ -117,6 +118,11 @@ export default {
 
     styles: {
       type: Object,
+    },
+
+    getFloor: {
+      type: [Function, Object],
+      required: true,
     },
 
     targetShape: {
@@ -201,6 +207,7 @@ export default {
       return {
         type: 'Feature',
         properties: {
+          floor: shape.properties.floor,
           uuid: shape.properties.uuid,
           name: shape.properties.name || placeholder,
         },
@@ -218,6 +225,7 @@ export default {
     cancelNavigate () {
       this.$emit('cancel')
     },
+
     startNavigate () {
       this.$emit('navigate', {
         start: this.startShape,

@@ -51,6 +51,7 @@
       :target-shape="activeShapeVm.shape"
       :geojson="json"
       :styles="styles"
+      :get-floor="getFloor"
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
       @switch-floor="switchFloor"

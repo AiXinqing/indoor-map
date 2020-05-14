@@ -77,6 +77,10 @@ export default {
       type: Object,
       default: null,
     },
+    currentFloor: {
+      type: Object,
+      default: null,
+    },
   },
 
   data () {
@@ -117,15 +121,17 @@ export default {
     },
 
     endMarker () {
-      return this.endPoint
-        ? reduceData(this.endPoint, this.offset)
-        : null
+      if (!this.endPoint) return null
+      const { floor } = this.endPoint.properties
+      if (floor && (floor !== this.currentFloor.alias)) return null
+      return reduceData(this.endPoint, this.offset)
     },
 
     startMarker () {
-      return this.startPoint
-        ? reduceData(this.startPoint, this.offset)
-        : null
+      if (!this.startPoint) return null
+      const { floor } = this.startPoint.properties
+      if (floor && (floor !== this.currentFloor.alias)) return null
+      return reduceData(this.startPoint, this.offset)
     },
   },
 
