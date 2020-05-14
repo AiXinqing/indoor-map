@@ -2,6 +2,7 @@
   <div class="search-component" :class="{ focus: showResults }">
     <div class="search-input">
       <i-input
+        ref="inputRef"
         v-model="searchKey"
         :placeholder="placeholder"
         type="text"
@@ -9,7 +10,7 @@
         clearable
         @on-change="debounceSearch"
         @on-clear="cleanSearch"
-        @on-focus="handleFocus"
+        @touchstart.native="handleFocus"
       />
     </div>
     <div
@@ -80,6 +81,7 @@ export default {
 
   methods: {
     handleFocus () {
+      this.$refs.inputRef.focus()
       this.$emit('input-focus')
     },
 

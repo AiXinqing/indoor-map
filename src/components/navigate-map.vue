@@ -29,7 +29,7 @@
         v-if="startMarker"
         type="pop"
         center-text="起"
-        :shape="endMarker"
+        :shape="startMarker"
         :scale="scale"
         :zoom="currentZoom"
         :style="styles.start"
