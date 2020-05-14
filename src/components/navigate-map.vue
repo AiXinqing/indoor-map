@@ -58,6 +58,11 @@ export default {
       required: true,
     },
 
+    currentPosition: {
+      type: Object,
+      default: null,
+    },
+
     selectedShape: {
       type: Object,
       default: null,

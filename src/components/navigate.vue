@@ -12,7 +12,11 @@
       />
       <div class="inputs">
         <div class="point-inputs">
-          <div class="point-input">
+          <div
+            :class="{ 'point-input--focus': mode === 0 }"
+            class="point-input"
+            @on-focus="mode = 0"
+          >
             <search
               :initValue="shapeName"
               placeholder="当前位置，可搜索更换"
@@ -21,7 +25,11 @@
             />
             <div class="point-input-tag">起点</div>
           </div>
-          <div class="point-input">
+          <div
+            :class="{ 'point-input--focus': mode === 1 }"
+            class="point-input"
+            @on-focus="mode = 1"
+          >
             <search
               :initValue="targetName"
               placeholder="当前位置，可搜索更换"
@@ -95,6 +103,8 @@ export default {
       endShape: this.targetShape,
       size: [0, 0],
       mapReady: false,
+      // 0 表示起点，1表示终点
+      mode: 0,
     }
   },
 
@@ -194,6 +204,13 @@ export default {
           flex-direction: row;
           align-items: center;
           margin-bottom: 10px;
+
+          &.point-input--focus {
+            input.ivu-input {
+              border-color: hsl(211, 87%, 65%);
+              box-shadow: 0 0 0 2px rgba(45, 140, 240, 0.2);
+            }
+          }
 
           &:last-child {
             margin-bottom: 0;

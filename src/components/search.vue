@@ -9,6 +9,7 @@
         clearable
         @on-change="debounceSearch"
         @on-clear="cleanSearch"
+        @on-focus="$emit('on-focus')"
       />
     </div>
     <div
