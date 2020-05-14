@@ -32,7 +32,7 @@
         :shape="startMarker"
         :scale="scale"
         :zoom="currentZoom"
-        :style="styles.start"
+        :style="styles.location"
       />
     </svg>
   </div>

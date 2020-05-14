@@ -46,11 +46,14 @@
     </footer>
     <navigate-layer
       v-if="showNavigateUI && activeShapeVm"
+      :floorId="floor && floor.id"
+      :floors="floors"
       :target-shape="activeShapeVm.shape"
       :geojson="json"
       :styles="styles"
       @cancel="showNavigateUI = false"
       @navigate="displayNavigate"
+      @switch-floor="switchFloor"
     />
     <div
       :class="{ loading: loadingContent }"

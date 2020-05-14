@@ -58,6 +58,21 @@
         :end-point="endShape"
         @shape-clicked="handleShapeClicked"
       />
+      <div class="navigate-map-ui">
+        <button-group
+          vertical
+          class="floors"
+        >
+          <i-button
+            v-for="item in floors"
+            :key="item.id"
+            :type="item.id === floorId ? 'success' : 'default'"
+            @click="switchFloor(item)"
+          >
+            {{ item.alias }}
+          </i-button>
+        </button-group>
+      </div>
     </div>
     <div class="layer-footer">
       <i-button
@@ -86,6 +101,16 @@ export default {
   },
 
   props: {
+    floors: {
+      type: Array,
+      default: [],
+    },
+
+    floorId: {
+      type: [Number, String],
+      default: 0,
+    },
+
     geojson: {
       type: Object,
     },
@@ -128,6 +153,9 @@ export default {
   },
 
   methods: {
+    switchFloor (floor) {
+      this.$emit('switch-floor', floor)
+    },
     updateToZero () {
       if (0 === this.mode) return
       this.mode = 0
@@ -277,6 +305,21 @@ export default {
 
   .layer-body {
     flex: 1 0 0;
+    position: relative;
+  }
+
+  .navigate-map-ui {
+    position: absolute;
+    left: 16px;
+    bottom: 0;
+
+    .floors {
+      margin-bottom: 12px;
+
+      button {
+        padding: 0;
+      }
+    }
   }
 
   .layer-footer {
