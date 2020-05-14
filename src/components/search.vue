@@ -9,7 +9,7 @@
         clearable
         @on-change="debounceSearch"
         @on-clear="cleanSearch"
-        @on-focus="$emit('on-focus')"
+        @on-focus="handleFocus"
       />
     </div>
     <div
@@ -79,6 +79,10 @@ export default {
   },
 
   methods: {
+    handleFocus () {
+      this.$emit('input-focus')
+    },
+
     debounceSearch (event) {
       const value = event.target.value
       this.$emit('input', value)

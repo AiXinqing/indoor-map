@@ -13,28 +13,28 @@
       <div class="inputs">
         <div class="point-inputs">
           <div
-            :class="{ 'point-input--focus': mode === 0 }"
+            :class="{ 'point-input--focus': mode == 0 }"
             class="point-input"
-            @on-focus="mode = 0"
           >
             <search
               :initValue="shapeName"
               placeholder="当前位置，可搜索更换"
               @select-shape="updateStartShape"
               @clean-search="cleanStartShape"
+              @input-focus="updateToZero"
             />
             <div class="point-input-tag">起点</div>
           </div>
           <div
-            :class="{ 'point-input--focus': mode === 1 }"
+            :class="{ 'point-input--focus': mode == 1 }"
             class="point-input"
-            @on-focus="mode = 1"
           >
             <search
               :initValue="targetName"
               placeholder="当前位置，可搜索更换"
               @select-shape="updateEndShape"
               @clean-search="cleanEndShape"
+              @input-focus="updateToOne"
             />
             <div class="point-input-tag">终点</div>
           </div>
@@ -125,6 +125,16 @@ export default {
   },
 
   methods: {
+    updateToZero () {
+      if (0 === this.mode) return
+      this.mode = 0
+    },
+
+    updateToOne () {
+      if (1 === this.mode) return
+      this.mode = 1
+    },
+
     swapPoints () {
       const start = this.startShape
       this.startShape = this.endShape
