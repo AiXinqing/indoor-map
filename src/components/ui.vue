@@ -73,15 +73,16 @@ export default {
     .left-ui,
     .right-ui {
       position: absolute;
-      bottom: 0;
+      bottom: 40px;
     }
 
     .left-ui {
-      left: 16px;
+      right: 16px;
     }
 
     .right-ui {
-      left: 54px;
+      right: 7px;
+      bottom: -7px;
     }
 
     .floors {
@@ -102,6 +103,9 @@ export default {
       border-radius: 16px;
       color: #333;
       cursor: pointer;
+      position: fixed;
+      bottom: 10px;
+      left: 16px;
 
       &.active {
         color: hsl(208, 86%, 31%);
@@ -110,7 +114,6 @@ export default {
 
     .logo {
       position: relative;
-      bottom: -15px;
       z-index: 200;
       width: 50px;
       height: 51px;
