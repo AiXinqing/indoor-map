@@ -81,8 +81,8 @@ export default {
     }
 
     .right-ui {
-      right: 7px;
-      bottom: -7px;
+      right: 55px;
+      bottom: -4px;
     }
 
     .floors {
@@ -104,8 +104,8 @@ export default {
       color: #333;
       cursor: pointer;
       position: fixed;
-      bottom: 10px;
-      left: 16px;
+      bottom: 15px;
+      right: 16px;
 
       &.active {
         color: hsl(208, 86%, 31%);

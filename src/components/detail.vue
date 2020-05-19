@@ -75,6 +75,7 @@ export default {
       padding: 0 8px;
       background: white;
       position: relative;
+      z-index: 9;
     }
 
     .detail-container {
@@ -114,6 +115,7 @@ export default {
       color: white;
       box-shadow: 0 1px 5px 0 #19be6b;
       cursor: pointer;
+      z-index: 9;
     }
 
     .share-button {

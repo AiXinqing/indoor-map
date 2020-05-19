@@ -66,6 +66,10 @@
         <i-button @click="zoomIn">
           <icon type="md-add" size="18" />
         </i-button>
+        <div class="slider-line-container">
+          <div class="line-nav"></div>
+          <div class="slider-btn" />
+        </div>
         <i-button @click="zoomOut">
           <icon type="md-remove" size="18" />
         </i-button>
@@ -422,5 +426,49 @@ export default {
         padding: 0;
       }
     }
+
+    .slider-line-container{
+      position: relative;
+
+      .line-nav{
+        width: 8px;
+        height: 100px;
+        left: 12px;
+        background-color: #fff;
+        position: relative;
+        -moz-box-shadow:  0px 2px 6px #888;
+        -webkit-box-shadow:  0px 2px 6px #888;
+        box-shadow: 0px 2px 6px #888;
+      }
+
+      .slider-btn{
+        position: absolute;
+        width: 20px;
+        height: 10px;
+        top: 10px;
+        border-radius: 20px;
+        left: 6px;
+        background-color: #fff;
+        -moz-box-shadow:  0px 0px 4px #888;
+        -webkit-box-shadow:  0px 0px 4px #888;
+        box-shadow: 0px 0px 4px #888;
+      }
+    }
+  }
+
+  button.ivu-btn.ivu-btn-default {
+    -moz-box-shadow:  0px 2px 6px #888;
+    -webkit-box-shadow:  0px 2px 6px #888;
+    box-shadow: 0px 2px 6px #888;
+    border: none;
+  }
+
+  .ivu-btn-group-vertical > .ivu-btn{
+    border-radius: 8px;
+  }
+
+  .controls.ivu-btn-group.ivu-btn-group-default.ivu-btn-group-vertical {
+    position: fixed;
+    right: 16px;
   }
 </style>
